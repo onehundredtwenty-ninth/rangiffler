@@ -5,7 +5,6 @@ COPY package.json ./
 RUN npm install
 COPY . ./
 RUN npm run ${NPM_COMMAND}
-RUN ls
 
 # release step
 FROM nginx:1.23.3-alpine AS release
