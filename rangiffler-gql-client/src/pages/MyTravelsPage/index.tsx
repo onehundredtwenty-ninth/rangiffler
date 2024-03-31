@@ -15,7 +15,7 @@ export const MyTravelsPage = () => {
     });
 
     const [withMyFriends, setWithMyFriends] = useState(false);
-    const [page, setPage] = useState(0);
+    const [page] = useState(0);
     const {photos, stat} = useGetFeed({page, withFriends: withMyFriends});
 
     const handleSelectImage = (photo: Photo) => {

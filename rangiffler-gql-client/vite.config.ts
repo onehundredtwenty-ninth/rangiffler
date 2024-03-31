@@ -10,5 +10,8 @@ export default defineConfig(({ mode }) => {
       host: process.env.VITE_FRONT_HOST,
       port: 3001,
     },
+    build: {
+      outDir: 'build'
+    }
   });
 });
