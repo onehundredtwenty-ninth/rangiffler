@@ -1,14 +1,14 @@
 package com.onehundredtwentyninth.service;
 
-import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.data.repository.UserRepository;
+import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import io.grpc.stub.StreamObserver;
-import java.util.stream.Collectors;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 @GrpcService
 public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
@@ -21,8 +21,11 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
   }
 
   @Override
-  public void getAllUsers(Empty request, StreamObserver<AllUsersResponse> responseObserver) {
-    var allUsersEntities = userRepository.findAll();
+  public void getAllUsers(AllUsersRequest request, StreamObserver<AllUsersResponse> responseObserver) {
+    var allUsersEntities = userRepository.findByUsernameNotAndSearchQuery(request.getUsername(),
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
 
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
             allUsersEntities.stream().map(
@@ -32,8 +35,9 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
                     .build()
-            ).collect(Collectors.toList())
+            ).toList()
         )
+        .setHasNext(allUsersEntities.getTotalPages() > request.getPage() + 1)
         .build();
 
     responseObserver.onNext(allUsersResponse);

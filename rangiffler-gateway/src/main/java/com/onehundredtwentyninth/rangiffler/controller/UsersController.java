@@ -2,12 +2,16 @@ package com.onehundredtwentyninth.rangiffler.controller;
 
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import com.onehundredtwentyninth.rangiffler.service.UsersClient;
-import java.util.List;
+import javax.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Slice;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 public class UsersController {
 
   private final UsersClient usersClient;
@@ -17,8 +21,11 @@ public class UsersController {
     this.usersClient = usersClient;
   }
 
-  @GetMapping("/allUsers")
-  public List<UserJson> getAllUsers() {
-    return usersClient.getAllUsers();
+  @QueryMapping
+  public Slice<UserJson> users(@AuthenticationPrincipal Jwt principal,
+      @Argument int page,
+      @Argument int size,
+      @Argument @Nullable String searchQuery) {
+    return usersClient.getAllUsers(principal.getClaim("sub"), page, size, searchQuery);
   }
 }
