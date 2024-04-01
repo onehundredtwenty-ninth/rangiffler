@@ -1,0 +1,78 @@
+server:
+  port: 8090
+  error:
+    include:
+      message: true
+
+spring:
+  application:
+    name: rangiffler-gateway
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    net.devh.boot.grpc: DEBUG
+#    org.springframework.boot.autoconfigure: DEBUG
+
+  file:
+    name: 'gateway.log'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: 'local'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://127.0.0.1:9000'
+  graphql:
+    graphiql:
+      enabled: true
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://localhost:8092'
+      negotiationType: PLAINTEXT
+
+rangiffler-userdata:
+  base-uri: 'http://127.0.0.1:8092'
+rangiffler-front:
+  base-uri: 'http://127.0.0.1:3001'
+---
+spring:
+  config:
+    activate:
+      on-profile: 'docker'
+  autoconfigure:
+    exclude:
+      - 'org.springframework.cloud.vault.config.VaultAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
+      - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: 'http://auth.rangiffler.dc:9000'
+
+grpc:
+  client:
+    grpcUserdataClient:
+      address: 'static://userdata.rangiffler.dc:8092'
+      negotiationType: PLAINTEXT
+
+rangiffler-userdata:
+  base-uri: 'http://userdata.rangiffler.dc:8092'
+rangiffler-front:
+  base-uri: 'http://frontend.rangiffler.dc'
+---
