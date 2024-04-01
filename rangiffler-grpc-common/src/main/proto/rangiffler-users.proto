@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+package com.onehundredtwentyninth.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "com.onehundredtwentyninth.rangiffler.grpc";
+option java_outer_classname = "RangifflerUserdataProto";
+
+service RangifflerUserdataService {
+  rpc GetAllUsers(google.protobuf.Empty) returns (AllUsersResponse) {}
+}
+
+message AllUsersResponse {
+  repeated User allUsers = 1;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string firstname = 3;
+  string lastName = 4;
+  bytes avatar = 5;
+  string countryId = 6;
+}
