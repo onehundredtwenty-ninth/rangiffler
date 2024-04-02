@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 public record PhotoJson(
     UUID id,
     String src,
-    Object country,
+    CountryJson country,
     String description,
     LocalDate creationDate,
     LikesJson likes
@@ -21,7 +21,7 @@ public record PhotoJson(
     return new PhotoJson(
         UUID.fromString(photoMessage.getId()),
         new String(photoMessage.getSrc().toByteArray(), StandardCharsets.UTF_8),
-        photoMessage.getCountryId(),
+        new CountryJson(UUID.fromString(photoMessage.getCountryId()), null, null, null),
         photoMessage.getDescription(),
         LocalDate.ofInstant(Instant.ofEpochSecond(photoMessage.getCreationDate().getSeconds()), ZoneId.of("UTC")),
         LikesJson.fromGrpcMessage(photoMessage.getLikes())

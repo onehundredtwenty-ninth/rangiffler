@@ -4,9 +4,11 @@ import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.data.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.AllCountriesResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.Country;
+import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +29,7 @@ public class GeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImp
     var allCountriesResponse = AllCountriesResponse.newBuilder().addAllAllCountries(
             allCountriesEntities.stream().map(
                 entity -> Country.newBuilder()
+                    .setId(entity.getId().toString())
                     .setCode(entity.getCode())
                     .setName(entity.getName())
                     .setFlag(new String(entity.getFlag(), StandardCharsets.UTF_8))
@@ -36,6 +39,21 @@ public class GeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImp
         .build();
 
     responseObserver.onNext(allCountriesResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getCountry(GetCountryRequest request, StreamObserver<Country> responseObserver) {
+    var countryEntity = countryRepository.findById(UUID.fromString(request.getId())).orElseThrow();
+
+    var countryResponse = Country.newBuilder()
+        .setId(countryEntity.getId().toString())
+        .setCode(countryEntity.getCode())
+        .setName(countryEntity.getName())
+        .setFlag(new String(countryEntity.getFlag(), StandardCharsets.UTF_8))
+        .build();
+
+    responseObserver.onNext(countryResponse);
     responseObserver.onCompleted();
   }
 }
