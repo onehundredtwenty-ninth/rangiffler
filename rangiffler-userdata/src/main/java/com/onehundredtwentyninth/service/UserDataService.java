@@ -5,6 +5,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,21 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .build();
 
     responseObserver.onNext(allUsersResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getUser(UserRequest request, StreamObserver<User> responseObserver) {
+    var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+
+    var userResponse = User.newBuilder()
+        .setId(userEntity.getId().toString())
+        .setUsername(userEntity.getUsername())
+        .setFirstname(userEntity.getFirstname())
+        .setLastName(userEntity.getLastName())
+        .build();
+
+    responseObserver.onNext(userResponse);
     responseObserver.onCompleted();
   }
 }

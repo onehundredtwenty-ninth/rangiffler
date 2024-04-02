@@ -10,6 +10,7 @@ option java_outer_classname = "RangifflerUserdataProto";
 
 service RangifflerUserdataService {
   rpc GetAllUsers(AllUsersRequest) returns (AllUsersResponse) {}
+  rpc GetUser(UserRequest) returns (User) {}
 }
 
 message AllUsersRequest {
@@ -17,6 +18,10 @@ message AllUsersRequest {
   string searchQuery = 1;
   int32 page = 2;
   int32 size = 3;
+}
+
+message UserRequest {
+  string username = 1;
 }
 
 message AllUsersResponse {
