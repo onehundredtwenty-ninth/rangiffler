@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub;
+import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
 import net.devh.boot.grpc.client.inject.GrpcClient;
@@ -30,5 +31,10 @@ public class UsersClient {
         .map(UserJson::fromGrpcMessage)
         .toList();
     return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
+  }
+
+  public UserJson getUser(String userName) {
+    var request = UserRequest.newBuilder().setUsername(userName).build();
+    return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
   }
 }
