@@ -44,6 +44,9 @@ grpc:
     grpcUserdataClient:
       address: 'static://localhost:8092'
       negotiationType: PLAINTEXT
+    grpcGeoClient:
+      address: 'static://localhost:8091'
+      negotiationType: PLAINTEXT
 
 rangiffler-userdata:
   base-uri: 'http://127.0.0.1:8092'
