@@ -1,9 +1,3 @@
-server:
-  port: 8089
-  error:
-    include:
-      message: true
-
 grpc:
   server:
     port: 8092
@@ -68,8 +62,6 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/rangiffler-userdata'
     username: postgres
     password: secret
-rangiffler-userdata:
-  base-uri: 'http://127.0.0.1:8089'
 ---
 spring:
   config:
@@ -89,6 +81,4 @@ spring:
     url: 'jdbc:postgresql://rangiffler-all-db:5432/rangiffler-userdata'
     username: postgres
     password: secret
-rangiffler-userdata:
-  base-uri: 'http://userdata.rangiffler.dc:8089'
 ---

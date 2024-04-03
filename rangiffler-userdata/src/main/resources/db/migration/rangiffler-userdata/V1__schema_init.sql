@@ -5,7 +5,7 @@ create table if not exists "user"
     id        UUID unique        not null default uuid_generate_v1(),
     username  varchar(50) unique not null,
     firstname varchar(255),
-    lastName  varchar(255),
+    last_name  varchar(255),
     avatar    bytea,
     primary key (id)
 );

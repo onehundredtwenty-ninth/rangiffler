@@ -51,8 +51,6 @@ grpc:
       address: 'static://localhost:8093'
       negotiationType: PLAINTEXT
 
-rangiffler-userdata:
-  base-uri: 'http://127.0.0.1:8092'
 rangiffler-front:
   base-uri: 'http://127.0.0.1:3001'
 ---
@@ -77,8 +75,6 @@ grpc:
       address: 'static://userdata.rangiffler.dc:8092'
       negotiationType: PLAINTEXT
 
-rangiffler-userdata:
-  base-uri: 'http://userdata.rangiffler.dc:8092'
 rangiffler-front:
   base-uri: 'http://frontend.rangiffler.dc'
 ---
