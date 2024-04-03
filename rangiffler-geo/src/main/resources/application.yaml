@@ -57,8 +57,6 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/rangiffler-geo'
     username: postgres
     password: secret
-rangiffler-geo:
-  base-uri: 'http://127.0.0.1:8091'
 ---
 spring:
   config:
@@ -73,6 +71,4 @@ spring:
     url: 'jdbc:postgresql://rangiffler-all-db:5432/rangiffler-geo'
     username: postgres
     password: secret
-rangiffler-geo:
-  base-uri: 'http://geo.rangiffler.dc:8091'
 ---

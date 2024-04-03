@@ -1,4 +1,4 @@
-insert into "user" (id, firstname, lastName, username)
+insert into "user" (id, firstname, last_name, username)
 values
 ('e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, 'bee', 'bee', 'bee'),
 ('7ff6da70-08be-4a53-b1b3-bdad4da19f7b'::uuid, 'Tarra', 'Jones', 'milton.collins'),

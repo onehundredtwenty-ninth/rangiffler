@@ -27,7 +27,7 @@ public class UserEntity {
   @Column
   private String firstname;
 
-  @Column
+  @Column(name = "last_name")
   private String lastName;
 
   @Column(name = "avatar", columnDefinition = "bytea")

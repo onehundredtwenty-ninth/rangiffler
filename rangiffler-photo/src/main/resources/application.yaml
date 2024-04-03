@@ -57,8 +57,6 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/rangiffler-photo'
     username: postgres
     password: secret
-rangiffler-photo:
-  base-uri: 'http://127.0.0.1:8093'
 ---
 spring:
   config:
@@ -73,6 +71,4 @@ spring:
     url: 'jdbc:postgresql://rangiffler-all-db:5432/rangiffler-photo'
     username: postgres
     password: secret
-rangiffler-photo:
-  base-uri: 'http://photo.rangiffler.dc:8093'
 ---
