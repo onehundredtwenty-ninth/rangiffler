@@ -11,6 +11,9 @@ option java_outer_classname = "RangifflerUserdataProto";
 service RangifflerUserdataService {
   rpc GetAllUsers(AllUsersRequest) returns (AllUsersResponse) {}
   rpc GetUser(UserRequest) returns (User) {}
+  rpc GetUserFriends(AllUsersRequest) returns (AllUsersResponse) {}
+  rpc GetFriendshipRequests(AllUsersRequest) returns (AllUsersResponse) {}
+  rpc GetFriendshipAddresses(AllUsersRequest) returns (AllUsersResponse) {}
 }
 
 message AllUsersRequest {

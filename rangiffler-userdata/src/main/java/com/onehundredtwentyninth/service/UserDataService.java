@@ -35,6 +35,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setUsername(entity.getUsername())
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
+                    .setCountryId(entity.getCountryId())
                     .build()
             ).toList()
         )
@@ -54,9 +55,88 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .setUsername(userEntity.getUsername())
         .setFirstname(userEntity.getFirstname())
         .setLastName(userEntity.getLastName())
+        .setCountryId(userEntity.getCountryId())
         .build();
 
     responseObserver.onNext(userResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getUserFriends(AllUsersRequest request, StreamObserver<AllUsersResponse> responseObserver) {
+    var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+    var allUsersEntities = userRepository.findFriends(userEntity,
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+
+    var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
+            allUsersEntities.stream().map(
+                entity -> User.newBuilder()
+                    .setId(entity.getId().toString())
+                    .setUsername(entity.getUsername())
+                    .setFirstname(entity.getFirstname())
+                    .setLastName(entity.getLastName())
+                    .setCountryId(entity.getCountryId())
+                    .build()
+            ).toList()
+        )
+        .setHasNext(allUsersEntities.hasNext())
+        .build();
+
+    responseObserver.onNext(allUsersResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getFriendshipRequests(AllUsersRequest request, StreamObserver<AllUsersResponse> responseObserver) {
+    var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+    var allUsersEntities = userRepository.findIncomeInvitations(userEntity,
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+
+    var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
+            allUsersEntities.stream().map(
+                entity -> User.newBuilder()
+                    .setId(entity.getId().toString())
+                    .setUsername(entity.getUsername())
+                    .setFirstname(entity.getFirstname())
+                    .setLastName(entity.getLastName())
+                    .setCountryId(entity.getCountryId())
+                    .build()
+            ).toList()
+        )
+        .setHasNext(allUsersEntities.hasNext())
+        .build();
+
+    responseObserver.onNext(allUsersResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getFriendshipAddresses(AllUsersRequest request, StreamObserver<AllUsersResponse> responseObserver) {
+    var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+    var allUsersEntities = userRepository.findOutcomeInvitations(userEntity,
+        PageRequest.of(request.getPage(), request.getSize()),
+        request.getSearchQuery()
+    );
+
+    var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
+            allUsersEntities.stream().map(
+                entity -> User.newBuilder()
+                    .setId(entity.getId().toString())
+                    .setUsername(entity.getUsername())
+                    .setFirstname(entity.getFirstname())
+                    .setLastName(entity.getLastName())
+                    .setCountryId(entity.getCountryId())
+                    .build()
+            ).toList()
+        )
+        .setHasNext(allUsersEntities.hasNext())
+        .build();
+
+    responseObserver.onNext(allUsersResponse);
     responseObserver.onCompleted();
   }
 }

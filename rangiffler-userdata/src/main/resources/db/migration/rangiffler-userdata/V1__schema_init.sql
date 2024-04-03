@@ -2,11 +2,12 @@ create extension if not exists "uuid-ossp";
 
 create table if not exists "user"
 (
-    id        UUID unique        not null default uuid_generate_v1(),
-    username  varchar(50) unique not null,
-    firstname varchar(255),
+    id         UUID unique        not null default uuid_generate_v1(),
+    username   varchar(50) unique not null,
+    firstname  varchar(255),
     last_name  varchar(255),
-    avatar    bytea,
+    avatar     bytea,
+    country_id UUID               not null,
     primary key (id)
 );
 

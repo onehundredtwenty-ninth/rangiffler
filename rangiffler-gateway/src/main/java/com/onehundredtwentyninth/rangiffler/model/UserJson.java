@@ -1,18 +1,22 @@
 package com.onehundredtwentyninth.rangiffler.model;
 
 import com.onehundredtwentyninth.rangiffler.grpc.User;
-import jakarta.validation.constraints.Size;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 import javax.annotation.Nonnull;
+import org.springframework.data.domain.Slice;
 
 public record UserJson(
     UUID id,
     String username,
-    @Size(max = 30, message = "First name can`t be longer than 30 characters")
     String firstname,
-    @Size(max = 50, message = "Surname can`t be longer than 50 characters")
-    String lastname,
-    String avatar
+    String surname,
+    String avatar,
+    FriendStatus friendStatus,
+    Slice<UserJson> friends,
+    Slice<UserJson> incomeInvitations,
+    Slice<UserJson> outcomeInvitations,
+    CountryJson location
 ) {
 
   public static @Nonnull UserJson fromGrpcMessage(@Nonnull User userMessage) {
@@ -21,7 +25,27 @@ public record UserJson(
         userMessage.getUsername(),
         userMessage.getFirstname(),
         userMessage.getLastName(),
-        null
+        new String(userMessage.getAvatar().toByteArray(), StandardCharsets.UTF_8),
+        null,
+        null,
+        null,
+        null,
+        new CountryJson(UUID.fromString(userMessage.getCountryId()), null, null, null)
+    );
+  }
+
+  public static @Nonnull UserJson friendFromGrpcMessage(@Nonnull User userMessage, FriendStatus friendStatus) {
+    return new UserJson(
+        UUID.fromString(userMessage.getId()),
+        userMessage.getUsername(),
+        userMessage.getFirstname(),
+        userMessage.getLastName(),
+        new String(userMessage.getAvatar().toByteArray(), StandardCharsets.UTF_8),
+        friendStatus,
+        null,
+        null,
+        null,
+        new CountryJson(UUID.fromString(userMessage.getCountryId()), null, null, null)
     );
   }
 }

@@ -32,4 +32,7 @@ public class UserEntity {
 
   @Column(name = "avatar", columnDefinition = "bytea")
   private byte[] avatar;
+
+  @Column(name = "country_id")
+  private String countryId;
 }

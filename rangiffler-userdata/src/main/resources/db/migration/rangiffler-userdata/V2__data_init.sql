@@ -1,26 +1,26 @@
-insert into "user" (id, firstname, last_name, username)
+insert into "user" (id, firstname, last_name, username, country_id)
 values
-('e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, 'bee', 'bee', 'bee'),
-('7ff6da70-08be-4a53-b1b3-bdad4da19f7b'::uuid, 'Tarra', 'Jones', 'milton.collins'),
-('ad01846a-7ca0-4d22-a1f7-b3e35b801f59'::uuid, 'Ethan', 'Leffler', 'arnette.steuber'),
-('ac318ea5-7b12-4d59-a57e-bd42c4df0f7d'::uuid, 'Ike', 'Kshlerin', 'aurelio.nikolaus'),
-('8c1b5e20-97fe-4a1a-a2bf-c8b4430f5c0b'::uuid, 'Audra', 'Batz', 'cedrick.yundt'),
-('2ceb376d-171c-4007-af63-9e5776c95dbf'::uuid, 'Marlana', 'Feeney', 'antone.legros'),
-('377b04c6-da52-4ee0-947d-92847cbc83c6'::uuid, 'Gavin', 'Considine', 'contessa.mcglynn'),
-('087b7f26-99fa-426e-9b10-0b7418b68e44'::uuid, 'Gerri', 'Hane', 'lupita.reilly'),
-('26323813-6e91-4a94-b35f-ccca609502be'::uuid, 'Eufemia', 'Purdy', 'lonny.gorczany'),
-('b8ba5611-9315-4be6-9595-00898bbf2d70'::uuid, 'Chester', 'Kub', 'francis.jacobson'),
-('f7e7b177-2a7e-4286-8d7c-457f02f97408'::uuid, 'Gene', 'Fay', 'zachery.bernier'),
-('ddf80463-1258-442b-abe8-f9f7782bed8f'::uuid, 'Davina', 'Mann', 'aaron.flatley'),
-('2551534b-20bf-419f-970d-98cb1e40f36f'::uuid, 'Yuko', 'Witting', 'cheri.blick'),
-('9d0afe07-24c1-47d7-804a-e00fc956816d'::uuid, 'Marlys', 'Quitzon', 'florencio.vonrueden'),
-('7b3b9b03-4cc1-480a-a00a-6f1e74650f24'::uuid, 'Marisha', 'Ritchie', 'sam.wisoky'),
-('79874258-a854-4214-b738-12972da424ec'::uuid, 'Vicki', 'Steuber', 'carmen.konopelski'),
-('3d7626b7-5df6-4414-b2d1-ebd8ee6b39f6'::uuid, 'Stanton', 'Franecki', 'shelley.roberts'),
-('42c2a83d-fb58-4111-9834-57410f6172dd'::uuid, 'My', 'King', 'emerson.robel'),
-('13b4f926-ac31-40d0-8cce-86ea88337d1f'::uuid, 'Sandy', 'Kulas', 'jeremy.schulist'),
-('c9d7b698-b143-4e8c-a0ff-723530fe62df'::uuid, 'Lorenzo', 'Block', 'king.kirlin'),
-('da0d7bb2-be8a-4f92-8704-0753d21e16f9'::uuid, 'Marcos', 'Predovic', 'analisa.satterfield');
+('e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, 'bee', 'bee', 'bee', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('7ff6da70-08be-4a53-b1b3-bdad4da19f7b'::uuid, 'Tarra', 'Jones', 'milton.collins', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('ad01846a-7ca0-4d22-a1f7-b3e35b801f59'::uuid, 'Ethan', 'Leffler', 'arnette.steuber', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('ac318ea5-7b12-4d59-a57e-bd42c4df0f7d'::uuid, 'Ike', 'Kshlerin', 'aurelio.nikolaus', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('8c1b5e20-97fe-4a1a-a2bf-c8b4430f5c0b'::uuid, 'Audra', 'Batz', 'cedrick.yundt', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('2ceb376d-171c-4007-af63-9e5776c95dbf'::uuid, 'Marlana', 'Feeney', 'antone.legros', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('377b04c6-da52-4ee0-947d-92847cbc83c6'::uuid, 'Gavin', 'Considine', 'contessa.mcglynn', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('087b7f26-99fa-426e-9b10-0b7418b68e44'::uuid, 'Gerri', 'Hane', 'lupita.reilly', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('26323813-6e91-4a94-b35f-ccca609502be'::uuid, 'Eufemia', 'Purdy', 'lonny.gorczany', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('b8ba5611-9315-4be6-9595-00898bbf2d70'::uuid, 'Chester', 'Kub', 'francis.jacobson', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('f7e7b177-2a7e-4286-8d7c-457f02f97408'::uuid, 'Gene', 'Fay', 'zachery.bernier', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('ddf80463-1258-442b-abe8-f9f7782bed8f'::uuid, 'Davina', 'Mann', 'aaron.flatley', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('2551534b-20bf-419f-970d-98cb1e40f36f'::uuid, 'Yuko', 'Witting', 'cheri.blick', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('9d0afe07-24c1-47d7-804a-e00fc956816d'::uuid, 'Marlys', 'Quitzon', 'florencio.vonrueden', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('7b3b9b03-4cc1-480a-a00a-6f1e74650f24'::uuid, 'Marisha', 'Ritchie', 'sam.wisoky', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('79874258-a854-4214-b738-12972da424ec'::uuid, 'Vicki', 'Steuber', 'carmen.konopelski', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('3d7626b7-5df6-4414-b2d1-ebd8ee6b39f6'::uuid, 'Stanton', 'Franecki', 'shelley.roberts', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('42c2a83d-fb58-4111-9834-57410f6172dd'::uuid, 'My', 'King', 'emerson.robel', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('13b4f926-ac31-40d0-8cce-86ea88337d1f'::uuid, 'Sandy', 'Kulas', 'jeremy.schulist', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('c9d7b698-b143-4e8c-a0ff-723530fe62df'::uuid, 'Lorenzo', 'Block', 'king.kirlin', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid),
+('da0d7bb2-be8a-4f92-8704-0753d21e16f9'::uuid, 'Marcos', 'Predovic', 'analisa.satterfield', '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid);
 
 insert into "friendship" (requester_id, addressee_id, created_date, status)
 values
