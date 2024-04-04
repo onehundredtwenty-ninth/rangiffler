@@ -28,6 +28,15 @@ create table if not exists "photo_like"
     constraint lk_like_photo_id foreign key (like_id) references "like" (id)
 );
 
+create table if not exists "statistic"
+(
+    id                      UUID unique not null default uuid_generate_v1(),
+    user_id                 UUID        not null,
+    country_id              UUID        not null,
+    count                   int         not null,
+    primary key (id)
+);
+
 alter table "photo"
     owner to postgres;
 
@@ -35,4 +44,7 @@ alter table "like"
     owner to postgres;
 
 alter table "photo_like"
+    owner to postgres;
+
+alter table "statistic"
     owner to postgres;

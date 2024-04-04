@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package com.onehundredtwentyninth.rangiffler;
+
+option java_multiple_files = true;
+option java_package = "com.onehundredtwentyninth.rangiffler.grpc";
+option java_outer_classname = "RangifflerStatisticProto";
+
+service RangifflerStatisticService {
+  rpc GetStatistic(StatisticRequest) returns(StatisticResponse) {}
+}
+
+message StatisticRequest {
+  repeated string userIds = 5;
+}
+
+message CountryStatisticResponse {
+  string countryId = 3;
+  int32 count = 4;
+}
+
+message StatisticResponse {
+  repeated CountryStatisticResponse statistic = 1;
+}
