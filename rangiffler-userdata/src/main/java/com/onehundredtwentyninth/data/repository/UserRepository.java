@@ -92,4 +92,9 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
       " and (u.username like %:searchQuery% or u.firstname like %:searchQuery% or u.lastName like %:searchQuery%)")
   List<UserEntity> findIncomeInvitations(@Param("addressee") UserEntity addressee,
       @Param("searchQuery") String searchQuery);
+
+  @Query("select u.id from UserEntity u join FriendshipEntity f on u = f.addressee or u = f.requester" +
+      " where f.status = com.onehundredtwentyninth.data.FriendshipStatus.ACCEPTED and (f.requester = :user or f.addressee = :user)" +
+      " and u != :user")
+  List<UUID> findFriendsIds(@Param("user") UserEntity userEntity);
 }

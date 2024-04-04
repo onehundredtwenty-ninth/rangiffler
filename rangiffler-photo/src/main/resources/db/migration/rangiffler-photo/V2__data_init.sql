@@ -4,7 +4,8 @@ values
 ('99a5c875-e7d5-459f-9618-69947ec27ac3'::uuid, 'e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, '4cca3bae-f195-11ee-9b32-0242ac110002'::uuid, 'hfkqrvxonxk9k', '2023-12-16 15:49:15.174'),
 ('552f72c2-f782-4156-b174-94152a15dbf2'::uuid, 'e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid, '92b9z7ksndae', '2021-11-23 01:34:53.988'),
 ('9bcd83b8-5720-44fc-a4bb-7be38fb3ae33'::uuid, 'e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, '4cc91f80-f195-11ee-9b32-0242ac110002'::uuid, 'e27w6vm5hb2vg', '2024-02-24 12:13:53.647'),
-('6eb64139-e581-4f4d-9667-03193eb0b4a6'::uuid, 'e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, '4cc899ca-f195-11ee-9b32-0242ac110002'::uuid, '2l7b9ty71x9b6', '2023-10-27 22:51:22.76');
+('6eb64139-e581-4f4d-9667-03193eb0b4a6'::uuid, 'e9202290-8ade-426b-a3b6-40ef149dbb39'::uuid, '4cc899ca-f195-11ee-9b32-0242ac110002'::uuid, '2l7b9ty71x9b6', '2023-10-27 22:51:22.76'),
+('451e4a2f-6a47-4c8b-b90e-af2e91651999'::uuid, '377b04c6-da52-4ee0-947d-92847cbc83c6'::uuid, '4cca3bae-f195-11ee-9b32-0242ac110002'::uuid, 'sluntvnhd190m', '2022-03-29 11:58:07.678');
 
 insert into "like" (id, user_id, created_date)
 values

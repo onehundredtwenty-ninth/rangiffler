@@ -13,8 +13,7 @@ service RangifflerPhotoService {
 }
 
 message PhotoRequest {
-  string userId = 5;
-  bool withFriends = 1;
+  repeated string userIds = 5;
   int32 page = 2;
   int32 size = 3;
 }
