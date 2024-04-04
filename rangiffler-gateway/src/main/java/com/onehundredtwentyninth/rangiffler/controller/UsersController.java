@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
+import com.onehundredtwentyninth.rangiffler.model.LikeJson;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import com.onehundredtwentyninth.rangiffler.service.UsersClient;
 import javax.annotation.Nullable;
@@ -57,5 +58,10 @@ public class UsersController {
       @Argument int size,
       @Argument @Nullable String searchQuery) {
     return usersClient.getFriendshipAddresses(user.username(), page, size, searchQuery);
+  }
+
+  @SchemaMapping(typeName = "Like", field = "username")
+  public String likeUser(LikeJson like) {
+    return usersClient.getUserById(like.user()).username();
   }
 }

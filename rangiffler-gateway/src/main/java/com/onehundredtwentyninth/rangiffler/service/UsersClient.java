@@ -2,10 +2,12 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub;
+import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.model.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
+import java.util.UUID;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -37,6 +39,11 @@ public class UsersClient {
   public UserJson getUser(String userName) {
     var request = UserRequest.newBuilder().setUsername(userName).build();
     return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
+  }
+
+  public UserJson getUserById(UUID id) {
+    var request = UserByIdRequest.newBuilder().setId(id.toString()).build();
+    return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
   }
 
   public @Nonnull Slice<UserJson> getFriends(String username, int page, int size, String searchQuery) {

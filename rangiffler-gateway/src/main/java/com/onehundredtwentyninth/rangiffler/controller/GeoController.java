@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
 import com.onehundredtwentyninth.rangiffler.model.CountryJson;
+import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import com.onehundredtwentyninth.rangiffler.service.GeoClient;
 import java.util.List;
@@ -27,5 +28,10 @@ public class GeoController {
   @SchemaMapping(typeName = "User", field = "location")
   public CountryJson userCountry(UserJson user) {
     return geoClient.getCountry(user.location().id());
+  }
+
+  @SchemaMapping(typeName = "Photo", field = "country")
+  public CountryJson country(PhotoJson photo) {
+    return geoClient.getCountry(photo.country().id());
   }
 }

@@ -5,8 +5,10 @@ import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import io.grpc.stub.StreamObserver;
+import java.util.UUID;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +51,22 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
   @Override
   public void getUser(UserRequest request, StreamObserver<User> responseObserver) {
     var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+
+    var userResponse = User.newBuilder()
+        .setId(userEntity.getId().toString())
+        .setUsername(userEntity.getUsername())
+        .setFirstname(userEntity.getFirstname())
+        .setLastName(userEntity.getLastName())
+        .setCountryId(userEntity.getCountryId())
+        .build();
+
+    responseObserver.onNext(userResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getUserById(UserByIdRequest request, StreamObserver<User> responseObserver) {
+    var userEntity = userRepository.findById(UUID.fromString(request.getId())).orElseThrow();
 
     var userResponse = User.newBuilder()
         .setId(userEntity.getId().toString())
