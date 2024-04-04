@@ -18,3 +18,10 @@ values
 ('451e4a2f-6a47-4c8b-b90e-af2e91651998'::uuid, '2047e8a2-2c6e-41b9-a60e-d2f78fba80da'::uuid),
 ('451e4a2f-6a47-4c8b-b90e-af2e91651998'::uuid, 'ac57dc45-355b-47b0-be5d-70f3c2b6d74a'::uuid),
 ('451e4a2f-6a47-4c8b-b90e-af2e91651998'::uuid, '3ac02f44-fae7-4876-9829-3347285d3964'::uuid);
+
+insert into statistic (user_id, country_id, "count")
+values
+('e9202290-8ade-426b-a3b6-40ef149dbb39', '4cca3bae-f195-11ee-9b32-0242ac110002', 2),
+('e9202290-8ade-426b-a3b6-40ef149dbb39', '4cc91f80-f195-11ee-9b32-0242ac110002', 2),
+('e9202290-8ade-426b-a3b6-40ef149dbb39', '4cc899ca-f195-11ee-9b32-0242ac110002', 1),
+('377b04c6-da52-4ee0-947d-92847cbc83c6', '4cca3bae-f195-11ee-9b32-0242ac110002', 1);
