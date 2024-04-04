@@ -13,6 +13,7 @@ service RangifflerUserdataService {
   rpc GetUser(UserRequest) returns (User) {}
   rpc GetUserById(UserByIdRequest) returns (User) {}
   rpc GetUserFriends(AllUsersRequest) returns (AllUsersResponse) {}
+  rpc GetUserFriendsIds(UserRequest) returns (UserIdsResponse) {}
   rpc GetFriendshipRequests(AllUsersRequest) returns (AllUsersResponse) {}
   rpc GetFriendshipAddresses(AllUsersRequest) returns (AllUsersResponse) {}
 }
@@ -35,6 +36,10 @@ message UserByIdRequest {
 message AllUsersResponse {
   repeated User allUsers = 1;
   bool hasNext = 2;
+}
+
+message UserIdsResponse {
+  repeated string userIds = 1;
 }
 
 message User {

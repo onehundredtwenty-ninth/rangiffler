@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.service;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Timestamp;
+import com.onehundredtwentyninth.data.PhotoEntity;
 import com.onehundredtwentyninth.data.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.Like;
 import com.onehundredtwentyninth.rangiffler.grpc.Likes;
@@ -13,6 +14,7 @@ import io.grpc.stub.StreamObserver;
 import java.util.UUID;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 @GrpcService
@@ -27,12 +29,18 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
 
   @Override
   public void getPhotos(PhotoRequest request, StreamObserver<PhotoResponse> responseObserver) {
-    var photos = photoRepository.findByUserId(
-        UUID.fromString(request.getUserId()),
+    var photos = photoRepository.findByUserIdIn(
+        request.getUserIdsList().stream().map(UUID::fromString).toList(),
         PageRequest.of(request.getPage(), request.getSize())
     );
 
-    var photoResponse = PhotoResponse.newBuilder()
+    var photoResponse = buildPhotoResponseFromEntities(photos);
+    responseObserver.onNext(photoResponse);
+    responseObserver.onCompleted();
+  }
+
+  private PhotoResponse buildPhotoResponseFromEntities(Page<PhotoEntity> photos) {
+    return PhotoResponse.newBuilder()
         .addAllPhotos(
             photos.map(photoEntity -> Photo.newBuilder()
                 .setId(photoEntity.getId().toString())
@@ -62,10 +70,7 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
                 .build()
             ).toList()
         )
-        .setHasNext(photos.getTotalPages() > request.getPage() + 1)
+        .setHasNext(photos.hasNext())
         .build();
-
-    responseObserver.onNext(photoResponse);
-    responseObserver.onCompleted();
   }
 }

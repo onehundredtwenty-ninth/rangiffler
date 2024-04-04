@@ -32,6 +32,6 @@ public class PhotoController {
   public Slice<PhotoJson> photos(FeedJson feed, @AuthenticationPrincipal Jwt principal,
       @Argument int page,
       @Argument int size) {
-    return photoClient.getPhotos(principal.getClaim("sub"), page, size);
+    return photoClient.getPhotos(principal.getClaim("sub"), page, size, feed.withFriends());
   }
 }

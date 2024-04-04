@@ -6,6 +6,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
+import com.onehundredtwentyninth.rangiffler.grpc.UserIdsResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import io.grpc.stub.StreamObserver;
 import java.util.UUID;
@@ -103,6 +104,19 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .build();
 
     responseObserver.onNext(allUsersResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getUserFriendsIds(UserRequest request, StreamObserver<UserIdsResponse> responseObserver) {
+    var userEntity = userRepository.findByUsername(request.getUsername()).orElseThrow();
+    var userFriendIds = userRepository.findFriendsIds(userEntity);
+
+    var idsResponse = UserIdsResponse.newBuilder()
+        .addAllUserIds(userFriendIds.stream().map(UUID::toString).toList())
+        .build();
+
+    responseObserver.onNext(idsResponse);
     responseObserver.onCompleted();
   }
 
