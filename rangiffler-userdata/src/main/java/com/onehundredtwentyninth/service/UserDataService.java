@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.service;
 
+import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.data.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
@@ -38,6 +39,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setUsername(entity.getUsername())
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
+                    .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
                     .setCountryId(entity.getCountryId())
                     .build()
             ).toList()
@@ -58,6 +60,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .setUsername(userEntity.getUsername())
         .setFirstname(userEntity.getFirstname())
         .setLastName(userEntity.getLastName())
+        .setAvatar(ByteString.copyFrom(userEntity.getAvatar() != null ? userEntity.getAvatar() : new byte[]{}))
         .setCountryId(userEntity.getCountryId())
         .build();
 
@@ -74,6 +77,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .setUsername(userEntity.getUsername())
         .setFirstname(userEntity.getFirstname())
         .setLastName(userEntity.getLastName())
+        .setAvatar(ByteString.copyFrom(userEntity.getAvatar() != null ? userEntity.getAvatar() : new byte[]{}))
         .setCountryId(userEntity.getCountryId())
         .build();
 
@@ -96,6 +100,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setUsername(entity.getUsername())
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
+                    .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
                     .setCountryId(entity.getCountryId())
                     .build()
             ).toList()
@@ -135,6 +140,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setUsername(entity.getUsername())
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
+                    .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
                     .setCountryId(entity.getCountryId())
                     .build()
             ).toList()
@@ -161,6 +167,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                     .setUsername(entity.getUsername())
                     .setFirstname(entity.getFirstname())
                     .setLastName(entity.getLastName())
+                    .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
                     .setCountryId(entity.getCountryId())
                     .build()
             ).toList()
