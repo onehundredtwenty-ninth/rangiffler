@@ -73,7 +73,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
-    bootstrap-servers: 'kafka:9092'
+    bootstrap-servers: 'rangiffler-all-kafka:9092'
     consumer:
       group-id: 'userdata'
       auto-offset-reset: earliest
