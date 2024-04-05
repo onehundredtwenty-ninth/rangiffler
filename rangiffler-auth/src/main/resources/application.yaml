@@ -86,7 +86,7 @@ spring:
       - 'org.springframework.cloud.vault.config.VaultObservationAutoConfiguration'
       - 'org.springframework.cloud.vault.config.VaultReactiveAutoConfiguration'
   kafka:
-    bootstrap-servers: 'kafka:9092'
+    bootstrap-servers: 'rangiffler-all-kafka:9092'
   datasource:
     url: 'jdbc:postgresql://rangiffler-all-db:5432/rangiffler-auth'
     username: postgres
