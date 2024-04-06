@@ -3,7 +3,9 @@ package com.onehundredtwentyninth.service;
 import com.google.protobuf.BoolValue;
 import com.onehundredtwentyninth.data.LikeEntity;
 import com.onehundredtwentyninth.data.PhotoEntity;
+import com.onehundredtwentyninth.data.StatisticEntity;
 import com.onehundredtwentyninth.data.repository.PhotoRepository;
+import com.onehundredtwentyninth.data.repository.StatisticRepository;
 import com.onehundredtwentyninth.mapper.PhotoMapper;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
@@ -26,10 +28,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServiceImplBase {
 
   private final PhotoRepository photoRepository;
+  private final StatisticRepository statisticRepository;
 
   @Autowired
-  public PhotoService(PhotoRepository photoRepository) {
+  public PhotoService(PhotoRepository photoRepository, StatisticRepository statisticRepository) {
     this.photoRepository = photoRepository;
+    this.statisticRepository = statisticRepository;
   }
 
   @Override
@@ -59,6 +63,7 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
     photoEntity.setCreatedDate(Timestamp.from(Instant.now()));
 
     photoRepository.save(photoEntity);
+    increaseStatistic(photoEntity.getUserId(), photoEntity.getCountryId());
 
     var photoResponse = PhotoMapper.toMessage(photoEntity);
     responseObserver.onNext(photoResponse);
@@ -69,6 +74,7 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
   @Override
   public void updatePhoto(UpdatePhotoRequest request, StreamObserver<Photo> responseObserver) {
     var photoEntity = photoRepository.findById(UUID.fromString(request.getId())).orElseThrow();
+    var originalCountryId = photoEntity.getCountryId();
 
     if (!photoEntity.getUserId().equals(UUID.fromString(request.getUserId()))) {
       throw new IllegalStateException();
@@ -79,6 +85,10 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
     photoEntity.setDescription(request.getDescription());
 
     photoRepository.save(photoEntity);
+    if (!originalCountryId.equals(photoEntity.getCountryId())) {
+      increaseStatistic(photoEntity.getUserId(), photoEntity.getCountryId());
+      decreaseStatistic(photoEntity.getUserId(), originalCountryId);
+    }
 
     var photoResponse = PhotoMapper.toMessage(photoEntity);
     responseObserver.onNext(photoResponse);
@@ -119,7 +129,31 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
     }
 
     photoRepository.delete(photoEntity);
+    decreaseStatistic(photoEntity.getUserId(), photoEntity.getCountryId());
+
     responseObserver.onNext(BoolValue.of(true));
     responseObserver.onCompleted();
+  }
+
+  private void increaseStatistic(UUID userId, UUID countryId) {
+    var statisticEntity = statisticRepository.findByUserIdAndCountryId(userId,
+        countryId);
+    if (statisticEntity.isPresent()) {
+      statisticEntity.get().setCount(statisticEntity.get().getCount() + 1);
+      statisticRepository.save(statisticEntity.get());
+    } else {
+      var newStatisticEntity = new StatisticEntity();
+      newStatisticEntity.setUserId(userId);
+      newStatisticEntity.setCountryId(countryId);
+      newStatisticEntity.setCount(1);
+      statisticRepository.save(newStatisticEntity);
+    }
+  }
+
+  private void decreaseStatistic(UUID userId, UUID countryId) {
+    var statisticEntity = statisticRepository.findByUserIdAndCountryId(userId,
+        countryId).orElseThrow();
+    statisticEntity.setCount(statisticEntity.getCount() - 1);
+    statisticRepository.save(statisticEntity);
   }
 }
