@@ -16,6 +16,7 @@ service RangifflerUserdataService {
   rpc GetUserFriendsIds(UserRequest) returns (UserIdsResponse) {}
   rpc GetFriendshipRequests(AllUsersRequest) returns (AllUsersResponse) {}
   rpc GetFriendshipAddresses(AllUsersRequest) returns (AllUsersResponse) {}
+  rpc UpdateUser(User) returns (User) {}
 }
 
 message AllUsersRequest {

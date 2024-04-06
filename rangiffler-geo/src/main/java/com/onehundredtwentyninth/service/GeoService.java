@@ -4,6 +4,7 @@ import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.data.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.AllCountriesResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.Country;
+import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import io.grpc.stub.StreamObserver;
@@ -45,6 +46,21 @@ public class GeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImp
   @Override
   public void getCountry(GetCountryRequest request, StreamObserver<Country> responseObserver) {
     var countryEntity = countryRepository.findById(UUID.fromString(request.getId())).orElseThrow();
+
+    var countryResponse = Country.newBuilder()
+        .setId(countryEntity.getId().toString())
+        .setCode(countryEntity.getCode())
+        .setName(countryEntity.getName())
+        .setFlag(new String(countryEntity.getFlag(), StandardCharsets.UTF_8))
+        .build();
+
+    responseObserver.onNext(countryResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Override
+  public void getCountryByCode(GetCountryByCodeRequest request, StreamObserver<Country> responseObserver) {
+    var countryEntity = countryRepository.findByCode(request.getCode()).orElseThrow();
 
     var countryResponse = Country.newBuilder()
         .setId(countryEntity.getId().toString())

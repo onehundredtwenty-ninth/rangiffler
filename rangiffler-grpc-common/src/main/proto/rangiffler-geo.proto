@@ -11,6 +11,7 @@ option java_outer_classname = "RangifflerGeoProto";
 service RangifflerGeoService {
   rpc GetAllCountries(google.protobuf.Empty) returns (AllCountriesResponse) {}
   rpc GetCountry(GetCountryRequest) returns (Country) {}
+  rpc GetCountryByCode(GetCountryByCodeRequest) returns (Country) {}
 }
 
 message AllCountriesResponse {
@@ -19,6 +20,10 @@ message AllCountriesResponse {
 
 message GetCountryRequest {
   string id = 1;
+}
+
+message GetCountryByCodeRequest {
+  string code = 1;
 }
 
 message Country {
