@@ -1,12 +1,14 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
 import com.onehundredtwentyninth.rangiffler.model.LikeJson;
+import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import com.onehundredtwentyninth.rangiffler.service.UsersClient;
 import javax.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -63,5 +65,10 @@ public class UsersController {
   @SchemaMapping(typeName = "Like", field = "username")
   public String likeUser(LikeJson like) {
     return usersClient.getUserById(like.user()).username();
+  }
+
+  @MutationMapping
+  public UserJson user(@AuthenticationPrincipal Jwt principal, @Argument UserInput input) {
+    return usersClient.updateUser(principal.getClaim("sub"), input);
   }
 }
