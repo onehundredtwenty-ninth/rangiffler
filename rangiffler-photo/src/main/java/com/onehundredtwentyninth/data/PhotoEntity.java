@@ -38,9 +38,6 @@ public class PhotoEntity {
   @Column
   private String description;
 
-  @Column
-  private String name;
-
   @Column(name = "photo", columnDefinition = "bytea")
   private byte[] photo;
 

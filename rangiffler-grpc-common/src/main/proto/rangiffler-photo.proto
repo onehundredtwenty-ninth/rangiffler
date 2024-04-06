@@ -10,12 +10,35 @@ option java_outer_classname = "RangifflerPhotoProto";
 
 service RangifflerPhotoService {
   rpc GetPhotos(PhotoRequest) returns(PhotoResponse) {}
+  rpc CreatePhoto(CreatePhotoRequest) returns(Photo) {}
+  rpc UpdatePhoto(UpdatePhotoRequest) returns(Photo) {}
+  rpc LikePhoto(LikePhotoRequest) returns(Photo) {}
 }
 
 message PhotoRequest {
   repeated string userIds = 5;
   int32 page = 2;
   int32 size = 3;
+}
+
+message CreatePhotoRequest {
+  string userId = 6;
+  bytes src = 2;
+  string countryId = 3;
+  string description = 4;
+}
+
+message UpdatePhotoRequest {
+  string userId = 6;
+  string id = 1;
+  bytes src = 2;
+  string countryId = 3;
+  string description = 4;
+}
+
+message LikePhotoRequest {
+  string photoId = 1;
+  string userId = 2;
 }
 
 message PhotoResponse {

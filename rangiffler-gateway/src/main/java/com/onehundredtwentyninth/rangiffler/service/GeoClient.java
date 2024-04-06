@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
 import com.google.protobuf.Empty;
+import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub;
 import com.onehundredtwentyninth.rangiffler.model.CountryJson;
@@ -28,6 +29,13 @@ public class GeoClient {
   public @Nonnull CountryJson getCountry(UUID countryId) {
     var request = GetCountryRequest.newBuilder().setId(countryId.toString()).build();
     var response = rangifflerGeoServiceBlockingStub.getCountry(request);
+    return CountryJson.fromGrpcMessage(response);
+  }
+
+  public @Nonnull CountryJson getCountryByCode(String code) {
+    var response = rangifflerGeoServiceBlockingStub.getCountryByCode(
+        GetCountryByCodeRequest.newBuilder().setCode(code).build()
+    );
     return CountryJson.fromGrpcMessage(response);
   }
 }
