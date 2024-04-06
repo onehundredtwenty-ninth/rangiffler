@@ -17,6 +17,7 @@ service RangifflerUserdataService {
   rpc GetFriendshipRequests(AllUsersRequest) returns (AllUsersResponse) {}
   rpc GetFriendshipAddresses(AllUsersRequest) returns (AllUsersResponse) {}
   rpc UpdateUser(User) returns (User) {}
+  rpc UpdateUserFriendship(UpdateUserFriendshipRequest) returns (User) {}
 }
 
 message AllUsersRequest {
@@ -50,4 +51,18 @@ message User {
   string lastName = 4;
   bytes avatar = 5;
   string countryId = 6;
+}
+
+message UpdateUserFriendshipRequest {
+  string actionAuthorUserId = 1;
+  string actionTargetUserId = 2;
+  FriendshipAction action = 3;
+}
+
+enum FriendshipAction {
+  UNSPECIFIED = 0;
+  ADD = 1;
+  ACCEPT = 2;
+  REJECT = 3;
+  DELETE = 4;
 }

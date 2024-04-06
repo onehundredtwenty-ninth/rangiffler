@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
+import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.LikeJson;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
@@ -70,5 +71,10 @@ public class UsersController {
   @MutationMapping
   public UserJson user(@AuthenticationPrincipal Jwt principal, @Argument UserInput input) {
     return usersClient.updateUser(principal.getClaim("sub"), input);
+  }
+
+  @MutationMapping
+  public UserJson friendship(@AuthenticationPrincipal Jwt principal, @Argument FriendshipInput input) {
+    return usersClient.updateFriendshipStatus(principal.getClaim("sub"), input);
   }
 }
