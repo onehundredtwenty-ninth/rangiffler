@@ -1,15 +1,21 @@
 package com.onehundredtwentyninth.service;
 
+import com.onehundredtwentyninth.data.FriendshipEntity;
+import com.onehundredtwentyninth.data.FriendshipStatus;
+import com.onehundredtwentyninth.data.repository.FriendshipRepository;
 import com.onehundredtwentyninth.data.repository.UserRepository;
 import com.onehundredtwentyninth.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
+import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserIdsResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import io.grpc.stub.StreamObserver;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +26,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUserdataServiceImplBase {
 
   private final UserRepository userRepository;
+  private final FriendshipRepository friendshipRepository;
 
   @Autowired
-  public UserDataService(UserRepository userRepository) {
+  public UserDataService(UserRepository userRepository, FriendshipRepository friendshipRepository) {
     this.userRepository = userRepository;
+    this.friendshipRepository = friendshipRepository;
   }
 
   @Override
@@ -140,6 +148,45 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
     var userResponse = UserEntityMapper.toMessage(userEntity);
 
+    responseObserver.onNext(userResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Transactional
+  @Override
+  public void updateUserFriendship(UpdateUserFriendshipRequest request, StreamObserver<User> responseObserver) {
+    var actionAuthorUser = userRepository.findById(UUID.fromString(request.getActionAuthorUserId())).orElseThrow();
+    var actionTargetUser = userRepository.findById(UUID.fromString(request.getActionTargetUserId())).orElseThrow();
+
+    var action = request.getAction();
+    switch (action) {
+      case ADD -> {
+        var friendshipEntity = new FriendshipEntity();
+        friendshipEntity.setRequester(actionAuthorUser);
+        friendshipEntity.setAddressee(actionTargetUser);
+        friendshipEntity.setStatus(FriendshipStatus.PENDING);
+        friendshipEntity.setCreatedDate(Timestamp.from(Instant.now()));
+        friendshipRepository.save(friendshipEntity);
+      }
+      case DELETE -> {
+        var friendshipEntity = friendshipRepository.findFriendship(actionAuthorUser, actionTargetUser).orElseThrow();
+        friendshipRepository.delete(friendshipEntity);
+      }
+      case ACCEPT -> {
+        var friendshipEntity = friendshipRepository.findByRequesterAndAddressee(actionTargetUser, actionAuthorUser)
+            .orElseThrow();
+        friendshipEntity.setStatus(FriendshipStatus.ACCEPTED);
+        friendshipRepository.save(friendshipEntity);
+      }
+      case REJECT -> {
+        var friendshipEntity = friendshipRepository.findByRequesterAndAddressee(actionTargetUser, actionAuthorUser)
+            .orElseThrow();
+        friendshipRepository.delete(friendshipEntity);
+      }
+      default -> throw new IllegalStateException();
+    }
+
+    var userResponse = UserEntityMapper.toMessage(actionAuthorUser);
     responseObserver.onNext(userResponse);
     responseObserver.onCompleted();
   }

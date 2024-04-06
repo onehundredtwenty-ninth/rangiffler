@@ -2,13 +2,14 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub;
+import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub;
+import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.model.FriendStatus;
+import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import jakarta.annotation.Nonnull;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -26,8 +28,8 @@ public class UsersClient {
 
   @GrpcClient("grpcUserdataClient")
   private RangifflerUserdataServiceBlockingStub rangifflerUserdataServiceBlockingStub;
-  @GrpcClient("grpcGeoClient")
-  private RangifflerGeoServiceBlockingStub rangifflerGeoServiceBlockingStub;
+  @Autowired
+  private GeoClient geoClient;
 
   public @Nonnull Slice<UserJson> getAllUsers(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
@@ -112,18 +114,28 @@ public class UsersClient {
   }
 
   public UserJson updateUser(String username, UserInput userInput) {
-    var country = rangifflerGeoServiceBlockingStub.getCountryByCode(
-        GetCountryByCodeRequest.newBuilder().setCode(userInput.location().code()).build()
-    );
+    var country = geoClient.getCountryByCode(userInput.location().code());
     var request = User.newBuilder()
         .setUsername(username)
         .setFirstname(userInput.firstname())
         .setLastName(userInput.surname())
         .setAvatar(ByteString.copyFrom(userInput.avatar().getBytes(StandardCharsets.UTF_8)))
-        .setCountryId(country.getId())
+        .setCountryId(country.id().toString())
         .build();
 
     var response = rangifflerUserdataServiceBlockingStub.updateUser(request);
+    return UserJson.fromGrpcMessage(response);
+  }
+
+  public UserJson updateFriendshipStatus(String username, FriendshipInput friendshipInput) {
+    var actionAuthorUser = getUser(username);
+    var request = UpdateUserFriendshipRequest.newBuilder()
+        .setActionAuthorUserId(actionAuthorUser.id().toString())
+        .setActionTargetUserId(friendshipInput.user().toString())
+        .setAction(FriendshipAction.valueOf(friendshipInput.action().name()))
+        .build();
+
+    var response = rangifflerUserdataServiceBlockingStub.updateUserFriendship(request);
     return UserJson.fromGrpcMessage(response);
   }
 }
