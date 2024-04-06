@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
+import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub;
@@ -105,5 +106,16 @@ public class PhotoClient {
 
     var response = rangifflerPhotoServiceBlockingStub.likePhoto(request);
     return PhotoJson.fromGrpcMessage(response);
+  }
+
+  public boolean deletePhoto(String userName, UUID photoId) {
+    var user = usersClient.getUser(userName);
+    var request = DeletePhotoRequest.newBuilder()
+        .setPhotoId(photoId.toString())
+        .setUserId(user.id().toString())
+        .build();
+
+    var response = rangifflerPhotoServiceBlockingStub.deletePhoto(request);
+    return response.getValue();
   }
 }

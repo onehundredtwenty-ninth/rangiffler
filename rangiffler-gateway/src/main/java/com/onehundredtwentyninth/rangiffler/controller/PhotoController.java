@@ -4,6 +4,7 @@ import com.onehundredtwentyninth.rangiffler.model.FeedJson;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
 import com.onehundredtwentyninth.rangiffler.service.PhotoClient;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -40,5 +41,10 @@ public class PhotoController {
   @MutationMapping
   public PhotoJson photo(@AuthenticationPrincipal Jwt principal, @Argument PhotoInput input) {
     return photoClient.photo(principal.getClaim("sub"), input);
+  }
+
+  @MutationMapping
+  public boolean deletePhoto(@AuthenticationPrincipal Jwt principal, @Argument UUID id) {
+    return photoClient.deletePhoto(principal.getClaim("sub"), id);
   }
 }
