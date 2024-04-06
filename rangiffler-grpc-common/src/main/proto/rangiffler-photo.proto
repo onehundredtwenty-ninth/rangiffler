@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
 
 package com.onehundredtwentyninth.rangiffler;
 
@@ -13,6 +14,7 @@ service RangifflerPhotoService {
   rpc CreatePhoto(CreatePhotoRequest) returns(Photo) {}
   rpc UpdatePhoto(UpdatePhotoRequest) returns(Photo) {}
   rpc LikePhoto(LikePhotoRequest) returns(Photo) {}
+  rpc DeletePhoto(DeletePhotoRequest) returns (google.protobuf.BoolValue) {}
 }
 
 message PhotoRequest {
@@ -37,6 +39,11 @@ message UpdatePhotoRequest {
 }
 
 message LikePhotoRequest {
+  string photoId = 1;
+  string userId = 2;
+}
+
+message DeletePhotoRequest {
   string photoId = 1;
   string userId = 2;
 }

@@ -1,10 +1,12 @@
 package com.onehundredtwentyninth.service;
 
+import com.google.protobuf.BoolValue;
 import com.onehundredtwentyninth.data.LikeEntity;
 import com.onehundredtwentyninth.data.PhotoEntity;
 import com.onehundredtwentyninth.data.repository.PhotoRepository;
 import com.onehundredtwentyninth.mapper.PhotoMapper;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
+import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
@@ -104,6 +106,20 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
 
     var photoResponse = PhotoMapper.toMessage(photoEntity);
     responseObserver.onNext(photoResponse);
+    responseObserver.onCompleted();
+  }
+
+  @Transactional
+  @Override
+  public void deletePhoto(DeletePhotoRequest request, StreamObserver<BoolValue> responseObserver) {
+    var photoEntity = photoRepository.findById(UUID.fromString(request.getPhotoId())).orElseThrow();
+
+    if (!photoEntity.getUserId().equals(UUID.fromString(request.getUserId()))) {
+      throw new IllegalStateException();
+    }
+
+    photoRepository.delete(photoEntity);
+    responseObserver.onNext(BoolValue.of(true));
     responseObserver.onCompleted();
   }
 }
