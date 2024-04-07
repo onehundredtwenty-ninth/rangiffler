@@ -30,4 +30,9 @@ public class GrpcErrorHandler {
   public Status handleIllegalArgumentException(final IllegalArgumentException e) {
     return Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e);
   }
+
+  @GrpcExceptionHandler(IllegalStateException.class)
+  public Status handleIllegalStateException(final IllegalStateException e) {
+    return Status.ABORTED.withDescription(e.getMessage()).withCause(e);
+  }
 }
