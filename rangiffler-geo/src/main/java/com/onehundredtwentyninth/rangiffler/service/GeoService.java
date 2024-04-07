@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.rangiffler.data.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.exception.CountryNotFoundException;
 import com.onehundredtwentyninth.rangiffler.grpc.AllCountriesResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.Country;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
@@ -9,7 +10,6 @@ import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import io.grpc.stub.StreamObserver;
 import java.nio.charset.StandardCharsets;
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class GeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImp
   @Override
   public void getCountry(GetCountryRequest request, StreamObserver<Country> responseObserver) {
     var countryEntity = countryRepository.findById(UUID.fromString(request.getId()))
-        .orElseThrow(() -> new NoSuchElementException("Country with id " + request.getId() + " not found"));
+        .orElseThrow(() -> new CountryNotFoundException(request.getId()));
 
     var countryResponse = Country.newBuilder()
         .setId(countryEntity.getId().toString())
@@ -63,7 +63,7 @@ public class GeoService extends RangifflerGeoServiceGrpc.RangifflerGeoServiceImp
   @Override
   public void getCountryByCode(GetCountryByCodeRequest request, StreamObserver<Country> responseObserver) {
     var countryEntity = countryRepository.findByCode(request.getCode())
-        .orElseThrow(() -> new NoSuchElementException("Country with code " + request.getCode() + " not found"));
+        .orElseThrow(() -> new CountryNotFoundException(request.getCode()));
 
     var countryResponse = Country.newBuilder()
         .setId(countryEntity.getId().toString())

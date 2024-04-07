@@ -1,26 +1,24 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
 
+import com.onehundredtwentyninth.rangiffler.exception.CountryNotFoundException;
 import io.grpc.Status;
-import java.util.NoSuchElementException;
+import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.advice.GrpcAdvice;
 import net.devh.boot.grpc.server.advice.GrpcExceptionHandler;
 
+@Slf4j
 @GrpcAdvice
 public class GrpcErrorHandler {
 
-  @GrpcExceptionHandler(NoSuchElementException.class)
-  public Status handleNoSuchElementException(final NoSuchElementException e) {
+  @GrpcExceptionHandler(CountryNotFoundException.class)
+  public Status handleNoSuchElementException(final CountryNotFoundException e) {
     return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
   }
 
-  @GrpcExceptionHandler(IllegalArgumentException.class)
-  public Status handleIllegalArgumentException(final IllegalArgumentException e) {
-    return Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e);
-  }
-
-  @GrpcExceptionHandler(IllegalStateException.class)
-  public Status handleIllegalStateException(final IllegalStateException e) {
+  @GrpcExceptionHandler(Exception.class)
+  public Status handleException(final Exception e) {
+    log.error("Exception occurred", e);
     return Status.ABORTED.withDescription(e.getMessage()).withCause(e);
   }
 }
