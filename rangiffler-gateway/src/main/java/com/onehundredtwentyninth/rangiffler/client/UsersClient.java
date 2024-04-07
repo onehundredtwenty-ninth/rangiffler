@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.service;
+package com.onehundredtwentyninth.rangiffler.client;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
@@ -12,7 +12,6 @@ import com.onehundredtwentyninth.rangiffler.model.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
-import jakarta.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -31,7 +30,7 @@ public class UsersClient {
   @Autowired
   private GeoClient geoClient;
 
-  public @Nonnull Slice<UserJson> getAllUsers(String username, int page, int size, String searchQuery) {
+  public Slice<UserJson> getAllUsers(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -57,7 +56,7 @@ public class UsersClient {
     return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
   }
 
-  public @Nonnull Slice<UserJson> getFriends(String username, int page, int size, String searchQuery) {
+  public Slice<UserJson> getFriends(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -81,7 +80,7 @@ public class UsersClient {
         .toList();
   }
 
-  public @Nonnull Slice<UserJson> getFriendshipRequests(String username, int page, int size, String searchQuery) {
+  public Slice<UserJson> getFriendshipRequests(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -97,7 +96,7 @@ public class UsersClient {
     return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
   }
 
-  public @Nonnull Slice<UserJson> getFriendshipAddresses(String username, int page, int size, String searchQuery) {
+  public Slice<UserJson> getFriendshipAddresses(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)

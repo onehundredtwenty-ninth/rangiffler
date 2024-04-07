@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.service;
+package com.onehundredtwentyninth.rangiffler.client;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
@@ -9,7 +9,6 @@ import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc.Rang
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
-import jakarta.annotation.Nonnull;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -30,7 +29,7 @@ public class PhotoClient {
   @Autowired
   private GeoClient geoClient;
 
-  public @Nonnull Slice<PhotoJson> getPhotos(String userName, int page, int size, boolean withFriends) {
+  public Slice<PhotoJson> getPhotos(String userName, int page, int size, boolean withFriends) {
     var userIds = new ArrayList<UUID>();
     userIds.add(usersClient.getUser(userName).id());
 

@@ -4,7 +4,7 @@ import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.LikeJson;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
-import com.onehundredtwentyninth.rangiffler.service.UsersClient;
+import com.onehundredtwentyninth.rangiffler.client.UsersClient;
 import javax.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
