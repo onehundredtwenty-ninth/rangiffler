@@ -49,7 +49,9 @@ public class PhotoClient {
         .stream()
         .map(PhotoJson::fromGrpcMessage)
         .toList();
-    return new SliceImpl<>(photos, PageRequest.of(page, size), response.getHasNext());
+    return !photos.isEmpty()
+        ? new SliceImpl<>(photos, PageRequest.of(page, size), response.getHasNext())
+        : null;
   }
 
   public PhotoJson photo(String userName, PhotoInput photo) {
