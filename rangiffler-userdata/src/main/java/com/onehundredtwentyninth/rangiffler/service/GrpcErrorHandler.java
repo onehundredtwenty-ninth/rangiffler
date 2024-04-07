@@ -25,4 +25,9 @@ public class GrpcErrorHandler {
   public Status handleUserNotFoundException(final UserNotFoundException e) {
     return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
   }
+
+  @GrpcExceptionHandler(IllegalArgumentException.class)
+  public Status handleIllegalArgumentException(final IllegalArgumentException e) {
+    return Status.INVALID_ARGUMENT.withDescription(e.getMessage()).withCause(e);
+  }
 }

@@ -2,7 +2,6 @@ package com.onehundredtwentyninth.rangiffler.data.repository;
 
 import com.onehundredtwentyninth.rangiffler.data.GroupedStatistic;
 import com.onehundredtwentyninth.rangiffler.data.StatisticEntity;
-import jakarta.annotation.Nonnull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public interface StatisticRepository extends JpaRepository<StatisticEntity, UUID
       + "from StatisticEntity s "
       + "where s.userId in :userIds "
       + "group by s.countryId")
-  List<GroupedStatistic> countStatistic(@Nonnull List<UUID> userIds);
+  List<GroupedStatistic> countStatistic(List<UUID> userIds);
 
   Optional<StatisticEntity> findByUserIdAndCountryId(UUID userId, UUID countryId);
 }
