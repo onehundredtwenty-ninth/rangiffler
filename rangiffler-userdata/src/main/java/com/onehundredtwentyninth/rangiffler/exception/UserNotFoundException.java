@@ -1,6 +1,8 @@
 package com.onehundredtwentyninth.rangiffler.exception;
 
-public class UserNotFoundException extends IllegalArgumentException {
+import java.util.NoSuchElementException;
+
+public class UserNotFoundException extends NoSuchElementException {
 
   public UserNotFoundException(String userAttribute) {
     super("User " + userAttribute + " not found");

@@ -1,6 +1,8 @@
 package com.onehundredtwentyninth.rangiffler.exception;
 
-public class FriendshipNotFoundException extends IllegalArgumentException {
+import java.util.NoSuchElementException;
+
+public class FriendshipNotFoundException extends NoSuchElementException {
 
   public FriendshipNotFoundException(String actionAuthorUsername, String actionTargetUserName) {
     super("Friendship between " + actionAuthorUsername + " and " + actionTargetUserName + " not found");
