@@ -16,7 +16,6 @@ import org.springframework.core.env.PropertySource;
 public class PropertiesLogger implements ApplicationListener<ApplicationPreparedEvent> {
 
   private static final Logger log = LoggerFactory.getLogger(PropertiesLogger.class);
-
   private ConfigurableEnvironment environment;
   private boolean isFirstRun = true;
 
@@ -31,7 +30,7 @@ public class PropertiesLogger implements ApplicationListener<ApplicationPrepared
 
   public void printProperties() {
     for (EnumerablePropertySource<?> propertySource : findPropertiesPropertySources()) {
-      log.info("******* " + propertySource.getName() + " *******");
+      log.info("******* {} *******", propertySource.getName());
       String[] propertyNames = propertySource.getPropertyNames();
       Arrays.sort(propertyNames);
       for (String propertyName : propertyNames) {

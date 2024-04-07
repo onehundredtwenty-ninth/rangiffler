@@ -4,7 +4,7 @@ import com.onehundredtwentyninth.rangiffler.model.CountryJson;
 import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
 import com.onehundredtwentyninth.rangiffler.model.StatJson;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
-import com.onehundredtwentyninth.rangiffler.service.GeoClient;
+import com.onehundredtwentyninth.rangiffler.client.GeoClient;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

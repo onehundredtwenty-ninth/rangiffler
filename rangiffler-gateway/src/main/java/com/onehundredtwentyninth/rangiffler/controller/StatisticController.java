@@ -2,7 +2,7 @@ package com.onehundredtwentyninth.rangiffler.controller;
 
 import com.onehundredtwentyninth.rangiffler.model.FeedJson;
 import com.onehundredtwentyninth.rangiffler.model.StatJson;
-import com.onehundredtwentyninth.rangiffler.service.StatisticClient;
+import com.onehundredtwentyninth.rangiffler.client.StatisticClient;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;

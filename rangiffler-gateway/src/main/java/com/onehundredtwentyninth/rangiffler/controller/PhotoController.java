@@ -3,7 +3,7 @@ package com.onehundredtwentyninth.rangiffler.controller;
 import com.onehundredtwentyninth.rangiffler.model.FeedJson;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
-import com.onehundredtwentyninth.rangiffler.service.PhotoClient;
+import com.onehundredtwentyninth.rangiffler.client.PhotoClient;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;

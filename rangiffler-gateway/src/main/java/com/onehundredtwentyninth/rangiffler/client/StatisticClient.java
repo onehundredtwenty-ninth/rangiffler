@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.service;
+package com.onehundredtwentyninth.rangiffler.client;
 
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerStatisticServiceGrpc.RangifflerStatisticServiceBlockingStub;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticRequest;
