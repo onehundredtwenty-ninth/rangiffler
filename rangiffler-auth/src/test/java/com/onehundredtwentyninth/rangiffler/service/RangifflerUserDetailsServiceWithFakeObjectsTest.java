@@ -16,7 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-class NifflerUserDetailsServiceWithFakeObjectsTest {
+class RangifflerUserDetailsServiceWithFakeObjectsTest {
 
   private RangifflerUserDetailsService nifflerUserDetailsService;
   private UserEntity testUserEntity;

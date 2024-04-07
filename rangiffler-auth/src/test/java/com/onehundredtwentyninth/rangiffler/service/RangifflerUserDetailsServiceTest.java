@@ -23,7 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @ExtendWith(MockitoExtension.class)
-class NifflerUserDetailsServiceTest {
+class RangifflerUserDetailsServiceTest {
 
   private RangifflerUserDetailsService nifflerUserDetailsService;
   private UserEntity testUserEntity;
