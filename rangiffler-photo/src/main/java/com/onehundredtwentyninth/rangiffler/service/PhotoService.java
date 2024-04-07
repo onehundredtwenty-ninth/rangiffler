@@ -102,7 +102,8 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
   @Transactional
   @Override
   public void likePhoto(LikePhotoRequest request, StreamObserver<Photo> responseObserver) {
-    var photoEntity = photoRepository.findById(UUID.fromString(request.getPhotoId())).orElseThrow();
+    var photoEntity = photoRepository.findById(UUID.fromString(request.getPhotoId()))
+        .orElseThrow(() -> new PhotoNotFoundException(request.getPhotoId()));
 
     var existedLikeEntity = photoEntity.getLikes().stream()
         .filter(s -> UUID.fromString(request.getUserId()).equals(s.getUserId()))

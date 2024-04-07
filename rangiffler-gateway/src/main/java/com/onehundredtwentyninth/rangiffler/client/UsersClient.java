@@ -43,7 +43,9 @@ public class UsersClient {
         .stream()
         .map(UserJson::fromGrpcMessage)
         .toList();
-    return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
+    return !users.isEmpty()
+        ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
+        : null;
   }
 
   public UserJson getUser(String userName) {
@@ -69,7 +71,9 @@ public class UsersClient {
         .stream()
         .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.FRIEND))
         .toList();
-    return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
+    return !users.isEmpty()
+        ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
+        : null;
   }
 
   public List<UUID> getUserFriendsIds(String userName) {
@@ -93,7 +97,9 @@ public class UsersClient {
         .stream()
         .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.INVITATION_RECEIVED))
         .toList();
-    return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
+    return !users.isEmpty()
+        ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
+        : null;
   }
 
   public Slice<UserJson> getFriendshipAddresses(String username, int page, int size, String searchQuery) {
@@ -109,7 +115,9 @@ public class UsersClient {
         .stream()
         .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.INVITATION_SENT))
         .toList();
-    return new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext());
+    return !users.isEmpty()
+        ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
+        : null;
   }
 
   public UserJson updateUser(String username, UserInput userInput) {

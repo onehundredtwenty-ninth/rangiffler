@@ -165,8 +165,10 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
   @Transactional
   @Override
   public void updateUserFriendship(UpdateUserFriendshipRequest request, StreamObserver<User> responseObserver) {
-    var actionAuthorUser = userRepository.findById(UUID.fromString(request.getActionAuthorUserId())).orElseThrow();
-    var actionTargetUser = userRepository.findById(UUID.fromString(request.getActionTargetUserId())).orElseThrow();
+    var actionAuthorUser = userRepository.findById(UUID.fromString(request.getActionAuthorUserId()))
+        .orElseThrow(() -> new UserNotFoundException(request.getActionAuthorUserId()));
+    var actionTargetUser = userRepository.findById(UUID.fromString(request.getActionTargetUserId()))
+        .orElseThrow(() -> new UserNotFoundException(request.getActionTargetUserId()));
 
     var action = request.getAction();
     switch (action) {
