@@ -5,15 +5,19 @@ import graphql.GraphqlErrorBuilder;
 import graphql.schema.DataFetchingEnvironment;
 import java.util.NoSuchElementException;
 import javax.annotation.Nonnull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.execution.DataFetcherExceptionResolverAdapter;
 import org.springframework.graphql.execution.ErrorType;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class GraphqlExceptionHandler extends DataFetcherExceptionResolverAdapter {
 
   @Override
   protected GraphQLError resolveToSingleError(@Nonnull Throwable ex, @Nonnull DataFetchingEnvironment env) {
+    log.error("Exception occurred", ex);
+
     if (ex instanceof IllegalArgumentException || ex instanceof IllegalStateException) {
       return GraphqlErrorBuilder.newError()
           .errorType(ErrorType.BAD_REQUEST)
