@@ -15,22 +15,25 @@ public class GrpcErrorHandler {
 
   @GrpcExceptionHandler(PhotoNotFoundException.class)
   public Status handlePhotoNotFoundException(final PhotoNotFoundException e) {
+    log.error(e.getMessage(), e);
     return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
   }
 
   @GrpcExceptionHandler(IllegalPhotoAccessException.class)
   public Status handleIllegalPhotoAccessException(final IllegalPhotoAccessException e) {
+    log.error(e.getMessage(), e);
     return Status.PERMISSION_DENIED.withDescription(e.getMessage()).withCause(e);
   }
 
   @GrpcExceptionHandler(StatisticNotFoundException.class)
   public Status handleStatisticNotFoundException(final StatisticNotFoundException e) {
+    log.error(e.getMessage(), e);
     return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
   }
 
   @GrpcExceptionHandler(Exception.class)
   public Status handleException(final Exception e) {
-    log.error("Exception occurred", e);
+    log.error(e.getMessage(), e);
     return Status.ABORTED.withDescription(e.getMessage()).withCause(e);
   }
 }

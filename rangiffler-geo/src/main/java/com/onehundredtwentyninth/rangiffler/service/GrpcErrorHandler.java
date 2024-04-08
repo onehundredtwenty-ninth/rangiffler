@@ -13,12 +13,13 @@ public class GrpcErrorHandler {
 
   @GrpcExceptionHandler(CountryNotFoundException.class)
   public Status handleNoSuchElementException(final CountryNotFoundException e) {
+    log.error(e.getMessage(), e);
     return Status.NOT_FOUND.withDescription(e.getMessage()).withCause(e);
   }
 
   @GrpcExceptionHandler(Exception.class)
   public Status handleException(final Exception e) {
-    log.error("Exception occurred", e);
+    log.error(e.getMessage(), e);
     return Status.ABORTED.withDescription(e.getMessage()).withCause(e);
   }
 }
