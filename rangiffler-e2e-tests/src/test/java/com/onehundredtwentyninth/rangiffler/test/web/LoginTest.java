@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test;
+package com.onehundredtwentyninth.rangiffler.test.web;
 
 import com.onehundredtwentyninth.rangiffler.page.LoginPage;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
