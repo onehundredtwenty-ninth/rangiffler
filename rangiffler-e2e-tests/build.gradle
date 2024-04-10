@@ -63,6 +63,7 @@ dependencies {
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
 }
 
 tasks.withType(JavaCompile).configureEach {

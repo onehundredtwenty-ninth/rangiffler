@@ -10,7 +10,7 @@ public class DockerConfig implements Config {
 
   @Override
   public String authUrl() {
-    return "auth.rangiffler.dc:9000";
+    return "http://auth.rangiffler.dc:9000";
   }
 
   @Override
@@ -25,7 +25,7 @@ public class DockerConfig implements Config {
 
   @Override
   public String frontUrl() {
-    return "frontend.rangiffler.dc";
+    return "http://frontend.rangiffler.dc";
   }
 
   @Override
