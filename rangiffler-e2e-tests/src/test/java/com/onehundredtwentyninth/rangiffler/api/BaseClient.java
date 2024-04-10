@@ -17,6 +17,10 @@ public abstract class BaseClient {
   protected static final Config CFG = Config.getInstance();
   protected final RequestSpecification requestSpecification;
 
+  public BaseClient(String baseUri) {
+    this.requestSpecification = new RequestSpecBuilder().setBaseUri(baseUri).build();
+  }
+
   @SuppressWarnings("deprecation")
   public BaseClient(String baseUri, boolean followRedirect, List<HttpRequestInterceptor> requestInterceptors,
       List<HttpResponseInterceptor> responseInterceptors) {
