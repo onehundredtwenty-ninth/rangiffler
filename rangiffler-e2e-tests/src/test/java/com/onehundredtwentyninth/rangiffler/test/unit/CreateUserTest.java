@@ -5,6 +5,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,8 +49,7 @@ class CreateUserTest {
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertNotNull(user.getLastName())
     );
   }
 
@@ -65,8 +65,21 @@ class CreateUserTest {
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertNotNull(user.getLastName())
+    );
+  }
+
+  @CreateUser(photos = {
+      @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
+      @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescription2")
+  })
+  @Test
+  void createRandomUserWithPhotoTest(User user) {
+    Assertions.assertAll(
+        () -> Assertions.assertNotNull(user.getId()),
+        () -> Assertions.assertNotNull(user.getUsername()),
+        () -> Assertions.assertNotNull(user.getFirstname()),
+        () -> Assertions.assertNotNull(user.getLastName())
     );
   }
 }

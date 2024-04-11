@@ -1,11 +1,15 @@
 package com.onehundredtwentyninth.rangiffler.jupiter;
 
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
+import com.onehundredtwentyninth.rangiffler.service.PhotoTestService;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -21,6 +25,7 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public static final ExtensionContext.Namespace NAMESPACE
       = ExtensionContext.Namespace.create(CreateUserExtension.class);
   private final UserService userService = new UserDbService();
+  private final PhotoTestService photoService = new PhotoDbService();
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
@@ -38,6 +43,14 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
       if (userParameters.get().friends().length != 0) {
         createFriends(userParameters.get(), createdUser, extensionContext);
       }
+
+      var createdPhotos = new ArrayList<Photo>();
+      for (var photoParameters : userParameters.get().photos()) {
+        var createdPhoto = photoService.createPhoto(UUID.fromString(createdUser.getId()), photoParameters.countryCode(),
+            photoParameters.image(), photoParameters.description());
+        createdPhotos.add(createdPhoto);
+      }
+      setCreatedPhotos(extensionContext, createdPhotos);
     }
   }
 
@@ -45,7 +58,10 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public void afterEach(ExtensionContext extensionContext) {
     var createdUser = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
     if (createdUser != null) {
+      var createdPhotos = getCreatedPhotos(extensionContext);
       var createdFriends = getCreatedFriends(extensionContext);
+
+      createdPhotos.forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
       createdFriends.forEach(userService::deleteUser);
       userService.deleteUser(createdUser);
     }
@@ -92,5 +108,15 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   private List<User> getCreatedFriends(ExtensionContext extensionContext) {
     return extensionContext.getStore(NAMESPACE)
         .getOrDefault(extensionContext.getUniqueId() + "createdFriends", List.class, new ArrayList<>());
+  }
+
+  private void setCreatedPhotos(ExtensionContext extensionContext, List<Photo> photos) {
+    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdPhotos", photos);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<Photo> getCreatedPhotos(ExtensionContext extensionContext) {
+    return extensionContext.getStore(NAMESPACE)
+        .getOrDefault(extensionContext.getUniqueId() + "createdPhotos", List.class, new ArrayList<>());
   }
 }
