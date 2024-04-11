@@ -1,8 +1,11 @@
 package com.onehundredtwentyninth.rangiffler.jupiter;
 
-import com.github.javafaker.Faker;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
+import com.onehundredtwentyninth.rangiffler.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
@@ -17,7 +20,7 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
 
   public static final ExtensionContext.Namespace NAMESPACE
       = ExtensionContext.Namespace.create(CreateUserExtension.class);
-  private final UserDbService userDbService = new UserDbService();
+  private final UserService userService = new UserDbService();
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
@@ -27,15 +30,14 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
     );
 
     if (userParameters.isPresent()) {
-      String username = userParameters.get().username().isEmpty()
-          ? new Faker().name().username()
-          : userParameters.get().username();
-      String password = userParameters.get().password().isEmpty()
-          ? "123"
-          : userParameters.get().password();
-
-      var createdUser = userDbService.createUser(username, password);
+      var createdUser = userParameters.get().username().isEmpty()
+          ? userService.createRandomUser()
+          : userService.createUser(userParameters.get().username(), userParameters.get().password());
       extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUser);
+
+      if (userParameters.get().friends().length != 0) {
+        createFriends(userParameters.get(), createdUser, extensionContext);
+      }
     }
   }
 
@@ -43,7 +45,9 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public void afterEach(ExtensionContext extensionContext) {
     var createdUser = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
     if (createdUser != null) {
-      userDbService.deleteUser(createdUser);
+      var createdFriends = getCreatedFriends(extensionContext);
+      createdFriends.forEach(userService::deleteUser);
+      userService.deleteUser(createdUser);
     }
   }
 
@@ -58,5 +62,35 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public User resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
     return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
+  }
+
+  private void createFriends(CreateUser userParameters, User user, ExtensionContext extensionContext) {
+    List<User> futureFriends = new ArrayList<>();
+
+    for (int i = 0; i < userParameters.friends().length; i++) {
+      var createdFriend = userService.createRandomUser();
+      futureFriends.add(createdFriend);
+
+      if (!userParameters.friends()[i].pending()) {
+        userService.createFriendship(user.getId(), createdFriend.getId(), false);
+      } else {
+        if (userParameters.friends()[i].friendshipRequestType() == FriendshipRequestType.OUTCOME) {
+          userService.createFriendship(user.getId(), createdFriend.getId(), true);
+        } else {
+          userService.createFriendship(createdFriend.getId(), user.getId(), true);
+        }
+      }
+    }
+    setCreatedFriends(extensionContext, futureFriends);
+  }
+
+  private void setCreatedFriends(ExtensionContext extensionContext, List<User> futureFriends) {
+    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdFriends", futureFriends);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<User> getCreatedFriends(ExtensionContext extensionContext) {
+    return extensionContext.getStore(NAMESPACE)
+        .getOrDefault(extensionContext.getUniqueId() + "createdFriends", List.class, new ArrayList<>());
   }
 }
