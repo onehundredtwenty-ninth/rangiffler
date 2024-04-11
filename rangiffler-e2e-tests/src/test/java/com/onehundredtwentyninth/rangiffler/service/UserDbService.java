@@ -1,22 +1,29 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
+import com.github.javafaker.Faker;
 import com.onehundredtwentyninth.rangiffler.db.model.Authority;
 import com.onehundredtwentyninth.rangiffler.db.model.AuthorityEntity;
+import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.model.UserAuthEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
+import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class UserDbService {
+public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
+  private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
 
+  @Override
   public User createUser(String username, String password) {
     var userAuth = new UserAuthEntity();
     userAuth.setUsername(username);
@@ -48,8 +55,26 @@ public class UserDbService {
     return UserEntityMapper.toMessage(userEntity);
   }
 
+  @Override
   public void deleteUser(User user) {
     userRepository.deleteInAuthByUsername(user.getUsername());
     userRepository.deleteInUserdataById(UUID.fromString(user.getId()));
+  }
+
+  @Override
+  public User createRandomUser() {
+    var username = new Faker().name().username();
+    var password = "123";
+    return createUser(username, password);
+  }
+
+  @Override
+  public void createFriendship(String firstFriendId, String secondFriendId, Boolean isPending) {
+    friendshipRepository.createFriendship(
+        UUID.fromString(firstFriendId),
+        UUID.fromString(secondFriendId),
+        LocalDateTime.now(),
+        isPending ? FriendshipStatus.PENDING : FriendshipStatus.ACCEPTED
+    );
   }
 }

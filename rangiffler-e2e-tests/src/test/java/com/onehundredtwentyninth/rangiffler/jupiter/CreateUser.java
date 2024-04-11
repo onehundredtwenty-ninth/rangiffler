@@ -11,4 +11,6 @@ public @interface CreateUser {
   String password() default "";
 
   boolean handle() default true;
+
+  Friend[] friends() default {};
 }
