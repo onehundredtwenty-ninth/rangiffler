@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 public enum JdbcUrl {
 
   AUTH("jdbc:postgresql://%s:%d/rangiffler-auth"),
+  PHOTO("jdbc:postgresql://%s:%d/rangiffler-photo"),
+  GEO("jdbc:postgresql://%s:%d/rangiffler-geo"),
   USERDATA("jdbc:postgresql://%s:%d/rangiffler-userdata");
 
   private final String url;

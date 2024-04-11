@@ -13,4 +13,6 @@ public @interface CreateUser {
   boolean handle() default true;
 
   Friend[] friends() default {};
+
+  WithPhoto[] photos() default {};
 }
