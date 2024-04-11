@@ -19,9 +19,9 @@ class GetCountriesTest {
         () -> Assertions.assertNotNull(countriesResponse),
         () -> Assertions.assertNotNull(countriesResponse.getData().getCountries()),
         () -> Assertions.assertEquals(238, countriesResponse.getData().getCountries().size()),
-        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).code()),
-        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).name()),
-        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).flag())
+        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).getCode()),
+        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).getName()),
+        () -> Assertions.assertNotNull(countriesResponse.getData().getCountries().get(0).getFlag())
     );
   }
 }
