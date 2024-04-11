@@ -1,11 +1,13 @@
 package com.onehundredtwentyninth.rangiffler.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
 
-public record GqlCountry(String code,
-                         String name,
-                         String flag,
-                         @JsonProperty("__typename")
-                         String typename) {
+@Getter
+@Setter
+public class GqlCountry extends GqlResponseType {
 
+  private String code;
+  private String name;
+  private String flag;
 }

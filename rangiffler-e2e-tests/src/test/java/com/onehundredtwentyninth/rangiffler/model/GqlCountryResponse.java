@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GqlCountryResponse extends GqlResponse<GqlCountryResponse> {
+public class GqlCountryResponse {
 
   private List<GqlCountry> countries;
 }
