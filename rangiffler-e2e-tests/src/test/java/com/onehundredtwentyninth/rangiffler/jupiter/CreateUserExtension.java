@@ -2,7 +2,6 @@ package com.onehundredtwentyninth.rangiffler.jupiter;
 
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
 import com.onehundredtwentyninth.rangiffler.service.PhotoTestService;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
@@ -40,16 +39,26 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
           : userService.createUser(userParameters.get().username(), userParameters.get().password());
       extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUser);
 
-      if (userParameters.get().friends().length != 0) {
-        createFriends(userParameters.get(), createdUser, extensionContext);
-      }
-
       var createdPhotos = new ArrayList<Photo>();
       for (var photoParameters : userParameters.get().photos()) {
         var createdPhoto = photoService.createPhoto(UUID.fromString(createdUser.getId()), photoParameters.countryCode(),
             photoParameters.image(), photoParameters.description());
         createdPhotos.add(createdPhoto);
       }
+
+      List<User> futureFriends = new ArrayList<>();
+      for (var friendParameters : userParameters.get().friends()) {
+        var createdFriend = userService.createFriend(createdUser.getId(), friendParameters);
+        futureFriends.add(createdFriend);
+
+        for (var photoParameters : friendParameters.photos()) {
+          var createdPhoto = photoService.createPhoto(UUID.fromString(createdFriend.getId()),
+              photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
+          createdPhotos.add(createdPhoto);
+        }
+      }
+
+      setCreatedFriends(extensionContext, futureFriends);
       setCreatedPhotos(extensionContext, createdPhotos);
     }
   }
@@ -78,26 +87,6 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public User resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
     return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
-  }
-
-  private void createFriends(CreateUser userParameters, User user, ExtensionContext extensionContext) {
-    List<User> futureFriends = new ArrayList<>();
-
-    for (int i = 0; i < userParameters.friends().length; i++) {
-      var createdFriend = userService.createRandomUser();
-      futureFriends.add(createdFriend);
-
-      if (!userParameters.friends()[i].pending()) {
-        userService.createFriendship(user.getId(), createdFriend.getId(), false);
-      } else {
-        if (userParameters.friends()[i].friendshipRequestType() == FriendshipRequestType.OUTCOME) {
-          userService.createFriendship(user.getId(), createdFriend.getId(), true);
-        } else {
-          userService.createFriendship(createdFriend.getId(), user.getId(), true);
-        }
-      }
-    }
-    setCreatedFriends(extensionContext, futureFriends);
   }
 
   private void setCreatedFriends(ExtensionContext extensionContext, List<User> futureFriends) {

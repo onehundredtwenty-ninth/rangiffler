@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 
 public interface UserService {
 
@@ -11,4 +12,6 @@ public interface UserService {
   User createRandomUser();
 
   void createFriendship(String firstFriendId, String secondFriendId, Boolean isPending);
+
+  User createFriend(String userId, Friend friendParameters);
 }

@@ -6,6 +6,8 @@ public @interface Friend {
 
   FriendshipRequestType friendshipRequestType() default FriendshipRequestType.INCOME;
 
+  WithPhoto[] photos() default {};
+
   enum FriendshipRequestType {
     INCOME, OUTCOME
   }

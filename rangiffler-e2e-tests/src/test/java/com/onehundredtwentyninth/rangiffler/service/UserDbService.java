@@ -11,6 +11,8 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJ
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -76,5 +78,21 @@ public class UserDbService implements UserService {
         LocalDateTime.now(),
         isPending ? FriendshipStatus.PENDING : FriendshipStatus.ACCEPTED
     );
+  }
+
+  @Override
+  public User createFriend(String userId, Friend friendParameters) {
+    var createdFriend = createRandomUser();
+
+    if (!friendParameters.pending()) {
+      createFriendship(userId, createdFriend.getId(), false);
+    } else {
+      if (friendParameters.friendshipRequestType() == FriendshipRequestType.OUTCOME) {
+        createFriendship(userId, createdFriend.getId(), true);
+      } else {
+        createFriendship(createdFriend.getId(), userId, true);
+      }
+    }
+    return createdFriend;
   }
 }
