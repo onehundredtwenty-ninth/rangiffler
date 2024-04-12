@@ -10,6 +10,7 @@ import com.onehundredtwentyninth.rangiffler.mapper.PhotoMapper;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 public class PhotoDbService implements PhotoTestService {
@@ -35,5 +36,10 @@ public class PhotoDbService implements PhotoTestService {
   @Override
   public void deletePhoto(UUID id) {
     photoRepository.deletePhoto(id);
+  }
+
+  @Override
+  public void likePhoto(UUID userId, UUID photoId) {
+    photoRepository.likePhoto(userId, photoId, LocalDate.now());
   }
 }

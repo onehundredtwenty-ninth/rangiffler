@@ -39,14 +39,22 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
           : userService.createUser(userParameters.get().username(), userParameters.get().password());
       extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUser);
 
+      var futureFriends = new ArrayList<User>();
       var createdPhotos = new ArrayList<Photo>();
+      var createdLikeUsers = new ArrayList<User>();
+
       for (var photoParameters : userParameters.get().photos()) {
         var createdPhoto = photoService.createPhoto(UUID.fromString(createdUser.getId()), photoParameters.countryCode(),
             photoParameters.image(), photoParameters.description());
         createdPhotos.add(createdPhoto);
+
+        for (var i = 0; i < photoParameters.likes(); i++) {
+          var likeUser = userService.createRandomUser();
+          photoService.likePhoto(UUID.fromString(likeUser.getId()), UUID.fromString(createdPhoto.getId()));
+          createdLikeUsers.add(likeUser);
+        }
       }
 
-      List<User> futureFriends = new ArrayList<>();
       for (var friendParameters : userParameters.get().friends()) {
         var createdFriend = userService.createFriend(createdUser.getId(), friendParameters);
         futureFriends.add(createdFriend);
@@ -55,11 +63,18 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
           var createdPhoto = photoService.createPhoto(UUID.fromString(createdFriend.getId()),
               photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
           createdPhotos.add(createdPhoto);
+
+          for (var i = 0; i < photoParameters.likes(); i++) {
+            var likeUser = userService.createRandomUser();
+            photoService.likePhoto(UUID.fromString(likeUser.getId()), UUID.fromString(createdPhoto.getId()));
+            createdLikeUsers.add(likeUser);
+          }
         }
       }
 
       setCreatedFriends(extensionContext, futureFriends);
       setCreatedPhotos(extensionContext, createdPhotos);
+      setCreatedLikeUsers(extensionContext, createdLikeUsers);
     }
   }
 
@@ -69,8 +84,10 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
     if (createdUser != null) {
       var createdPhotos = getCreatedPhotos(extensionContext);
       var createdFriends = getCreatedFriends(extensionContext);
+      var createdLikeUsers = getCreatedLikeUsers(extensionContext);
 
       createdPhotos.forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+      createdLikeUsers.forEach(userService::deleteUser);
       createdFriends.forEach(userService::deleteUser);
       userService.deleteUser(createdUser);
     }
@@ -107,5 +124,15 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   private List<Photo> getCreatedPhotos(ExtensionContext extensionContext) {
     return extensionContext.getStore(NAMESPACE)
         .getOrDefault(extensionContext.getUniqueId() + "createdPhotos", List.class, new ArrayList<>());
+  }
+
+  private void setCreatedLikeUsers(ExtensionContext extensionContext, List<User> likeUsers) {
+    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdLikeUsers", likeUsers);
+  }
+
+  @SuppressWarnings("unchecked")
+  private List<User> getCreatedLikeUsers(ExtensionContext extensionContext) {
+    return extensionContext.getStore(NAMESPACE)
+        .getOrDefault(extensionContext.getUniqueId() + "createdLikeUsers", List.class, new ArrayList<>());
   }
 }

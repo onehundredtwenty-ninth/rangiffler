@@ -4,13 +4,18 @@ import com.onehundredtwentyninth.rangiffler.db.DataSourceProvider;
 import com.onehundredtwentyninth.rangiffler.db.JdbcUrl;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.StatisticEntity;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -18,12 +23,14 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class PhotoRepositorySJdbc implements PhotoRepository {
 
   private final JdbcTemplate photoTemplate;
+  private final NamedParameterJdbcTemplate namedPhotoTemplate;
   private final TransactionTemplate photoTxt;
 
   public PhotoRepositorySJdbc() {
     var photoTm = new JdbcTransactionManager(DataSourceProvider.INSTANCE.dataSource(JdbcUrl.PHOTO));
     this.photoTxt = new TransactionTemplate(photoTm);
     this.photoTemplate = new JdbcTemplate(Objects.requireNonNull(photoTm.getDataSource()));
+    this.namedPhotoTemplate = new NamedParameterJdbcTemplate(photoTemplate);
   }
 
   @Override
@@ -70,7 +77,9 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
         updateStatisticByUserIdAndCountryId(photo.getUserId(), photo.getCountryId(), statistic.getCount() - 1);
       }
 
+      var likesIds = findLikesByPhotoId(id);
       photoTemplate.update("DELETE FROM \"photo_like\" WHERE photo_id = ?", id);
+      deleteLikesByIds(likesIds);
       photoTemplate.update("DELETE FROM \"photo\" WHERE id = ?", id);
       return null;
     });
@@ -131,5 +140,42 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
   @Override
   public void deleteStatisticByUserIdAndCountryId(UUID userId, UUID countryId) {
     photoTemplate.update("DELETE FROM \"statistic\" WHERE user_id = ? and country_id = ?", userId, countryId);
+  }
+
+  @Override
+  public void likePhoto(UUID userId, UUID photoId, LocalDate createdDate) {
+    photoTxt.execute(status -> {
+      var kh = new GeneratedKeyHolder();
+      photoTemplate.update(con -> {
+        PreparedStatement ps = con.prepareStatement(
+            "INSERT INTO \"like\" (user_id, created_date) VALUES(?, ?)",
+            PreparedStatement.RETURN_GENERATED_KEYS
+        );
+        ps.setObject(1, userId);
+        ps.setDate(2, Date.valueOf(createdDate));
+        return ps;
+      }, kh);
+
+      photoTemplate.update("INSERT INTO \"photo_like\" (photo_id, like_id) VALUES(?, ?)",
+          photoId, Objects.requireNonNull(kh.getKeys()).get("id"));
+
+      return null;
+    });
+  }
+
+  @Override
+  public List<UUID> findLikesByPhotoId(UUID photoId) {
+    return photoTemplate.queryForList("SELECT like_id FROM \"photo_like\" WHERE photo_id = ?",
+        UUID.class,
+        photoId
+    );
+  }
+
+  @Override
+  public void deleteLikesByIds(List<UUID> likeIds) {
+    if (!likeIds.isEmpty()) {
+      var parameters = new MapSqlParameterSource("ids", likeIds);
+      namedPhotoTemplate.update("DELETE FROM \"like\" WHERE id IN (:ids)", parameters);
+    }
   }
 }

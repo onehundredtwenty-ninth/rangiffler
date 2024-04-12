@@ -70,8 +70,8 @@ class CreateUserTest {
   }
 
   @CreateUser(photos = {
-      @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
-      @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescription2")
+      @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription", likes = 1),
+      @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescription2", likes = 2)
   })
   @Test
   void createRandomUserWithPhotoTest(User user) {
