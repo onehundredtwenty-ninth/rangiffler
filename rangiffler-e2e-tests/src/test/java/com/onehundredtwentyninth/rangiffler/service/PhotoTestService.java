@@ -14,6 +14,8 @@ public interface PhotoTestService {
 
   void deletePhoto(UUID id);
 
+  void likePhoto(UUID userId, UUID photoId);
+
   @SneakyThrows
   default String getImageAsBase64(String imageName) {
     var res = getClass().getClassLoader().getResource("image/" + imageName);

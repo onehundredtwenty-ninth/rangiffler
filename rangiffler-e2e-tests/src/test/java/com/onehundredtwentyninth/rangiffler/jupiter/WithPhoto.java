@@ -11,4 +11,6 @@ public @interface WithPhoto {
   String image() default "";
 
   String description() default "";
+
+  int likes() default 0;
 }
