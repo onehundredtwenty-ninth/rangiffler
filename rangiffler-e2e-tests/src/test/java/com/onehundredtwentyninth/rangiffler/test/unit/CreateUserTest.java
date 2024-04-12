@@ -82,4 +82,28 @@ class CreateUserTest {
         () -> Assertions.assertNotNull(user.getLastName())
     );
   }
+
+  @CreateUser(
+      friends = {
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+              photos = {
+                  @WithPhoto(countryCode = "mx", image = "France.png", description = "insertedDescriptionFriend"),
+              }),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
+              photos = {
+                  @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescriptionFriend2"),
+              })
+      },
+      photos = {
+          @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
+      })
+  @Test
+  void createRandomUserWithFriendsPhotoTest(User user) {
+    Assertions.assertAll(
+        () -> Assertions.assertNotNull(user.getId()),
+        () -> Assertions.assertNotNull(user.getUsername()),
+        () -> Assertions.assertNotNull(user.getFirstname()),
+        () -> Assertions.assertNotNull(user.getLastName())
+    );
+  }
 }
