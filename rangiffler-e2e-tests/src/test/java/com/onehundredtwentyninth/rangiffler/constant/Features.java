@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 public class Features {
 
   public static final String COUNTRY_LIST = "countryList";
+  public static final String COUNTRY = "country";
 }
