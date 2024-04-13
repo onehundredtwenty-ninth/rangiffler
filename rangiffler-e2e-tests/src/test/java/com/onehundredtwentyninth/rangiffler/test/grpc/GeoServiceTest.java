@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.test.grpc;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Empty;
+import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
@@ -16,7 +17,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.grpc.AllureGrpc;
-import java.nio.charset.StandardCharsets;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,22 +62,12 @@ class GeoServiceTest {
     });
 
     var expectedCountry = countryRepository.findCountryByCode(response.getAllCountries(0).getCode());
-    SoftAssertions.assertSoftly(softAssertions -> {
-      softAssertions.assertThat(response.getAllCountries(0).getId())
-          .describedAs("Id страны из ответа сервиса совпадает с БД")
-          .isEqualTo(expectedCountry.getId().toString());
-
-      softAssertions.assertThat(response.getAllCountries(0).getFlag().getBytes(StandardCharsets.UTF_8))
-          .describedAs("Флаг страны из ответа сервиса совпадает с БД")
-          .isEqualTo(expectedCountry.getFlag());
-
-      softAssertions.assertThat(response.getAllCountries(0).getCode())
-          .describedAs("Код страны из ответа сервиса совпадает с БД")
-          .isEqualTo(expectedCountry.getCode());
-
-      softAssertions.assertThat(response.getAllCountries(0).getName())
-          .describedAs("Имя страны из ответа сервиса совпадает с БД")
-          .isEqualTo(expectedCountry.getName());
-    });
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getAllCountries(0))
+            .hasId(expectedCountry.getId())
+            .hasCode(expectedCountry.getCode())
+            .hasName(expectedCountry.getName())
+            .hasFlag(expectedCountry.getFlag())
+    );
   }
 }
