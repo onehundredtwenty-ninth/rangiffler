@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.config;
 
+import com.codeborne.selenide.Configuration;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +8,10 @@ import lombok.NoArgsConstructor;
 public class LocalConfig implements Config {
 
   static final LocalConfig INSTANCE = new LocalConfig();
+
+  static {
+    Configuration.baseUrl = "http://127.0.0.1:3001";
+  }
 
   @Override
   public String authUrl() {
@@ -19,8 +24,8 @@ public class LocalConfig implements Config {
   }
 
   @Override
-  public String geoUrl() {
-    return "http://127.0.0.1:8091";
+  public String geoHost() {
+    return "localhost";
   }
 
   @Override
@@ -29,13 +34,13 @@ public class LocalConfig implements Config {
   }
 
   @Override
-  public String photoUrl() {
-    return "http://127.0.0.1:8093";
+  public String photoHost() {
+    return "localhost";
   }
 
   @Override
-  public String userdataUrl() {
-    return "http://127.0.0.1:8092";
+  public String userdataHost() {
+    return "localhost";
   }
 
   @Override

@@ -12,13 +12,13 @@ public interface Config {
 
   String gatewayUrl();
 
-  String geoUrl();
+  String geoHost();
 
   String frontUrl();
 
-  String photoUrl();
+  String photoHost();
 
-  String userdataUrl();
+  String userdataHost();
 
   String jdbcHost();
 
@@ -32,5 +32,17 @@ public interface Config {
 
   default int jdbcPort() {
     return 5432;
+  }
+
+  default int geoPort() {
+    return 8091;
+  }
+
+  default int photoPort() {
+    return 8093;
+  }
+
+  default int userdataPort() {
+    return 8092;
   }
 }

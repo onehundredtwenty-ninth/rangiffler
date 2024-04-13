@@ -1,16 +1,21 @@
 package com.onehundredtwentyninth.rangiffler.api;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
+import com.onehundredtwentyninth.rangiffler.logger.RestAssuredLogger;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RedirectConfig;
 import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.log.LogDetail;
+import io.restassured.filter.log.RequestLoggingFilter;
+import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.slf4j.Logger;
 
 public abstract class BaseClient {
 
@@ -19,6 +24,18 @@ public abstract class BaseClient {
 
   public BaseClient(String baseUri) {
     this.requestSpecification = new RequestSpecBuilder().setBaseUri(baseUri).build();
+  }
+
+  public BaseClient(String baseUri, Logger logger) {
+    this.requestSpecification = new RequestSpecBuilder()
+        .setBaseUri(baseUri)
+        .addFilters(
+            List.of(
+                new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+                new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger))
+            )
+        )
+        .build();
   }
 
   @SuppressWarnings("deprecation")
