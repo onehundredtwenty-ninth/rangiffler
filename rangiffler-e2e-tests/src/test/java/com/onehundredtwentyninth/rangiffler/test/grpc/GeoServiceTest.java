@@ -6,6 +6,8 @@ import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.grpc.AllCountriesResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
@@ -13,7 +15,8 @@ import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.grpc.AllureGrpc;
-import org.junit.jupiter.api.Assertions;
+import java.nio.charset.StandardCharsets;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -27,6 +30,7 @@ class GeoServiceTest {
 
   private static final Config CFG = Config.getInstance();
   private RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub blockingStub;
+  private final CountryRepository countryRepository = new CountryRepositorySJdbc();
 
   @BeforeEach
   void before() {
@@ -41,13 +45,36 @@ class GeoServiceTest {
   @Test
   void allCountriesTest() {
     final AllCountriesResponse response = blockingStub.getAllCountries(Empty.getDefaultInstance());
-    Assertions.assertAll(
-        () -> Assertions.assertNotNull(response),
-        () -> Assertions.assertEquals(238, response.getAllCountriesCount()),
-        () -> Assertions.assertNotNull(response.getAllCountries(0).getId()),
-        () -> Assertions.assertNotNull(response.getAllCountries(0).getFlag()),
-        () -> Assertions.assertNotNull(response.getAllCountries(0).getCode()),
-        () -> Assertions.assertNotNull(response.getAllCountries(0).getName())
-    );
+
+    var count = countryRepository.count();
+    SoftAssertions.assertSoftly(softAssertions -> {
+      softAssertions.assertThat(response)
+          .describedAs("Ответ сервиса не null")
+          .isNotNull();
+
+      softAssertions.assertThat(response.getAllCountriesCount())
+          .describedAs("Количество в списке стран совпадает с количеством в БД")
+          .isEqualTo(count);
+
+    });
+
+    var expectedCountry = countryRepository.findCountryByCode(response.getAllCountries(0).getCode());
+    SoftAssertions.assertSoftly(softAssertions -> {
+      softAssertions.assertThat(response.getAllCountries(0).getId())
+          .describedAs("Id страны из ответа сервиса совпадает с БД")
+          .isEqualTo(expectedCountry.getId().toString());
+
+      softAssertions.assertThat(response.getAllCountries(0).getFlag().getBytes(StandardCharsets.UTF_8))
+          .describedAs("Флаг страны из ответа сервиса совпадает с БД")
+          .isEqualTo(expectedCountry.getFlag());
+
+      softAssertions.assertThat(response.getAllCountries(0).getCode())
+          .describedAs("Код страны из ответа сервиса совпадает с БД")
+          .isEqualTo(expectedCountry.getCode());
+
+      softAssertions.assertThat(response.getAllCountries(0).getName())
+          .describedAs("Имя страны из ответа сервиса совпадает с БД")
+          .isEqualTo(expectedCountry.getName());
+    });
   }
 }

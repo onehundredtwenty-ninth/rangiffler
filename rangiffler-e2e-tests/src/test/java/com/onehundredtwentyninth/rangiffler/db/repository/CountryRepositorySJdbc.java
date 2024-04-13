@@ -13,7 +13,7 @@ public class CountryRepositorySJdbc implements CountryRepository {
   private final JdbcTemplate countryTemplate = new JdbcTemplate(DataSourceProvider.INSTANCE.dataSource(JdbcUrl.GEO));
 
   @Override
-  public CountryEntity getCountryByCode(String code) {
+  public CountryEntity findCountryByCode(String code) {
     return Optional.ofNullable(
         countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE code = ?", (ResultSet rs, int rowNum) -> {
           var countryEntity = new CountryEntity();
@@ -24,5 +24,10 @@ public class CountryRepositorySJdbc implements CountryRepository {
           return countryEntity;
         }, code)
     ).orElseThrow();
+  }
+
+  @Override
+  public Integer count() {
+    return countryTemplate.queryForObject("SELECT COUNT(*) FROM \"country\"", Integer.class);
   }
 }

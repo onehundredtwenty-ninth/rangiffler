@@ -20,7 +20,7 @@ public class PhotoDbService implements PhotoTestService {
 
   @Override
   public Photo createPhoto(UUID userId, String countryCode, String image, String description) {
-    var country = countryRepository.getCountryByCode(countryCode);
+    var country = countryRepository.findCountryByCode(countryCode);
 
     var photoEntity = new PhotoEntity();
     photoEntity.setUserId(userId);

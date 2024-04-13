@@ -4,5 +4,7 @@ import com.onehundredtwentyninth.rangiffler.db.model.CountryEntity;
 
 public interface CountryRepository {
 
-  CountryEntity getCountryByCode(String code);
+  CountryEntity findCountryByCode(String code);
+
+  Integer count();
 }
