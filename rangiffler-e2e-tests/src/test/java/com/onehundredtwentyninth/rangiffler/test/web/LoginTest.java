@@ -5,7 +5,7 @@ import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import org.junit.jupiter.api.Test;
 
-class LoginTest {
+class LoginTest extends BaseWebTest {
 
   private final StartPage startPage = new StartPage();
   private final LoginPage loginPage = new LoginPage();
