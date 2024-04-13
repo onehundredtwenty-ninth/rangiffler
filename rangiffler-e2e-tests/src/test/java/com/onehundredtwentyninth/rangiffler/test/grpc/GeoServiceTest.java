@@ -7,7 +7,6 @@ import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
-import java.net.URI;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,7 @@ class GeoServiceTest {
 
   @BeforeEach
   void before() {
-    var uri = URI.create(CFG.geoUrl());
-    var channel = ManagedChannelBuilder.forAddress(uri.getHost(), uri.getPort())
+    var channel = ManagedChannelBuilder.forAddress(CFG.geoHost(), CFG.geoPort())
         .intercept(new AllureGrpc(), new GrpcConsoleInterceptor())
         .usePlaintext()
         .build();
