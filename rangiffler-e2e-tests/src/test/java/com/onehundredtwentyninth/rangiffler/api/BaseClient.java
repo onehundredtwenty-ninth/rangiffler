@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.api;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.logger.RestAssuredLogger;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RedirectConfig;
@@ -32,7 +33,8 @@ public abstract class BaseClient {
         .addFilters(
             List.of(
                 new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
-                new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger))
+                new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+                new AllureRestAssured()
             )
         )
         .build();
