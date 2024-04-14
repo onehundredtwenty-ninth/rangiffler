@@ -26,7 +26,7 @@ public class UserDbService implements UserService {
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
 
   @Override
-  public User createUser(String username, String password) {
+  public User createUser(String username, String password, String firstname, String lastname) {
     var userAuth = new UserAuthEntity();
     userAuth.setUsername(username);
     userAuth.setPassword(password);
@@ -46,8 +46,8 @@ public class UserDbService implements UserService {
 
     var userEntity = new UserEntity();
     userEntity.setUsername(username);
-    userEntity.setLastName(username);
-    userEntity.setFirstname(username);
+    userEntity.setLastName(lastname);
+    userEntity.setFirstname(firstname);
     userEntity.setCountryId(UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"));
 
     userRepository.createInAuth(userAuth);
@@ -65,9 +65,8 @@ public class UserDbService implements UserService {
 
   @Override
   public User createRandomUser() {
-    var username = new Faker().name().username();
-    var password = "123";
-    return createUser(username, password);
+    var faker = new Faker();
+    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName());
   }
 
   @Override

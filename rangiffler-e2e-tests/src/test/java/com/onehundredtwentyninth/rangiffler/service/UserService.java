@@ -5,7 +5,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 
 public interface UserService {
 
-  User createUser(String username, String password);
+  User createUser(String username, String password, String firstname, String lastname);
 
   void deleteUser(User user);
 
