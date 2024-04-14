@@ -9,4 +9,5 @@ public class Features {
   public static final String COUNTRY_LIST = "countryList";
   public static final String COUNTRY = "country";
   public static final String USER = "user";
+  public static final String USER_LIST = "userList";
 }

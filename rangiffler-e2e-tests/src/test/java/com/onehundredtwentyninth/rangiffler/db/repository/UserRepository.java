@@ -15,4 +15,14 @@ public interface UserRepository {
   void deleteInAuthByUsername(String username);
 
   void deleteInUserdataById(UUID id);
+
+  Integer count();
+
+  UserEntity findById(UUID id);
+
+  UserEntity findByUsername(String username);
+
+  UserEntity findByFirstname(String firstname);
+
+  UserEntity findByLastname(String lastName);
 }

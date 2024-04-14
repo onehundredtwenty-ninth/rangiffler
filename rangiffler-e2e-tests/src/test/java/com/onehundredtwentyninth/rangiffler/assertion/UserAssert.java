@@ -51,9 +51,9 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
 
   public UserAssert hasAvatar(byte[] avatar) {
     isNotNull();
-    if (!Arrays.equals(avatar, actual.getAvatar().toByteArray())) {
+    if (!Arrays.equals(avatar == null ? new byte[]{} : avatar, actual.getAvatar().toByteArray())) {
       failWithActualExpectedAndMessage(actual, avatar, "Expected avatar to be <%s> but was <%s>", avatar,
-          actual.getAvatar());
+          actual.getAvatar().toByteArray());
     }
     return this;
   }
