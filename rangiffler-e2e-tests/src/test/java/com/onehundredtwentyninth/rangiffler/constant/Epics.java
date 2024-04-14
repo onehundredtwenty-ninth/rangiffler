@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 public class Epics {
 
   public static final String GEO = "geo";
+  public static final String USERS = "users";
 }

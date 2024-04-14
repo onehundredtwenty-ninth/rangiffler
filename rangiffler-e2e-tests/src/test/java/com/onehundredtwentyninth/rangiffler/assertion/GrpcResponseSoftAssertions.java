@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.grpc.Country;
+import com.onehundredtwentyninth.rangiffler.grpc.User;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractSoftAssertions;
 import org.assertj.core.api.SoftAssertionsProvider;
@@ -14,5 +15,9 @@ public class GrpcResponseSoftAssertions extends AbstractSoftAssertions implement
 
   public CountryAssert assertThat(Country actual) {
     return proxy(CountryAssert.class, Country.class, actual);
+  }
+
+  public UserAssert assertThat(User actual) {
+    return proxy(UserAssert.class, User.class, actual);
   }
 }
