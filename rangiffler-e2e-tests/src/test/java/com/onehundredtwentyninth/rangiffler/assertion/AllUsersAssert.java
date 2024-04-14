@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
+import com.onehundredtwentyninth.rangiffler.grpc.User;
 import org.assertj.core.api.AbstractAssert;
 
 public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersResponse> {
@@ -71,6 +72,26 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     if (isUserWithUsernamePresented) {
       failWithActualExpectedAndMessage(actual, username,
           "Expected response to have not user with username <%s> but it was", username);
+    }
+    return this;
+  }
+
+  public AllUsersAssert containsUser(User user) {
+    isNotNull();
+    boolean isUserPresented = actual.getAllUsersList().stream().anyMatch(user::equals);
+    if (!isUserPresented) {
+      failWithActualExpectedAndMessage(actual, user,
+          "Expected response to have user <%s> but it's not", user);
+    }
+    return this;
+  }
+
+  public AllUsersAssert notContainsUser(User user) {
+    isNotNull();
+    boolean isUserPresented = actual.getAllUsersList().stream().anyMatch(user::equals);
+    if (isUserPresented) {
+      failWithActualExpectedAndMessage(actual, user,
+          "Expected response to have not user <%s> but it was", user);
     }
     return this;
   }
