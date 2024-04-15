@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ExtendWith({GuiceExtension.class, AllureJunit5.class, CreateUserExtension.class})
+@ExtendWith({GuiceExtension.class, AllureJunit5.class, CreateUserExtension.class, CreateExtrasUserExtension.class})
 public @interface GrpcTest {
 
 }

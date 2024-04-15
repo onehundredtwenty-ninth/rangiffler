@@ -100,7 +100,8 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
     return (parameterContext.getParameter().getType().isAssignableFrom(User.class)
-        || parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+        || (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+        && parameterContext.getParameter().isAnnotationPresent(Friends.class))
     )
         && extensionContext.getRequiredTestMethod().isAnnotationPresent(CreateUser.class);
   }
@@ -108,7 +109,8 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    if (parameterContext.getParameter().getType().isAssignableFrom(User[].class)) {
+    if (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+        && parameterContext.getParameter().isAnnotationPresent(Friends.class)) {
       return getCreatedFriends(extensionContext).toArray(User[]::new);
     } else {
       return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
