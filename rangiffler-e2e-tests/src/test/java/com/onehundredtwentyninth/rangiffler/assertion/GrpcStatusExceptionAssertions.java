@@ -37,6 +37,18 @@ public class GrpcStatusExceptionAssertions extends AbstractThrowableAssert<GrpcS
     return this;
   }
 
+  public GrpcStatusExceptionAssertions hasCountryNotFoundMessage(String countryAttribute) {
+    isNotNull();
+    var expectedMessage = "NOT_FOUND: Country " + countryAttribute + " not found";
+    if (!expectedMessage.equals(actual.getMessage())) {
+      failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
+          expectedMessage,
+          actual.getMessage()
+      );
+    }
+    return this;
+  }
+
   public GrpcStatusExceptionAssertions hasInvalidIdMessage(String id) {
     isNotNull();
     var expectedMessage = "ABORTED: Invalid UUID string: " + id;
