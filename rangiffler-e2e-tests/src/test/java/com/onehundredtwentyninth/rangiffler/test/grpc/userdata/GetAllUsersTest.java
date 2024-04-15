@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;

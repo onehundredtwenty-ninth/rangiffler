@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 
 import com.github.javafaker.Faker;
 import com.google.inject.Inject;

@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.config.Config;
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(Epics.USERS), @Tag(Features.USER)})
-class GetUserFriendsIncomeRequestsTest {
+class GetUserFriendsOutcomeRequestsTest {
 
   private static final Config CFG = Config.getInstance();
   private RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub blockingStub;
@@ -43,21 +43,21 @@ class GetUserFriendsIncomeRequestsTest {
     blockingStub = RangifflerUserdataServiceGrpc.newBlockingStub(channel);
   }
 
-  @DisplayName("Получение всех входящих заявок в друзья")
+  @DisplayName("Получение всех исходящих заявок в друзья")
   @CreateUser(
       friends = {
-          @Friend(pending = true),
-          @Friend(pending = true)
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
       }
   )
   @Test
-  void getAllUserFriendsIncomeInvitationsTest(User user, User[] friends) {
+  void getAllUserFriendsOutcomeInvitationsTest(User user, User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setPage(0)
         .setSize(10)
         .build();
-    final AllUsersResponse response = blockingStub.getFriendshipRequests(request);
+    final AllUsersResponse response = blockingStub.getFriendshipAddresses(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -68,22 +68,22 @@ class GetUserFriendsIncomeRequestsTest {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по username")
+  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по username")
   @CreateUser(
       friends = {
-          @Friend(pending = true),
-          @Friend(pending = true)
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
       }
   )
   @Test
-  void getUserFriendsIncomeInvitationsWithUsernameFilterTest(User user, User[] friends) {
+  void getUserFriendsOutcomeInvitationsWithUsernameFilterTest(User user, User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getUsername())
         .setPage(0)
         .setSize(10)
         .build();
-    final AllUsersResponse response = blockingStub.getFriendshipRequests(request);
+    final AllUsersResponse response = blockingStub.getFriendshipAddresses(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -94,22 +94,22 @@ class GetUserFriendsIncomeRequestsTest {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по firstname")
+  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по firstname")
   @CreateUser(
       friends = {
-          @Friend(pending = true),
-          @Friend(pending = true)
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
       }
   )
   @Test
-  void getUserFriendsIncomeInvitationsWithFirstnameFilterTest(User user, User[] friends) {
+  void getUserFriendsOutcomeInvitationsWithFirstnameFilterTest(User user, User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getFirstname())
         .setPage(0)
         .setSize(10)
         .build();
-    final AllUsersResponse response = blockingStub.getFriendshipRequests(request);
+    final AllUsersResponse response = blockingStub.getFriendshipAddresses(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -120,49 +120,49 @@ class GetUserFriendsIncomeRequestsTest {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по lastname")
+  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по lastname")
   @CreateUser(
       friends = {
-          @Friend(pending = true),
-          @Friend(pending = true)
-      }
-  )
-  @Test
-  void getUserFriendsIncomeInvitationsWithLastnameFilterTest(User user, User[] friends) {
-    final AllUsersRequest request = AllUsersRequest.newBuilder()
-        .setUsername(user.getUsername())
-        .setSearchQuery(friends[0].getLastName())
-        .setPage(0)
-        .setSize(10)
-        .build();
-    final AllUsersResponse response = blockingStub.getFriendshipRequests(request);
-
-    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response)
-            .hasPageSize(1)
-            .hasNext(false)
-            .containsUser(friends[0])
-            .notContainsUser(friends[1])
-    );
-  }
-
-  @DisplayName("Отсутствие друзей и исходящих заявок в списке входящих заявок в друзья")
-  @CreateUser(
-      friends = {
-          @Friend(pending = true),
-          @Friend,
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
       }
   )
   @Test
-  void getUserFriendsIncomeInvitationsWithoutPendingTest(User user, User[] friends) {
+  void getUserFriendsOutcomeInvitationsWithLastnameFilterTest(User user, User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getLastName())
         .setPage(0)
         .setSize(10)
         .build();
-    final AllUsersResponse response = blockingStub.getFriendshipRequests(request);
+    final AllUsersResponse response = blockingStub.getFriendshipAddresses(request);
+
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasPageSize(1)
+            .hasNext(false)
+            .containsUser(friends[0])
+            .notContainsUser(friends[1])
+    );
+  }
+
+  @DisplayName("Отсутствие друзей и входящих заявок в списке исходящих заявок в друзья")
+  @CreateUser(
+      friends = {
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
+          @Friend,
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME)
+      }
+  )
+  @Test
+  void getUserFriendsOutcomeInvitationsWithoutPendingTest(User user, User[] friends) {
+    final AllUsersRequest request = AllUsersRequest.newBuilder()
+        .setUsername(user.getUsername())
+        .setSearchQuery(friends[0].getLastName())
+        .setPage(0)
+        .setSize(10)
+        .build();
+    final AllUsersResponse response = blockingStub.getFriendshipAddresses(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)

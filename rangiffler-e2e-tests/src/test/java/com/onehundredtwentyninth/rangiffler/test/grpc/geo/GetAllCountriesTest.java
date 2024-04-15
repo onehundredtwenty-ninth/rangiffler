@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.geo;
 
 import com.google.inject.Inject;
 import com.google.protobuf.Empty;

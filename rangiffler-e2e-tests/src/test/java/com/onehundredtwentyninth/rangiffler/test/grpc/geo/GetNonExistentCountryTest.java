@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.geo;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;

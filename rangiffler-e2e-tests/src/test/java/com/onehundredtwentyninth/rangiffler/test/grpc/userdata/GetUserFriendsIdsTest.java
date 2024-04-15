@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.grpc;
+package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
