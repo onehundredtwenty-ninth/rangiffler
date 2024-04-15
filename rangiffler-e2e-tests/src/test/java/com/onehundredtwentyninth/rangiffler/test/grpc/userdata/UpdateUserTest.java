@@ -4,6 +4,7 @@ import com.github.javafaker.Faker;
 import com.google.inject.Inject;
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
+import com.onehundredtwentyninth.rangiffler.assertion.GrpcStatusExceptionAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
@@ -15,11 +16,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
-import io.grpc.StatusRuntimeException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -103,8 +102,8 @@ class UpdateUserTest extends GrpcUserdataTestBase {
     final User updateUserRequest = User.newBuilder()
         .setUsername(faker.name().username())
         .build();
-    Assertions.assertThatThrownBy(() -> blockingStub.updateUser(updateUserRequest))
-        .isInstanceOf(StatusRuntimeException.class)
-        .hasMessage("NOT_FOUND: User " + updateUserRequest.getUsername() + " not found");
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUser(updateUserRequest))
+        .isInstanceOfStatusRuntimeException()
+        .hasUserNotFoundMessage(updateUserRequest.getUsername());
   }
 }

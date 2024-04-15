@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 
+import com.onehundredtwentyninth.rangiffler.assertion.GrpcStatusExceptionAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
@@ -7,10 +8,8 @@ import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
-import io.grpc.StatusRuntimeException;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -25,26 +24,26 @@ class GetNonExistentUserTest extends GrpcUserdataTestBase {
   @Test
   void getUserByNonExistentCodeTest() {
     var request = UserRequest.newBuilder().setUsername("nonExistentUsername").build();
-    Assertions.assertThatThrownBy(() -> blockingStub.getUser(request))
-        .isInstanceOf(StatusRuntimeException.class)
-        .hasMessage("NOT_FOUND: User nonExistentUsername not found");
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getUser(request))
+        .isInstanceOfStatusRuntimeException()
+        .hasUserNotFoundMessage(request.getUsername());
   }
 
   @DisplayName("Получение пользователя по несуществующему id")
   @Test
   void getUserByNonExistentIdTest() {
     var request = UserByIdRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
-    Assertions.assertThatThrownBy(() -> blockingStub.getUserById(request))
-        .isInstanceOf(StatusRuntimeException.class)
-        .hasMessage("NOT_FOUND: User 00000000-0000-0000-0000-000000000000 not found");
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getUserById(request))
+        .isInstanceOfStatusRuntimeException()
+        .hasUserNotFoundMessage(request.getId());
   }
 
   @DisplayName("Получение пользователя по невалидному id")
   @Test
   void getUserByInvalidIdTest() {
     var request = UserByIdRequest.newBuilder().setId("notValidId").build();
-    Assertions.assertThatThrownBy(() -> blockingStub.getUserById(request))
-        .isInstanceOf(StatusRuntimeException.class)
-        .hasMessage("ABORTED: Invalid UUID string: notValidId");
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getUserById(request))
+        .isInstanceOfStatusRuntimeException()
+        .hasInvalidIdMessage(request.getId());
   }
 }
