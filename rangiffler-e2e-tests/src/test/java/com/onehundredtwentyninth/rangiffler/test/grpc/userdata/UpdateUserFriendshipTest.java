@@ -14,7 +14,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -35,6 +37,34 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   private UserRepository userRepository;
   @Inject
   private FriendshipRepository friendshipRepository;
+
+  @CreateExtrasUsers(@CreateUser)
+  @DisplayName("Отправить заявку в друзья")
+  @CreateUser
+  @Test
+  void sentFriendshipRequestTest(User user, @Extras User[] users) {
+    final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
+        .setActionAuthorUserId(user.getId())
+        .setActionTargetUserId(users[0].getId())
+        .setAction(FriendshipAction.ADD)
+        .build();
+    final User response = blockingStub.updateUserFriendship(request);
+
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasId(user.getId())
+            .hasUsername(user.getUsername())
+            .hasFirstName(user.getFirstname())
+            .hasLastName(user.getLastName())
+            .hasAvatar(user.getAvatar().toByteArray())
+            .hasCountryId(user.getCountryId())
+    );
+
+    final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+        UUID.fromString(user.getId()), UUID.fromString(users[0].getId())).orElseThrow();
+    Assertions.assertThat(friendship.getStatus())
+        .isEqualTo(FriendshipStatus.PENDING);
+  }
 
   @DisplayName("Принять заявку в друзья")
   @CreateUser(
