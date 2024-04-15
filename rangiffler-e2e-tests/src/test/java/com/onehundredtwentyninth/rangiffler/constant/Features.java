@@ -15,4 +15,5 @@ public class Features {
   public static final String ADD_PHOTO = "Добавление фото";
   public static final String UPDATE_PHOTO = "Изменение фото";
   public static final String DELETE_PHOTO = "Удаление фото";
+  public static final String STATISTIC = "Получение статистике";
 }
