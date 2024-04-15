@@ -117,10 +117,13 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     blockingStub.updateUserFriendship(request);
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
-        .isInstanceOfStatusRuntimeException();
+        .isInstanceOfStatusRuntimeException()
+        .messageContains(
+            "ERROR: duplicate key value violates unique constraint \"friendship_requester_id_addressee_id_key\""
+        );
   }
 
-  @DisplayName("Принять заявку в друзья поторно")
+  @DisplayName("Принять заявку в друзья повторно")
   @CreateUser(
       friends = {
           @Friend(pending = true)
@@ -136,10 +139,11 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     blockingStub.updateUserFriendship(request);
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
-        .isInstanceOfStatusRuntimeException();
+        .isInstanceOfStatusRuntimeException()
+        .hasFriendshipRequestNotFoundMessage(friends[0].getUsername(), user.getUsername());
   }
 
-  @DisplayName("Отклонить ранее принятую заявку в друзья поторно")
+  @DisplayName("Отклонить ранее принятую заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true)

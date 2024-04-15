@@ -73,9 +73,11 @@ public class GrpcStatusExceptionAssertions extends AbstractThrowableAssert<GrpcS
     return this;
   }
 
-  public GrpcStatusExceptionAssertions hasFriendshipRequestNotFoundMessage(String firstUsername, String secondUsername) {
+  public GrpcStatusExceptionAssertions hasFriendshipRequestNotFoundMessage(String firstUsername,
+      String secondUsername) {
     isNotNull();
-    var expectedMessage = "NOT_FOUND: Friendship request from " + firstUsername + " to " + secondUsername + " not found";
+    var expectedMessage =
+        "NOT_FOUND: Friendship request from " + firstUsername + " to " + secondUsername + " not found";
     if (!expectedMessage.equals(actual.getMessage())) {
       failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
           expectedMessage,
@@ -90,6 +92,17 @@ public class GrpcStatusExceptionAssertions extends AbstractThrowableAssert<GrpcS
     var expectedMessage = "ABORTED";
     if (!expectedMessage.equals(actual.getMessage())) {
       failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
+          expectedMessage,
+          actual.getMessage()
+      );
+    }
+    return this;
+  }
+
+  public GrpcStatusExceptionAssertions messageContains(String expectedMessage) {
+    isNotNull();
+    if (!actual.getMessage().contains(expectedMessage)) {
+      failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message contain <%s> but was <%s>",
           expectedMessage,
           actual.getMessage()
       );
