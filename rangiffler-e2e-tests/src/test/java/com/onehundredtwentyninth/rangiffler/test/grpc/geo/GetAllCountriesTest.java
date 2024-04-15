@@ -5,6 +5,7 @@ import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
+import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
@@ -19,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 @Epic(Epics.GEO)
 @Feature(Features.COUNTRY_LIST)
-@Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(Epics.GEO), @Tag(Features.COUNTRY_LIST)})
+@Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.GEO), @Tag(JUnitTags.COUNTRY_LIST)})
 class GetAllCountriesTest extends GrpcGeoTestBase {
 
   @Inject

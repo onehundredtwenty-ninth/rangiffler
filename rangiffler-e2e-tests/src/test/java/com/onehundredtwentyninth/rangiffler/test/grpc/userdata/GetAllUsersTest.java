@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
+import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 @Epic(Epics.USERS)
 @Feature(Features.USER_LIST)
-@Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(Epics.USERS), @Tag(Features.USER_LIST)})
+@Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_LIST)})
 class GetAllUsersTest extends GrpcUserdataTestBase {
 
   @Inject
