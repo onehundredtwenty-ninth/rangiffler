@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.db.repository;
 
+import com.onehundredtwentyninth.rangiffler.db.model.LikeEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.StatisticEntity;
 import java.time.LocalDate;
@@ -15,6 +16,8 @@ public interface PhotoRepository {
 
   PhotoEntity findPhotoById(UUID photoId);
 
+  List<PhotoEntity> findByUserId(UUID userId);
+
   Optional<StatisticEntity> findStatisticByUserIdAndCountryId(UUID userId, UUID countryId);
 
   void updateStatisticByUserIdAndCountryId(UUID userId, UUID countryId, Integer count);
@@ -25,7 +28,9 @@ public interface PhotoRepository {
 
   void likePhoto(UUID userId, UUID photoId, LocalDate createdDate);
 
-  List<UUID> findLikesByPhotoId(UUID photoId);
+  List<UUID> findLikesIdsByPhotoId(UUID photoId);
+
+  List<LikeEntity> findLikesByPhotoId(UUID photoId);
 
   void deleteLikesByIds(List<UUID> likeIds);
 }

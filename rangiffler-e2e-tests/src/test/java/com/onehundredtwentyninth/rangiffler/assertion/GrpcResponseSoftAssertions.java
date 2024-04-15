@@ -2,6 +2,8 @@ package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.Country;
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.grpc.PhotoResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractSoftAssertions;
@@ -24,5 +26,13 @@ public class GrpcResponseSoftAssertions extends AbstractSoftAssertions implement
 
   public AllUsersAssert assertThat(AllUsersResponse actual) {
     return proxy(AllUsersAssert.class, AllUsersResponse.class, actual);
+  }
+
+  public GrpcPhotoAssertions assertThat(Photo actual) {
+    return proxy(GrpcPhotoAssertions.class, Photo.class, actual);
+  }
+
+  public GrpcPhotoListAssertions assertThat(PhotoResponse actual) {
+    return proxy(GrpcPhotoListAssertions.class, PhotoResponse.class, actual);
   }
 }

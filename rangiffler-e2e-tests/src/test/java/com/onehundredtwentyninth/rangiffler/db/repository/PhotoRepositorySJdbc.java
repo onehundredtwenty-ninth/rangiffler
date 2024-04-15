@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.db.repository;
 
 import com.onehundredtwentyninth.rangiffler.db.DataSourceProvider;
 import com.onehundredtwentyninth.rangiffler.db.JdbcUrl;
+import com.onehundredtwentyninth.rangiffler.db.model.LikeEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.StatisticEntity;
 import java.sql.Date;
@@ -77,7 +78,7 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
         updateStatisticByUserIdAndCountryId(photo.getUserId(), photo.getCountryId(), statistic.getCount() - 1);
       }
 
-      var likesIds = findLikesByPhotoId(id);
+      var likesIds = findLikesIdsByPhotoId(id);
       photoTemplate.update("DELETE FROM \"photo_like\" WHERE photo_id = ?", id);
       deleteLikesByIds(likesIds);
       photoTemplate.update("DELETE FROM \"photo\" WHERE id = ?", id);
@@ -102,6 +103,23 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
             photoId
         )
     ).orElseThrow();
+  }
+
+  @Override
+  public List<PhotoEntity> findByUserId(UUID userId) {
+    return photoTemplate.query("SELECT * FROM \"photo\" WHERE user_id = ?",
+        (ResultSet rs, int rowNum) -> {
+          var photoEntity = new PhotoEntity();
+          photoEntity.setId(rs.getObject("id", UUID.class));
+          photoEntity.setUserId(rs.getObject("user_id", UUID.class));
+          photoEntity.setCountryId(rs.getObject("country_id", UUID.class));
+          photoEntity.setDescription(rs.getString("description"));
+          photoEntity.setPhoto(rs.getBytes("photo"));
+          photoEntity.setCreatedDate(rs.getTimestamp("created_date"));
+          return photoEntity;
+        },
+        userId
+    );
   }
 
   @Override
@@ -164,9 +182,24 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
   }
 
   @Override
-  public List<UUID> findLikesByPhotoId(UUID photoId) {
+  public List<UUID> findLikesIdsByPhotoId(UUID photoId) {
     return photoTemplate.queryForList("SELECT like_id FROM \"photo_like\" WHERE photo_id = ?",
         UUID.class,
+        photoId
+    );
+  }
+
+  @Override
+  public List<LikeEntity> findLikesByPhotoId(UUID photoId) {
+    return photoTemplate.query(
+        "SELECT * FROM \"photo_like\" pl JOIN \"like\" l ON l.id = pl.like_id  WHERE photo_id = ?",
+        (ResultSet rs, int rowNum) -> {
+          var likeEntity = new LikeEntity();
+          likeEntity.setId(rs.getObject("id", UUID.class));
+          likeEntity.setUserId(rs.getObject("user_id", UUID.class));
+          likeEntity.setCreatedDate(rs.getTimestamp("created_date"));
+          return likeEntity;
+        },
         photoId
     );
   }
