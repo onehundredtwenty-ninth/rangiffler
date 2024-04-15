@@ -77,6 +77,18 @@ public class GrpcPhotoAssertions extends AbstractAssert<GrpcPhotoAssertions, Pho
     return this;
   }
 
+  public GrpcPhotoAssertions hasLikeFromUser(String userId) {
+    isNotNull();
+    boolean isLikeFromUserPresented = actual.getLikes().getLikesList().stream()
+        .anyMatch(s -> userId.equals(s.getUserId()));
+    if (!isLikeFromUserPresented) {
+      failWithActualExpectedAndMessage(actual.getLikes(), userId,
+          "Expected likes contains like from user <%s> but was <%s>", userId, actual.getLikes());
+    }
+
+    return this;
+  }
+
   public GrpcPhotoAssertions hasLikes(List<LikeEntity> likes) {
     isNotNull();
 
