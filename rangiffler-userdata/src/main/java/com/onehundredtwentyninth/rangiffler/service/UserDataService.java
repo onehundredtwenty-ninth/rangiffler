@@ -178,7 +178,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         friendshipEntity.setAddressee(actionTargetUser);
         friendshipEntity.setStatus(FriendshipStatus.PENDING);
         friendshipEntity.setCreatedDate(Timestamp.from(Instant.now()));
-        friendshipRepository.save(friendshipEntity);
+        friendshipRepository.saveAndFlush(friendshipEntity);
       }
       case DELETE -> {
         var friendshipEntity = friendshipRepository.findFriendship(actionAuthorUser, actionTargetUser).orElseThrow(
@@ -187,16 +187,18 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         friendshipRepository.delete(friendshipEntity);
       }
       case ACCEPT -> {
-        var friendshipEntity = friendshipRepository.findByRequesterAndAddressee(actionTargetUser, actionAuthorUser)
+        var friendshipEntity = friendshipRepository.findByRequesterAndAddresseeAndStatus(actionTargetUser,
+                actionAuthorUser, FriendshipStatus.PENDING)
             .orElseThrow(() -> new FriendshipRequestNotFoundException(
                     actionTargetUser.getUsername(), actionAuthorUser.getUsername()
                 )
             );
         friendshipEntity.setStatus(FriendshipStatus.ACCEPTED);
-        friendshipRepository.save(friendshipEntity);
+        friendshipRepository.saveAndFlush(friendshipEntity);
       }
       case REJECT -> {
-        var friendshipEntity = friendshipRepository.findByRequesterAndAddressee(actionTargetUser, actionAuthorUser)
+        var friendshipEntity = friendshipRepository.findByRequesterAndAddresseeAndStatus(actionTargetUser,
+                actionAuthorUser, FriendshipStatus.PENDING)
             .orElseThrow(() -> new FriendshipRequestNotFoundException(
                     actionTargetUser.getUsername(), actionAuthorUser.getUsername()
                 )
