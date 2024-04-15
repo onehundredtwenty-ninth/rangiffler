@@ -14,6 +14,9 @@ import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -65,6 +68,37 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
             .hasCreationDate(expectedPhoto.getCreatedDate().toLocalDateTime())
             .hasTotalLikes(1)
             .hasLikes(expectedLikes)
+    );
+  }
+
+  @DisplayName("Получение всех фото пользователя и его друзей")
+  @CreateUser(
+      friends = {
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+              photos = {
+                  @WithPhoto(countryCode = "mx", image = "France.png", description = "insertedDescriptionFriend"),
+              }),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
+              photos = {
+                  @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescriptionFriend2"),
+              })
+      },
+      photos = {
+          @WithPhoto(countryCode = "cn", image = "France.png")
+      })
+  @Test
+  void getAllPhotosWithFriendsTest(User user, @Friends User[] friends) {
+    final PhotoRequest request = PhotoRequest.newBuilder()
+        .addAllUserIds(List.of(user.getId(), friends[0].getId(), friends[1].getId()))
+        .setPage(0)
+        .setSize(10)
+        .build();
+    final PhotoResponse response = blockingStub.getPhotos(request);
+
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasPageSize(3)
+            .hasNext(false)
     );
   }
 }
