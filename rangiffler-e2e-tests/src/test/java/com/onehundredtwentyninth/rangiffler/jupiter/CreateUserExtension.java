@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.jupiter;
 
+import com.github.javafaker.Faker;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
@@ -25,6 +26,7 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
       = ExtensionContext.Namespace.create(CreateUserExtension.class);
   private final UserService userService = new UserDbService();
   private final PhotoTestService photoService = new PhotoDbService();
+  private final Faker faker = new Faker();
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
@@ -36,7 +38,8 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
     if (userParameters.isPresent()) {
       var createdUser = userParameters.get().username().isEmpty()
           ? userService.createRandomUser()
-          : userService.createUser(userParameters.get().username(), userParameters.get().password());
+          : userService.createUser(userParameters.get().username(), userParameters.get().password(),
+              faker.name().firstName(), faker.name().lastName());
       extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUser);
 
       var futureFriends = new ArrayList<User>();
@@ -96,14 +99,22 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return parameterContext.getParameter().getType().isAssignableFrom(User.class)
+    return (parameterContext.getParameter().getType().isAssignableFrom(User.class)
+        || (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+        && parameterContext.getParameter().isAnnotationPresent(Friends.class))
+    )
         && extensionContext.getRequiredTestMethod().isAnnotationPresent(CreateUser.class);
   }
 
   @Override
-  public User resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+  public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
+    if (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+        && parameterContext.getParameter().isAnnotationPresent(Friends.class)) {
+      return getCreatedFriends(extensionContext).toArray(User[]::new);
+    } else {
+      return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
+    }
   }
 
   private void setCreatedFriends(ExtensionContext extensionContext, List<User> futureFriends) {

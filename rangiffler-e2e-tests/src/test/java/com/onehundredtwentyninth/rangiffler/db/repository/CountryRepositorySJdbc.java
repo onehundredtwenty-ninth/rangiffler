@@ -27,6 +27,21 @@ public class CountryRepositorySJdbc implements CountryRepository {
   }
 
   @Override
+  public CountryEntity findCountryByIdNot(UUID id) {
+    return Optional.ofNullable(
+        countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE id != ? LIMIT 1",
+            (ResultSet rs, int rowNum) -> {
+              var countryEntity = new CountryEntity();
+              countryEntity.setId(rs.getObject("id", UUID.class));
+              countryEntity.setCode(rs.getString("code"));
+              countryEntity.setName(rs.getString("name"));
+              countryEntity.setFlag(rs.getBytes("flag"));
+              return countryEntity;
+            }, id)
+    ).orElseThrow();
+  }
+
+  @Override
   public Integer count() {
     return countryTemplate.queryForObject("SELECT COUNT(*) FROM \"country\"", Integer.class);
   }

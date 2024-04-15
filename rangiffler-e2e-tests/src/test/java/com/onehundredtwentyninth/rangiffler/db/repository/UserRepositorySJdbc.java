@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.db.repository;
 
 import com.onehundredtwentyninth.rangiffler.db.DataSourceProvider;
 import com.onehundredtwentyninth.rangiffler.db.JdbcUrl;
+import com.onehundredtwentyninth.rangiffler.db.mapper.UserEntityRowMapper;
 import com.onehundredtwentyninth.rangiffler.db.model.UserAuthEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import java.sql.PreparedStatement;
@@ -123,5 +124,38 @@ public class UserRepositorySJdbc implements UserRepository {
       udTemplate.update("DELETE FROM \"user\" WHERE id = ?", id);
       return null;
     });
+  }
+
+  @Override
+  public Integer count() {
+    return udTemplate.queryForObject("SELECT COUNT(*) FROM \"user\"", Integer.class);
+  }
+
+  @Override
+  public UserEntity findById(UUID id) {
+    return Optional.ofNullable(
+        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE id = ?", new UserEntityRowMapper(), id)
+    ).orElseThrow();
+  }
+
+  @Override
+  public UserEntity findByUsername(String username) {
+    return Optional.ofNullable(
+        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", new UserEntityRowMapper(), username)
+    ).orElseThrow();
+  }
+
+  @Override
+  public UserEntity findByFirstname(String firstname) {
+    return Optional.ofNullable(
+        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE firstname = ?", new UserEntityRowMapper(), firstname)
+    ).orElseThrow();
+  }
+
+  @Override
+  public UserEntity findByLastname(String lastName) {
+    return Optional.ofNullable(
+        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE last_name = ?", new UserEntityRowMapper(), lastName)
+    ).orElseThrow();
   }
 }
