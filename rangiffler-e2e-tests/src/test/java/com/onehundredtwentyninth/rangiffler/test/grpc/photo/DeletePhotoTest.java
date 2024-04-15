@@ -21,6 +21,8 @@ import io.qameta.allure.Feature;
 import java.util.List;
 import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -35,11 +37,10 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
   private PhotoRepository photoRepository;
   @Inject
   private CountryRepository countryRepository;
+  private Photo createPhotoResponse;
 
-  @DisplayName("Удалить фото")
-  @CreateUser
-  @Test
-  void deletePhotoTest(User user) {
+  @BeforeEach
+  void before(User user) {
     var country = countryRepository.findCountryByCode("ru");
     final CreatePhotoRequest createPhotoRequest = CreatePhotoRequest.newBuilder()
         .setUserId(user.getId())
@@ -47,8 +48,13 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
-    final Photo createPhotoResponse = blockingStub.createPhoto(createPhotoRequest);
+    createPhotoResponse = blockingStub.createPhoto(createPhotoRequest);
+  }
 
+  @DisplayName("Удалить фото")
+  @CreateUser
+  @Test
+  void deletePhotoTest(User user) {
     final DeletePhotoRequest request = DeletePhotoRequest.newBuilder()
         .setUserId(user.getId())
         .setPhotoId(createPhotoResponse.getId())
@@ -65,5 +71,13 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
           .describedAs("У пользователя отсутствуют фото в БД")
           .isEmpty();
     });
+  }
+
+  @AfterEach
+  void after(User user) {
+    final List<PhotoEntity> userPhotos = photoRepository.findByUserId(UUID.fromString(user.getId()));
+    if (!userPhotos.isEmpty()) {
+      photoRepository.deletePhoto(UUID.fromString(createPhotoResponse.getId()));
+    }
   }
 }
