@@ -11,6 +11,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.assertj.core.api.SoftAssertions;
@@ -32,7 +33,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsIdsTest(User user, User[] friends) {
+  void getAllUserFriendsIdsTest(User user, @Friends User[] friends) {
     final UserRequest request = UserRequest.newBuilder()
         .setUsername(user.getUsername())
         .build();
@@ -62,7 +63,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsIdsWithoutPendingTest(User user, User[] friends) {
+  void getAllUserFriendsIdsWithoutPendingTest(User user, @Friends User[] friends) {
     final UserRequest request = UserRequest.newBuilder()
         .setUsername(user.getUsername())
         .build();

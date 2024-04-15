@@ -18,6 +18,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.Optional;
@@ -73,7 +74,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void acceptFriendshipRequestTest(User user, User[] friends) {
+  void acceptFriendshipRequestTest(User user, @Friends User[] friends) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId())
         .setActionTargetUserId(friends[0].getId())
@@ -104,7 +105,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void rejectFriendshipRequestTest(User user, User[] friends) {
+  void rejectFriendshipRequestTest(User user, @Friends User[] friends) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId())
         .setActionTargetUserId(friends[0].getId())
@@ -137,7 +138,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void deleteFriendshipTest(User user, User[] friends) {
+  void deleteFriendshipTest(User user, @Friends User[] friends) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId())
         .setActionTargetUserId(friends[0].getId())

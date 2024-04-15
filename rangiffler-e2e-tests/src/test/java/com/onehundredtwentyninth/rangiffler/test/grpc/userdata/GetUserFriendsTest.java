@@ -12,6 +12,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsTest(User user, User[] friends) {
+  void getAllUserFriendsTest(User user, @Friends User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setPage(0)
@@ -57,7 +58,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithUsernameFilterTest(User user, User[] friends) {
+  void getUserFriendsWithUsernameFilterTest(User user, @Friends User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getUsername())
@@ -83,7 +84,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithFirstnameFilterTest(User user, User[] friends) {
+  void getUserFriendsWithFirstnameFilterTest(User user, @Friends User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getFirstname())
@@ -109,7 +110,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithLastnameFilterTest(User user, User[] friends) {
+  void getUserFriendsWithLastnameFilterTest(User user, @Friends User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getLastName())
@@ -136,7 +137,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithoutPendingTest(User user, User[] friends) {
+  void getUserFriendsWithoutPendingTest(User user, @Friends User[] friends) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(friends[0].getLastName())
