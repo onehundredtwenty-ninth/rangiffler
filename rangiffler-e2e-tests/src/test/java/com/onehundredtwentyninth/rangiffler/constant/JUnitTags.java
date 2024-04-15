@@ -16,5 +16,6 @@ public class JUnitTags {
   public static final String PHOTO_LIST = "photoList";
   public static final String ADD_PHOTO = "addPhoto";
   public static final String UPDATE_PHOTO = "updatePhoto";
+  public static final String DELETE_PHOTO = "deletePhoto";
   public static final String USER_FRIENDSHIP = "friendship";
 }

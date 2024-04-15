@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
-import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
@@ -30,8 +29,6 @@ class LikePhotoTest extends GrpcPhotoTestBase {
 
   @Inject
   private PhotoRepository photoRepository;
-  @Inject
-  private CountryRepository countryRepository;
 
   @DisplayName("Лайк фото пользователя")
   @CreateUser(
