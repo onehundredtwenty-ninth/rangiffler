@@ -37,4 +37,22 @@ class GetNonExistentUserFriendsTest extends GrpcUserdataTestBase {
         .isInstanceOfStatusRuntimeException()
         .hasUserNotFoundMessage(request.getUsername());
   }
+
+  @DisplayName("Получение исходящих заявок пользователя по несуществующему username")
+  @Test
+  void getUserRequestsByNonExistentIdTest() {
+    var request = AllUsersRequest.newBuilder().setUsername("nonExistentUsername").build();
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getFriendshipRequests(request))
+        .isInstanceOfStatusRuntimeException()
+        .hasUserNotFoundMessage(request.getUsername());
+  }
+
+  @DisplayName("Получение входящих заявок пользователя по несуществующему username")
+  @Test
+  void getUserAddresseeByNonExistentIdTest() {
+    var request = AllUsersRequest.newBuilder().setUsername("nonExistentUsername").build();
+    GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getFriendshipAddresses(request))
+        .isInstanceOfStatusRuntimeException()
+        .hasUserNotFoundMessage(request.getUsername());
+  }
 }
