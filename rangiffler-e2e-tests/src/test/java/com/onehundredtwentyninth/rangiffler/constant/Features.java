@@ -12,4 +12,5 @@ public class Features {
   public static final String USER_LIST = "Получение списка пользователей";
   public static final String USER_FRIENDSHIP = "Получение друзей / заявок";
   public static final String PHOTO_LIST = "Получение списка фото";
+  public static final String ADD_PHOTO = "Добавление фото";
 }
