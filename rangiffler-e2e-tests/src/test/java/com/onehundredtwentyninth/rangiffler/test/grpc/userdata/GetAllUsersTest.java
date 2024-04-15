@@ -12,7 +12,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -77,13 +79,14 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
     );
   }
 
+  @CreateExtrasUsers(@CreateUser)
   @DisplayName("Получение всех пользователей по переданному username")
   @CreateUser
   @Test
-  void getAllUsersWithUsernameSearchTest(User user) {
+  void getAllUsersWithUsernameSearchTest(User user, @Extras User[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery("bee")
+        .setSearchQuery(users[0].getUsername())
         .setPage(0)
         .setSize(10)
         .build();
@@ -93,10 +96,10 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .hasUserWithUsername("bee")
+            .hasUserWithUsername(users[0].getUsername())
     );
 
-    final UserEntity expectedUser = userRepository.findByUsername("bee");
+    final UserEntity expectedUser = userRepository.findByUsername(users[0].getUsername());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
@@ -128,13 +131,14 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
     );
   }
 
+  @CreateExtrasUsers(@CreateUser)
   @DisplayName("Получение всех пользователей по переданному firstname")
   @CreateUser
   @Test
-  void getAllUsersWithFirstnameSearchTest(User user) {
+  void getAllUsersWithFirstnameSearchTest(User user, @Extras User[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery("Tarra")
+        .setSearchQuery(users[0].getFirstname())
         .setPage(0)
         .setSize(10)
         .build();
@@ -144,10 +148,10 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .hasUserWithFirstName("Tarra")
+            .hasUserWithFirstName(users[0].getFirstname())
     );
 
-    final UserEntity expectedUser = userRepository.findByFirstname("Tarra");
+    final UserEntity expectedUser = userRepository.findByFirstname(users[0].getFirstname());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
@@ -159,13 +163,14 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
     );
   }
 
+  @CreateExtrasUsers(@CreateUser)
   @DisplayName("Получение всех пользователей по переданному lastName")
   @CreateUser
   @Test
-  void getAllUsersWithLastnameSearchTest(User user) {
+  void getAllUsersWithLastnameSearchTest(User user, @Extras User[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery("Batz")
+        .setSearchQuery(users[0].getLastName())
         .setPage(0)
         .setSize(10)
         .build();
@@ -175,10 +180,10 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .hasUserWithLastName("Batz")
+            .hasUserWithLastName(users[0].getLastName())
     );
 
-    final UserEntity expectedUser = userRepository.findByLastname("Batz");
+    final UserEntity expectedUser = userRepository.findByLastname(users[0].getLastName());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
