@@ -121,4 +121,16 @@ public class GrpcStatusExceptionAssertions extends AbstractThrowableAssert<GrpcS
     }
     return this;
   }
+
+  public GrpcStatusExceptionAssertions hasPhotoNotFoundMessage(String photoId) {
+    isNotNull();
+    var expectedMessage = "NOT_FOUND: Photo with id " + photoId + " not found";
+    if (!expectedMessage.equals(actual.getMessage())) {
+      failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
+          expectedMessage,
+          actual.getMessage()
+      );
+    }
+    return this;
+  }
 }
