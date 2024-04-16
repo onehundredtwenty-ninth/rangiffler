@@ -1,6 +1,5 @@
 package com.onehundredtwentyninth.rangiffler.test.unit;
 
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
@@ -146,7 +145,7 @@ class CreateUserTest {
           @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
       })
   @Test
-  void createRandomUserWithFriendsPhotoAndExtrasTest(TestUser user, @Extras User[] extras) {
+  void createRandomUserWithFriendsPhotoAndExtrasTest(TestUser user, @Extras TestUser[] extras) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(extras),
         () -> Assertions.assertEquals(2, extras.length),

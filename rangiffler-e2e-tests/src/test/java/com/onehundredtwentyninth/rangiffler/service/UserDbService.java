@@ -16,11 +16,13 @@ import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 
@@ -108,13 +110,25 @@ public class UserDbService implements UserService {
         ? createRandomUser()
         : createUser(userParameters.username(), userParameters.password(), faker.name().firstName(),
             faker.name().lastName());
+    createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 
     var friends = new ArrayList<TestUser>();
+    for (var friendParameters : userParameters.friends()) {
+      var createdFriend = createFriend(createdUser.getId(), friendParameters);
+      friends.add(createdFriend);
+      createdFriend.getPhotos().addAll(createPhotos(createdFriend.getId(), friendParameters.photos()));
+    }
+    createdUser.getFriends().addAll(friends);
 
-    for (var photoParameters : userParameters.photos()) {
-      var createdPhotos = new ArrayList<Photo>();
-      var createdPhoto = photoService.createPhoto(createdUser.getId(), photoParameters.countryCode(),
-          photoParameters.image(), photoParameters.description());
+    return createdUser;
+  }
+
+  @Override
+  public List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters) {
+    var createdPhotos = new ArrayList<Photo>();
+    for (var photoParameters : photosParameters) {
+      var createdPhoto = photoService.createPhoto(userId, photoParameters.countryCode(), photoParameters.image(),
+          photoParameters.description());
 
       var likes = new ArrayList<Like>();
       for (var i = 0; i < photoParameters.likes(); i++) {
@@ -125,32 +139,7 @@ public class UserDbService implements UserService {
       createdPhoto = createdPhoto.toBuilder()
           .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
       createdPhotos.add(createdPhoto);
-      createdUser.getPhotos().addAll(createdPhotos);
     }
-
-    for (var friendParameters : userParameters.friends()) {
-      var createdFriend = createFriend(createdUser.getId(), friendParameters);
-      friends.add(createdFriend);
-
-      for (var photoParameters : friendParameters.photos()) {
-        var createdPhotos = new ArrayList<Photo>();
-        var createdPhoto = photoService.createPhoto(createdFriend.getId(),
-            photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
-
-        var likes = new ArrayList<Like>();
-        for (var i = 0; i < photoParameters.likes(); i++) {
-          var likeUser = createRandomUser();
-          photoService.likePhoto(likeUser.getId(), UUID.fromString(createdPhoto.getId()));
-          likes.add(Like.newBuilder().setUserId(likeUser.getId().toString()).build());
-        }
-        createdPhoto = createdPhoto.toBuilder()
-            .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
-        createdPhotos.add(createdPhoto);
-        createdFriend.getPhotos().addAll(createdPhotos);
-      }
-    }
-
-    createdUser.getFriends().addAll(friends);
-    return createdUser;
+    return createdPhotos;
   }
 }
