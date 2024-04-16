@@ -55,7 +55,7 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
   @Override
   public String resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return "Bearer " + getTokens(extensionContext).idToken();
+    return getTokens(extensionContext).idToken();
   }
 
   public static void setTokens(ExtensionContext context, TokenResponse tokens) {
