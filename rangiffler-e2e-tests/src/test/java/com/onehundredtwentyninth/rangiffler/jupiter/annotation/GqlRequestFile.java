@@ -1,5 +1,7 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
+import com.onehundredtwentyninth.rangiffler.jupiter.converter.GqlRequestConverter;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.GqlRequestResolver;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

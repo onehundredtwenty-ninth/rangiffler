@@ -15,7 +15,7 @@ import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;

@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.test.gql;
 
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
-import com.onehundredtwentyninth.rangiffler.jupiter.GqlRequestFile;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.service.AuthService;
 import org.junit.jupiter.api.Assertions;

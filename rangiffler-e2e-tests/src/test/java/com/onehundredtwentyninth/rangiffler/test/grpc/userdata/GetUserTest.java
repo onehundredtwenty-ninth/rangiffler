@@ -9,7 +9,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;

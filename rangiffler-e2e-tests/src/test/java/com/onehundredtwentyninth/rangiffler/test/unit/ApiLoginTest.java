@@ -1,11 +1,11 @@
 package com.onehundredtwentyninth.rangiffler.test.unit;
 
-import com.onehundredtwentyninth.rangiffler.grpc.User;
-import com.onehundredtwentyninth.rangiffler.jupiter.ApiLogin;
-import com.onehundredtwentyninth.rangiffler.jupiter.ApiLoginExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUserExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.Token;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.ApiLoginExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.AuthService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -38,28 +38,28 @@ class ApiLoginTest {
   @ApiLogin
   @CreateUser(username = "bee48", password = "123")
   @Test
-  void apiLoginForCreatedUserTest(@Token String token, User user) {
+  void apiLoginForCreatedUserTest(@Token String token, TestUser user) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(token),
         () -> Assertions.assertEquals("bee48", user.getUsername()),
-        () -> Assertions.assertEquals("bee48", user.getFirstname()),
-        () -> Assertions.assertEquals("bee48", user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertNotNull(user.getFirstname()),
+        () -> Assertions.assertNotNull(user.getLastName()),
+        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
     );
   }
 
   @ApiLogin
   @CreateUser
   @Test
-  void apiLoginForRandomCreatedUserTest(@Token String token, User user) {
+  void apiLoginForRandomCreatedUserTest(@Token String token, TestUser user) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(token),
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
         () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
     );
   }
 }

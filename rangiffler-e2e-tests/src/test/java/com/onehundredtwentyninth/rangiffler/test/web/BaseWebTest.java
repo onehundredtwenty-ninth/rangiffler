@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.test.web;
 
 import com.codeborne.selenide.logevents.SelenideLogger;
-import com.onehundredtwentyninth.rangiffler.jupiter.BrowserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.BrowserExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeEach;

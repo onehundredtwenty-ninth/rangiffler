@@ -4,17 +4,17 @@ import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import org.assertj.core.api.AbstractAssert;
 
-public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersResponse> {
+public class GrpcUsersListAssertions extends AbstractAssert<GrpcUsersListAssertions, AllUsersResponse> {
 
-  protected AllUsersAssert(AllUsersResponse allUsersResponse) {
-    super(allUsersResponse, AllUsersAssert.class);
+  protected GrpcUsersListAssertions(AllUsersResponse allUsersResponse) {
+    super(allUsersResponse, GrpcUsersListAssertions.class);
   }
 
-  public static AllUsersAssert assertThat(AllUsersResponse actual) {
-    return new AllUsersAssert(actual);
+  public static GrpcUsersListAssertions assertThat(AllUsersResponse actual) {
+    return new GrpcUsersListAssertions(actual);
   }
 
-  public AllUsersAssert hasPageSize(Integer pageSize) {
+  public GrpcUsersListAssertions hasPageSize(Integer pageSize) {
     isNotNull();
     if (pageSize != actual.getAllUsersCount()) {
       failWithActualExpectedAndMessage(actual, pageSize, "Expected page size to be <%s> but was <%s>", pageSize,
@@ -23,7 +23,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert hasNext(boolean hasNext) {
+  public GrpcUsersListAssertions hasNext(boolean hasNext) {
     isNotNull();
     if (hasNext != actual.getHasNext()) {
       failWithActualExpectedAndMessage(actual, hasNext, "Expected hasNext to be <%s> but was <%s>", hasNext,
@@ -32,7 +32,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert hasUserWithUsername(String username) {
+  public GrpcUsersListAssertions hasUserWithUsername(String username) {
     isNotNull();
     boolean isUserWithUsernamePresented = actual.getAllUsersList().stream()
         .anyMatch(s -> username.equals(s.getUsername()));
@@ -43,7 +43,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert hasUserWithFirstName(String firstname) {
+  public GrpcUsersListAssertions hasUserWithFirstName(String firstname) {
     isNotNull();
     boolean isUserWithUsernamePresented = actual.getAllUsersList().stream()
         .anyMatch(s -> firstname.equals(s.getFirstname()));
@@ -54,7 +54,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert hasUserWithLastName(String lastName) {
+  public GrpcUsersListAssertions hasUserWithLastName(String lastName) {
     isNotNull();
     boolean isUserWithUsernamePresented = actual.getAllUsersList().stream()
         .anyMatch(s -> lastName.equals(s.getLastName()));
@@ -65,7 +65,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert hasNotUserWithUsername(String username) {
+  public GrpcUsersListAssertions hasNotUserWithUsername(String username) {
     isNotNull();
     boolean isUserWithUsernamePresented = actual.getAllUsersList().stream()
         .anyMatch(s -> username.equals(s.getUsername()));
@@ -76,7 +76,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert containsUser(User user) {
+  public GrpcUsersListAssertions containsUser(User user) {
     isNotNull();
     boolean isUserPresented = actual.getAllUsersList().stream().anyMatch(user::equals);
     if (!isUserPresented) {
@@ -86,7 +86,7 @@ public class AllUsersAssert extends AbstractAssert<AllUsersAssert, AllUsersRespo
     return this;
   }
 
-  public AllUsersAssert notContainsUser(User user) {
+  public GrpcUsersListAssertions notContainsUser(User user) {
     isNotNull();
     boolean isUserPresented = actual.getAllUsersList().stream().anyMatch(user::equals);
     if (isUserPresented) {

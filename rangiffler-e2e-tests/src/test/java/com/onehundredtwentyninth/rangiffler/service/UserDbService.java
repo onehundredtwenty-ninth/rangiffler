@@ -13,11 +13,12 @@ import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.grpc.Like;
 import com.onehundredtwentyninth.rangiffler.grpc.Likes;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -31,7 +32,7 @@ public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
-  private final PhotoTestService photoService = new PhotoDbService();
+  private final PhotoService photoService = new PhotoDbService();
   private final Faker faker = new Faker();
 
   @Override
@@ -63,7 +64,9 @@ public class UserDbService implements UserService {
     userEntity = userRepository.createInUserdata(userEntity);
     log.info("Создан пользователь с id {}", userEntity.getId());
 
-    return UserEntityMapper.toUser(userEntity);
+    var testUser = UserEntityMapper.toUser(userEntity);
+    testUser.setTestData(new TestData(password));
+    return testUser;
   }
 
   @Override

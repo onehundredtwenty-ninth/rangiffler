@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -9,8 +9,6 @@ public @interface CreateUser {
   String username() default "";
 
   String password() default "";
-
-  boolean handle() default true;
 
   Friend[] friends() default {};
 

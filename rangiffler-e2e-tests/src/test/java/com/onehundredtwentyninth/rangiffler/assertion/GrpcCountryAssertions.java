@@ -6,17 +6,17 @@ import java.util.Arrays;
 import java.util.UUID;
 import org.assertj.core.api.AbstractAssert;
 
-public class CountryAssert extends AbstractAssert<CountryAssert, Country> {
+public class GrpcCountryAssertions extends AbstractAssert<GrpcCountryAssertions, Country> {
 
-  protected CountryAssert(Country country) {
-    super(country, CountryAssert.class);
+  protected GrpcCountryAssertions(Country country) {
+    super(country, GrpcCountryAssertions.class);
   }
 
-  public static CountryAssert assertThat(Country actual) {
-    return new CountryAssert(actual);
+  public static GrpcCountryAssertions assertThat(Country actual) {
+    return new GrpcCountryAssertions(actual);
   }
 
-  public CountryAssert hasId(UUID id) {
+  public GrpcCountryAssertions hasId(UUID id) {
     isNotNull();
     if (!id.toString().equals(actual.getId())) {
       failWithActualExpectedAndMessage(actual, id, "Expected id to be <%s> but was <%s>", id, actual.getId());
@@ -24,7 +24,7 @@ public class CountryAssert extends AbstractAssert<CountryAssert, Country> {
     return this;
   }
 
-  public CountryAssert hasCode(String code) {
+  public GrpcCountryAssertions hasCode(String code) {
     isNotNull();
     if (!code.equals(actual.getCode())) {
       failWithActualExpectedAndMessage(actual, code, "Expected code to be <%s> but was <%s>", code, actual.getCode());
@@ -32,7 +32,7 @@ public class CountryAssert extends AbstractAssert<CountryAssert, Country> {
     return this;
   }
 
-  public CountryAssert hasName(String name) {
+  public GrpcCountryAssertions hasName(String name) {
     isNotNull();
     if (!name.equals(actual.getName())) {
       failWithActualExpectedAndMessage(actual, name, "Expected name to be <%s> but was <%s>", name, actual.getName());
@@ -40,7 +40,7 @@ public class CountryAssert extends AbstractAssert<CountryAssert, Country> {
     return this;
   }
 
-  public CountryAssert hasFlag(byte[] flag) {
+  public GrpcCountryAssertions hasFlag(byte[] flag) {
     isNotNull();
     if (!Arrays.equals(flag, actual.getFlag().getBytes(StandardCharsets.UTF_8))) {
       failWithActualExpectedAndMessage(actual, flag, "Expected flag to be <%s> but was <%s>", flag, actual.getFlag());

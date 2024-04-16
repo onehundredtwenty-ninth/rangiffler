@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

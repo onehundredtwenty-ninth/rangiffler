@@ -1,10 +1,10 @@
 package com.onehundredtwentyninth.rangiffler.test.unit;
 
-import com.onehundredtwentyninth.rangiffler.jupiter.ApiLogin;
-import com.onehundredtwentyninth.rangiffler.jupiter.ApiLoginExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.BrowserExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUserExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.Token;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.ApiLoginExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.BrowserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

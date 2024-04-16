@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import java.util.List;
 import java.util.UUID;
@@ -20,4 +21,6 @@ public class TestUser {
   private UUID countryId;
   private List<TestUser> friends;
   private List<Photo> photos;
+  @JsonIgnore
+  private TestData testData;
 }

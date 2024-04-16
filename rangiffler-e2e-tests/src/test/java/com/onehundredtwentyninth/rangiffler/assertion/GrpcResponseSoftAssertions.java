@@ -16,16 +16,16 @@ public class GrpcResponseSoftAssertions extends AbstractSoftAssertions implement
     SoftAssertionsProvider.assertSoftly(GrpcResponseSoftAssertions.class, consumer);
   }
 
-  public CountryAssert assertThat(Country actual) {
-    return proxy(CountryAssert.class, Country.class, actual);
+  public GrpcCountryAssertions assertThat(Country actual) {
+    return proxy(GrpcCountryAssertions.class, Country.class, actual);
   }
 
-  public UserAssert assertThat(User actual) {
-    return proxy(UserAssert.class, User.class, actual);
+  public GrpcUserAssertions assertThat(User actual) {
+    return proxy(GrpcUserAssertions.class, User.class, actual);
   }
 
-  public AllUsersAssert assertThat(AllUsersResponse actual) {
-    return proxy(AllUsersAssert.class, AllUsersResponse.class, actual);
+  public GrpcUsersListAssertions assertThat(AllUsersResponse actual) {
+    return proxy(GrpcUsersListAssertions.class, AllUsersResponse.class, actual);
   }
 
   public GrpcPhotoAssertions assertThat(Photo actual) {

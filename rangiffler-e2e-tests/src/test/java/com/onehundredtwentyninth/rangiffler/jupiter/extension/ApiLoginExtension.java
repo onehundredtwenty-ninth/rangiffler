@@ -1,11 +1,13 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 
 import com.onehundredtwentyninth.rangiffler.api.cookie.ThreadSafeCookieManager;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.model.Credentials;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.model.TokenResponse;
 import com.onehundredtwentyninth.rangiffler.service.AuthService;
-import java.util.Objects;
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -20,7 +22,7 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
   private final AuthService authService = new AuthService();
 
   @Override
-  public void beforeEach(ExtensionContext extensionContext) throws Exception {
+  public void beforeEach(ExtensionContext extensionContext) {
     var apiLoginAnnotation = AnnotationSupport.findAnnotation(
         extensionContext.getRequiredTestMethod(),
         ApiLogin.class
@@ -39,7 +41,7 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
   }
 
   @Override
-  public void afterTestExecution(ExtensionContext extensionContext) throws Exception {
+  public void afterTestExecution(ExtensionContext extensionContext) {
     ThreadSafeCookieManager.INSTANCE.removeAll();
   }
 
@@ -71,14 +73,9 @@ public class ApiLoginExtension implements BeforeEachCallback, AfterTestExecution
     }
 
     if (createUserAnnotation != null) {
-      if (!createUserAnnotation.username().isBlank() && !createUserAnnotation.password().isBlank()) {
-        return new Credentials(createUserAnnotation.username(), createUserAnnotation.password());
-      } else {
-        var username = extensionContext.getStore(CreateUserExtension.NAMESPACE)
-            .get(extensionContext.getUniqueId(), User.class)
-            .getUsername();
-        return new Credentials(Objects.requireNonNull(username), "123");
-      }
+      var user = extensionContext.getStore(CreateUserExtension.NAMESPACE)
+          .get(extensionContext.getUniqueId(), TestUser.class);
+      return new Credentials(user.getUsername(), user.getTestData().password());
     }
 
     throw new IllegalStateException("Не найдены учетные данные для ApiLoginExtension");
