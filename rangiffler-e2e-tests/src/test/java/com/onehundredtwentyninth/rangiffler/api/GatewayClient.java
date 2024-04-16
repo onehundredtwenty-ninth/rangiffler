@@ -13,12 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewayClient extends BaseClient {
 
   public GatewayClient() {
-    super(CFG.gatewayUrl(), log);
+    super(CFG.gatewayUrl());
   }
 
   public GqlResponse<GqlCountryResponse> getCountries(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
+        .filters(filterWithoutResponseBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()

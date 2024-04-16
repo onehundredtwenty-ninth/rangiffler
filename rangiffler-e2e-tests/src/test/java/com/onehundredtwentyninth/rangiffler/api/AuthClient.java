@@ -10,7 +10,9 @@ import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class AuthClient extends BaseClient {
 
   public AuthClient() {
@@ -25,7 +27,7 @@ public class AuthClient extends BaseClient {
       String codeChallenge, String codeChallengeMethod) {
     return given()
         .spec(requestSpecification)
-        .log().all()
+        .filters(filterWithResponseBody(log))
         .params(Map.of(
             "response_type", responseType,
             "client_id", clientId,
@@ -36,7 +38,6 @@ public class AuthClient extends BaseClient {
         ))
         .get("/oauth2/authorize")
         .then()
-        .log().all()
         .statusCode(200)
         .extract()
         .response();
@@ -46,7 +47,7 @@ public class AuthClient extends BaseClient {
     return given()
         .spec(requestSpecification)
         .contentType(ContentType.URLENC)
-        .log().all()
+        .filters(filterWithResponseBody(log))
         .formParams(Map.of(
             "username", username,
             "password", password,
@@ -54,7 +55,6 @@ public class AuthClient extends BaseClient {
         ))
         .post("/login")
         .then()
-        .log().all()
         .statusCode(302)
         .extract()
         .response();
@@ -65,7 +65,7 @@ public class AuthClient extends BaseClient {
     return given()
         .spec(requestSpecification)
         .header("Authorization", basicAuthorization)
-        .log().all()
+        .filters(filterWithResponseBody(log))
         .formParams(Map.of(
             "client_id", clientId,
             "redirect_uri", redirectUri,
@@ -75,7 +75,6 @@ public class AuthClient extends BaseClient {
         ))
         .post("/oauth2/token")
         .then()
-        .log().all()
         .statusCode(200)
         .extract()
         .response()

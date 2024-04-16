@@ -7,6 +7,7 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.HttpClientConfig;
 import io.restassured.config.RedirectConfig;
 import io.restassured.config.RestAssuredConfig;
+import io.restassured.filter.Filter;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
@@ -25,19 +26,6 @@ public abstract class BaseClient {
 
   public BaseClient(String baseUri) {
     this.requestSpecification = new RequestSpecBuilder().setBaseUri(baseUri).build();
-  }
-
-  public BaseClient(String baseUri, Logger logger) {
-    this.requestSpecification = new RequestSpecBuilder()
-        .setBaseUri(baseUri)
-        .addFilters(
-            List.of(
-                new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
-                new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
-                new AllureRestAssured()
-            )
-        )
-        .build();
   }
 
   @SuppressWarnings("deprecation")
@@ -74,5 +62,21 @@ public abstract class BaseClient {
                 .httpClient(HttpClientConfig.httpClientConfig().httpClientFactory(clientFactory))
         )
         .build();
+  }
+
+  public List<Filter> filterWithResponseBody(Logger logger) {
+    return List.of(
+        new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+        new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+        new AllureRestAssured()
+    );
+  }
+
+  public List<Filter> filterWithoutResponseBody(Logger logger) {
+    return List.of(
+        new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+        new ResponseLoggingFilter(LogDetail.STATUS, new RestAssuredLogger().getPrintStream(logger)),
+        new AllureRestAssured()
+    );
   }
 }
