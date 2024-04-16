@@ -3,12 +3,38 @@ package com.onehundredtwentyninth.rangiffler.mapper;
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import java.util.ArrayList;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserEntityMapper {
+
+  public static TestUser toUser(UserEntity entity) {
+    return TestUser.builder()
+        .id(entity.getId())
+        .username(entity.getUsername())
+        .firstname(entity.getFirstname())
+        .lastName(entity.getLastName())
+        .avatar(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{})
+        .countryId(entity.getCountryId())
+        .friends(new ArrayList<>())
+        .photos(new ArrayList<>())
+        .build();
+  }
+
+  public static User toMessage(TestUser entity) {
+    return User.newBuilder()
+        .setId(entity.getId().toString())
+        .setUsername(entity.getUsername())
+        .setFirstname(entity.getFirstname())
+        .setLastName(entity.getLastName())
+        .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
+        .setCountryId(entity.getCountryId().toString())
+        .build();
+  }
 
   public static User toMessage(UserEntity entity) {
     return User.newBuilder()

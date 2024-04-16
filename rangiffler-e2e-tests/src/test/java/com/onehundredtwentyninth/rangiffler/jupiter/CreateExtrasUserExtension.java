@@ -2,6 +2,8 @@ package com.onehundredtwentyninth.rangiffler.jupiter;
 
 import com.github.javafaker.Faker;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   public void beforeEach(ExtensionContext extensionContext) {
     var usersParameters = extractUsersForTest(extensionContext);
 
-    List<User> createdUsers = new ArrayList<>();
+    List<TestUser> createdUsers = new ArrayList<>();
     for (var userParameters : usersParameters) {
       var createdUser = userParameters.username().isEmpty()
           ? userService.createRandomUser()
@@ -42,9 +44,9 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   @SuppressWarnings("unchecked")
   @Override
   public void afterEach(ExtensionContext extensionContext) {
-    List<User> createdUsers = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class);
+    List<TestUser> createdUsers = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class);
     for (var createdUser : createdUsers) {
-      userService.deleteUser(createdUser);
+      userService.deleteUser(createdUser.getId(), createdUser.getUsername());
     }
   }
 
@@ -60,7 +62,10 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class).toArray(User[]::new);
+    return ((List<TestUser>) extensionContext.getStore(NAMESPACE)
+        .get(extensionContext.getUniqueId(), List.class)).stream()
+        .map(UserEntityMapper::toMessage)
+        .toArray(User[]::new);
   }
 
   private List<CreateUser> extractUsersForTest(ExtensionContext context) {

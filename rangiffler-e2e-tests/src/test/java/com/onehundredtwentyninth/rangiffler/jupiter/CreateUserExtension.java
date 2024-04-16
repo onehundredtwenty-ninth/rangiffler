@@ -1,14 +1,14 @@
 package com.onehundredtwentyninth.rangiffler.jupiter;
 
-import com.github.javafaker.Faker;
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
 import com.onehundredtwentyninth.rangiffler.service.PhotoTestService;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.AfterEachCallback;
@@ -26,7 +26,7 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
       = ExtensionContext.Namespace.create(CreateUserExtension.class);
   private final UserService userService = new UserDbService();
   private final PhotoTestService photoService = new PhotoDbService();
-  private final Faker faker = new Faker();
+  private final UserRepository userRepository = new UserRepositorySJdbc();
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
@@ -36,63 +36,25 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
     );
 
     if (userParameters.isPresent()) {
-      var createdUser = userParameters.get().username().isEmpty()
-          ? userService.createRandomUser()
-          : userService.createUser(userParameters.get().username(), userParameters.get().password(),
-              faker.name().firstName(), faker.name().lastName());
+      var createdUser = userService.createTestUser(userParameters.get());
       extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUser);
-
-      var futureFriends = new ArrayList<User>();
-      var createdPhotos = new ArrayList<Photo>();
-      var createdLikeUsers = new ArrayList<User>();
-
-      for (var photoParameters : userParameters.get().photos()) {
-        var createdPhoto = photoService.createPhoto(UUID.fromString(createdUser.getId()), photoParameters.countryCode(),
-            photoParameters.image(), photoParameters.description());
-        createdPhotos.add(createdPhoto);
-
-        for (var i = 0; i < photoParameters.likes(); i++) {
-          var likeUser = userService.createRandomUser();
-          photoService.likePhoto(UUID.fromString(likeUser.getId()), UUID.fromString(createdPhoto.getId()));
-          createdLikeUsers.add(likeUser);
-        }
-      }
-
-      for (var friendParameters : userParameters.get().friends()) {
-        var createdFriend = userService.createFriend(createdUser.getId(), friendParameters);
-        futureFriends.add(createdFriend);
-
-        for (var photoParameters : friendParameters.photos()) {
-          var createdPhoto = photoService.createPhoto(UUID.fromString(createdFriend.getId()),
-              photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
-          createdPhotos.add(createdPhoto);
-
-          for (var i = 0; i < photoParameters.likes(); i++) {
-            var likeUser = userService.createRandomUser();
-            photoService.likePhoto(UUID.fromString(likeUser.getId()), UUID.fromString(createdPhoto.getId()));
-            createdLikeUsers.add(likeUser);
-          }
-        }
-      }
-
-      setCreatedFriends(extensionContext, futureFriends);
-      setCreatedPhotos(extensionContext, createdPhotos);
-      setCreatedLikeUsers(extensionContext, createdLikeUsers);
     }
   }
 
   @Override
   public void afterEach(ExtensionContext extensionContext) {
-    var createdUser = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
+    var createdUser = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), TestUser.class);
     if (createdUser != null) {
-      var createdPhotos = getCreatedPhotos(extensionContext);
-      var createdFriends = getCreatedFriends(extensionContext);
-      var createdLikeUsers = getCreatedLikeUsers(extensionContext);
-
-      createdPhotos.forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
-      createdLikeUsers.forEach(userService::deleteUser);
-      createdFriends.forEach(userService::deleteUser);
-      userService.deleteUser(createdUser);
+      createdUser.getPhotos().forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+      createdUser.getPhotos().stream()
+          .flatMap(s -> s.getLikes().getLikesList().stream())
+          .forEach(s -> {
+            var userId = UUID.fromString(s.getUserId());
+            var username = userRepository.findById(userId).getUsername();
+            userService.deleteUser(userId, username);
+          });
+      createdUser.getFriends().forEach(s -> userService.deleteUser(s.getId(), s.getUsername()));
+      userService.deleteUser(createdUser.getId(), createdUser.getUsername());
     }
   }
 
@@ -109,41 +71,12 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
+    var user = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), TestUser.class);
     if (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
         && parameterContext.getParameter().isAnnotationPresent(Friends.class)) {
-      return getCreatedFriends(extensionContext).toArray(User[]::new);
+      return user.getFriends().stream().map(UserEntityMapper::toMessage).toArray(User[]::new);
     } else {
-      return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), User.class);
+      return UserEntityMapper.toMessage(user);
     }
-  }
-
-  private void setCreatedFriends(ExtensionContext extensionContext, List<User> futureFriends) {
-    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdFriends", futureFriends);
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<User> getCreatedFriends(ExtensionContext extensionContext) {
-    return extensionContext.getStore(NAMESPACE)
-        .getOrDefault(extensionContext.getUniqueId() + "createdFriends", List.class, new ArrayList<>());
-  }
-
-  private void setCreatedPhotos(ExtensionContext extensionContext, List<Photo> photos) {
-    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdPhotos", photos);
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<Photo> getCreatedPhotos(ExtensionContext extensionContext) {
-    return extensionContext.getStore(NAMESPACE)
-        .getOrDefault(extensionContext.getUniqueId() + "createdPhotos", List.class, new ArrayList<>());
-  }
-
-  private void setCreatedLikeUsers(ExtensionContext extensionContext, List<User> likeUsers) {
-    extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId() + "createdLikeUsers", likeUsers);
-  }
-
-  @SuppressWarnings("unchecked")
-  private List<User> getCreatedLikeUsers(ExtensionContext extensionContext) {
-    return extensionContext.getStore(NAMESPACE)
-        .getOrDefault(extensionContext.getUniqueId() + "createdLikeUsers", List.class, new ArrayList<>());
   }
 }

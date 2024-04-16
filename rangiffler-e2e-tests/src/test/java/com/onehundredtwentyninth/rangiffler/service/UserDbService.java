@@ -10,11 +10,16 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.grpc.Like;
+import com.onehundredtwentyninth.rangiffler.grpc.Likes;
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +29,11 @@ public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
+  private final PhotoTestService photoService = new PhotoDbService();
+  private final Faker faker = new Faker();
 
   @Override
-  public User createUser(String username, String password, String firstname, String lastname) {
+  public TestUser createUser(String username, String password, String firstname, String lastname) {
     var userAuth = new UserAuthEntity();
     userAuth.setUsername(username);
     userAuth.setPassword(password);
@@ -54,33 +61,33 @@ public class UserDbService implements UserService {
     userEntity = userRepository.createInUserdata(userEntity);
     log.info("Создан пользователь с id {}", userEntity.getId());
 
-    return UserEntityMapper.toMessage(userEntity);
+    return UserEntityMapper.toUser(userEntity);
   }
 
   @Override
-  public void deleteUser(User user) {
-    userRepository.deleteInAuthByUsername(user.getUsername());
-    userRepository.deleteInUserdataById(UUID.fromString(user.getId()));
+  public void deleteUser(UUID id, String username) {
+    userRepository.deleteInAuthByUsername(username);
+    userRepository.deleteInUserdataById(id);
   }
 
   @Override
-  public User createRandomUser() {
+  public TestUser createRandomUser() {
     var faker = new Faker();
     return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName());
   }
 
   @Override
-  public void createFriendship(String firstFriendId, String secondFriendId, Boolean isPending) {
+  public void createFriendship(UUID firstFriendId, UUID secondFriendId, Boolean isPending) {
     friendshipRepository.createFriendship(
-        UUID.fromString(firstFriendId),
-        UUID.fromString(secondFriendId),
+        firstFriendId,
+        secondFriendId,
         LocalDateTime.now(),
         isPending ? FriendshipStatus.PENDING : FriendshipStatus.ACCEPTED
     );
   }
 
   @Override
-  public User createFriend(String userId, Friend friendParameters) {
+  public TestUser createFriend(UUID userId, Friend friendParameters) {
     var createdFriend = createRandomUser();
 
     if (!friendParameters.pending()) {
@@ -93,5 +100,55 @@ public class UserDbService implements UserService {
       }
     }
     return createdFriend;
+  }
+
+  @Override
+  public TestUser createTestUser(CreateUser userParameters) {
+    var createdUser = userParameters.username().isEmpty()
+        ? createRandomUser()
+        : createUser(userParameters.username(), userParameters.password(), faker.name().firstName(),
+            faker.name().lastName());
+
+    var friends = new ArrayList<TestUser>();
+    var createdPhotos = new ArrayList<Photo>();
+
+    for (var photoParameters : userParameters.photos()) {
+      var createdPhoto = photoService.createPhoto(createdUser.getId(), photoParameters.countryCode(),
+          photoParameters.image(), photoParameters.description());
+
+      var likes = new ArrayList<Like>();
+      for (var i = 0; i < photoParameters.likes(); i++) {
+        var likeUser = createRandomUser();
+        photoService.likePhoto(likeUser.getId(), UUID.fromString(createdPhoto.getId()));
+        likes.add(Like.newBuilder().setUserId(likeUser.getId().toString()).build());
+      }
+      createdPhoto = createdPhoto.toBuilder()
+          .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
+      createdPhotos.add(createdPhoto);
+    }
+
+    for (var friendParameters : userParameters.friends()) {
+      var createdFriend = createFriend(createdUser.getId(), friendParameters);
+      friends.add(createdFriend);
+
+      for (var photoParameters : friendParameters.photos()) {
+        var createdPhoto = photoService.createPhoto(createdFriend.getId(),
+            photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
+
+        var likes = new ArrayList<Like>();
+        for (var i = 0; i < photoParameters.likes(); i++) {
+          var likeUser = createRandomUser();
+          photoService.likePhoto(likeUser.getId(), UUID.fromString(createdPhoto.getId()));
+          likes.add(Like.newBuilder().setUserId(likeUser.getId().toString()).build());
+        }
+        createdPhoto = createdPhoto.toBuilder()
+            .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
+        createdPhotos.add(createdPhoto);
+      }
+    }
+
+    createdUser.getFriends().addAll(friends);
+    createdUser.getPhotos().addAll(createdPhotos);
+    return createdUser;
   }
 }

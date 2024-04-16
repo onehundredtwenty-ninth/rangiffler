@@ -1,17 +1,21 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
-import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import java.util.UUID;
 
 public interface UserService {
 
-  User createUser(String username, String password, String firstname, String lastname);
+  TestUser createTestUser(CreateUser userParameters);
 
-  void deleteUser(User user);
+  TestUser createUser(String username, String password, String firstname, String lastname);
 
-  User createRandomUser();
+  void deleteUser(UUID id, String username);
 
-  void createFriendship(String firstFriendId, String secondFriendId, Boolean isPending);
+  TestUser createRandomUser();
 
-  User createFriend(String userId, Friend friendParameters);
+  void createFriendship(UUID firstFriendId, UUID secondFriendId, Boolean isPending);
+
+  TestUser createFriend(UUID userId, Friend friendParameters);
 }
