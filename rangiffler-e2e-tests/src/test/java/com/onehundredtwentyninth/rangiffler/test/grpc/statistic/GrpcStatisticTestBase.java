@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.test.grpc.statistic;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
+import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerStatisticServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.jupiter.GrpcTest;
 import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
@@ -15,6 +16,7 @@ public abstract class GrpcStatisticTestBase {
 
   protected static final Config CFG = Config.getInstance();
   protected RangifflerStatisticServiceGrpc.RangifflerStatisticServiceBlockingStub blockingStub;
+  protected RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub photoServiceBlockingStub;
 
   @BeforeEach
   void before() {
@@ -23,6 +25,7 @@ public abstract class GrpcStatisticTestBase {
         .usePlaintext()
         .build();
     blockingStub = RangifflerStatisticServiceGrpc.newBlockingStub(channel);
+    photoServiceBlockingStub = RangifflerPhotoServiceGrpc.newBlockingStub(channel);
   }
 
   @AfterEach
