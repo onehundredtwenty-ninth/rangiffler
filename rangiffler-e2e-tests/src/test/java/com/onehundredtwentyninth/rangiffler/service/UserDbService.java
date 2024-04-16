@@ -18,6 +18,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -63,7 +64,9 @@ public class UserDbService implements UserService {
     userEntity = userRepository.createInUserdata(userEntity);
     log.info("Создан пользователь с id {}", userEntity.getId());
 
-    return UserEntityMapper.toUser(userEntity);
+    var testUser = UserEntityMapper.toUser(userEntity);
+    testUser.setTestData(new TestData(password));
+    return testUser;
   }
 
   @Override
