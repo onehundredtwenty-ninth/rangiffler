@@ -49,7 +49,7 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
         .build();
     response = blockingStub.createPhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId().toString())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())
