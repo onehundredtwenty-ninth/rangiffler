@@ -1,11 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 
-import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
-import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
-import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
-import com.onehundredtwentyninth.rangiffler.service.PhotoService;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +19,6 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   public static final ExtensionContext.Namespace NAMESPACE
       = ExtensionContext.Namespace.create(CreateUserExtension.class);
   private final UserService userService = new UserDbService();
-  private final PhotoService photoService = new PhotoDbService();
-  private final UserRepository userRepository = new UserRepositorySJdbc();
 
   @Override
   public void beforeEach(ExtensionContext extensionContext) {
