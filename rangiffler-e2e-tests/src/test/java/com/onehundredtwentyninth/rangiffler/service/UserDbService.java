@@ -67,6 +67,19 @@ public class UserDbService implements UserService {
   }
 
   @Override
+  public void deleteUser(TestUser testUser) {
+    testUser.getPhotos().forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+    testUser.getPhotos().stream()
+        .flatMap(s -> s.getLikes().getLikesList().stream())
+        .forEach(s -> {
+          var userId = UUID.fromString(s.getUserId());
+          var username = userRepository.findById(userId).getUsername();
+          deleteUser(userId, username);
+        });
+    deleteUser(testUser.getId(), testUser.getUsername());
+  }
+
+  @Override
   public void deleteUser(UUID id, String username) {
     userRepository.deleteInAuthByUsername(username);
     userRepository.deleteInUserdataById(id);
