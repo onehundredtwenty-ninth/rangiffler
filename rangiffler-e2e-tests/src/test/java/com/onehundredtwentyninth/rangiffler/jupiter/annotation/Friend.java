@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
 public @interface Friend {
 

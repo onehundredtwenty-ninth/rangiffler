@@ -1,13 +1,13 @@
 package com.onehundredtwentyninth.rangiffler.test.unit;
 
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUserExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.CreateUserExtension;
-import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateExtrasUserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateExtrasUsers;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

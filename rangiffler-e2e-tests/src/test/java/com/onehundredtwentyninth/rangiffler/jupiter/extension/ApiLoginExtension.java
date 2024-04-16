@@ -1,7 +1,10 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 
 import com.onehundredtwentyninth.rangiffler.api.cookie.ThreadSafeCookieManager;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.model.Credentials;
 import com.onehundredtwentyninth.rangiffler.model.TokenResponse;
 import com.onehundredtwentyninth.rangiffler.service.AuthService;

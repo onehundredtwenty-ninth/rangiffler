@@ -1,6 +1,7 @@
-package com.onehundredtwentyninth.rangiffler.jupiter;
+package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import java.io.IOException;
 import java.io.InputStream;
