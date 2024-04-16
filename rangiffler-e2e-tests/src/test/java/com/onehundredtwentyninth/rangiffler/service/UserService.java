@@ -1,17 +1,28 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
-import com.onehundredtwentyninth.rangiffler.grpc.User;
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import java.util.List;
+import java.util.UUID;
 
 public interface UserService {
 
-  User createUser(String username, String password, String firstname, String lastname);
+  TestUser createTestUser(CreateUser userParameters);
 
-  void deleteUser(User user);
+  TestUser createUser(String username, String password, String firstname, String lastname);
 
-  User createRandomUser();
+  void deleteUser(TestUser testUser);
 
-  void createFriendship(String firstFriendId, String secondFriendId, Boolean isPending);
+  void deleteUser(UUID id, String username);
 
-  User createFriend(String userId, Friend friendParameters);
+  TestUser createRandomUser();
+
+  void createFriendship(UUID firstFriendId, UUID secondFriendId, Boolean isPending);
+
+  TestUser createFriend(UUID userId, Friend friendParameters);
+
+  List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters);
 }

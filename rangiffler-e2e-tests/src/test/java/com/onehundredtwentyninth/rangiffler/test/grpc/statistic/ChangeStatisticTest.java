@@ -8,16 +8,16 @@ import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.model.CountryEntity;
-import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.CountryStatisticResponse;
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -47,19 +47,19 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
       }
   )
   @Test
-  void getStatisticTest(User user) {
+  void getStatisticTest(TestUser user) {
     final CountryEntity cnCountry = countryRepository.findCountryByCode("cn");
     final CountryEntity caCountry = countryRepository.findCountryByCode("ca");
     final CountryEntity ruCountry = countryRepository.findCountryByCode("ru");
 
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(user.getId()))
-        .stream().filter(s -> s.getCountryId().equals(caCountry.getId()))
+    final Photo updatedPhoto = user.getPhotos()
+        .stream().filter(s -> s.getCountryId().equals(caCountry.getId().toString()))
         .findFirst()
         .orElseThrow();
 
     final UpdatePhotoRequest updatePhotoRequest = UpdatePhotoRequest.newBuilder()
-        .setUserId(user.getId())
-        .setId(oldPhoto.getId().toString())
+        .setUserId(user.getId().toString())
+        .setId(updatedPhoto.getId())
         .setSrc(ByteString.EMPTY)
         .setCountryId(ruCountry.getId().toString())
         .setDescription(UUID.randomUUID().toString())
@@ -67,7 +67,7 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
     photoServiceBlockingStub.updatePhoto(updatePhotoRequest);
 
     final StatisticRequest request = StatisticRequest.newBuilder()
-        .addAllUserIds(List.of(user.getId()))
+        .addAllUserIds(List.of(user.getId().toString()))
         .build();
     final StatisticResponse response = blockingStub.getStatistic(request);
 

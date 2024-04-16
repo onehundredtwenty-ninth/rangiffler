@@ -11,10 +11,10 @@ import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -34,7 +34,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение всех пользователей")
   @CreateUser
   @Test
-  void getAllUsersTest(User user) {
+  void getAllUsersTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setPage(0)
@@ -63,7 +63,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение второй страницы всех пользователей")
   @CreateUser
   @Test
-  void getAllUsersPageTwoTest(User user) {
+  void getAllUsersPageTwoTest(TestUser user) {
     var count = userRepository.count();
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
@@ -83,7 +83,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение всех пользователей по переданному username")
   @CreateUser
   @Test
-  void getAllUsersWithUsernameSearchTest(User user, @Extras User[] users) {
+  void getAllUsersWithUsernameSearchTest(TestUser user, @Extras TestUser[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(users[0].getUsername())
@@ -114,7 +114,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение пользователей при передаче SearchQuery username автора запроса")
   @CreateUser
   @Test
-  void getAllUsersWithCurrentUserUsernameSearchTest(User user) {
+  void getAllUsersWithCurrentUserUsernameSearchTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(user.getUsername())
@@ -135,7 +135,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение всех пользователей по переданному firstname")
   @CreateUser
   @Test
-  void getAllUsersWithFirstnameSearchTest(User user, @Extras User[] users) {
+  void getAllUsersWithFirstnameSearchTest(TestUser user, @Extras TestUser[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(users[0].getFirstname())
@@ -167,7 +167,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   @DisplayName("Получение всех пользователей по переданному lastName")
   @CreateUser
   @Test
-  void getAllUsersWithLastnameSearchTest(User user, @Extras User[] users) {
+  void getAllUsersWithLastnameSearchTest(TestUser user, @Extras TestUser[] users) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setSearchQuery(users[0].getLastName())

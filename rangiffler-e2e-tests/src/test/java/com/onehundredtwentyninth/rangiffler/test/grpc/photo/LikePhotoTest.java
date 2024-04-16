@@ -11,12 +11,11 @@ import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -36,15 +35,14 @@ class LikePhotoTest extends GrpcPhotoTestBase {
           @WithPhoto(countryCode = "cn", image = "France.png")
       })
   @Test
-  void likePhotoTest(User user) {
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+  void likePhotoTest(TestUser user) {
     final LikePhotoRequest request = LikePhotoRequest.newBuilder()
-        .setUserId(user.getId())
-        .setPhotoId(oldPhoto.getId().toString())
+        .setUserId(user.getId().toString())
+        .setPhotoId(user.getPhotos().get(0).getId())
         .build();
     final Photo response = blockingStub.likePhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())
@@ -53,7 +51,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
             .hasDescription(expectedPhoto.getDescription())
             .hasCreationDate(expectedPhoto.getCreatedDate().toLocalDateTime())
             .hasTotalLikes(1)
-            .hasLikeFromUser(user.getId())
+            .hasLikeFromUser(user.getId().toString())
     );
   }
 
@@ -63,16 +61,15 @@ class LikePhotoTest extends GrpcPhotoTestBase {
           @WithPhoto(countryCode = "cn", image = "France.png")
       })
   @Test
-  void rejectLikePhotoTest(User user) {
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+  void rejectLikePhotoTest(TestUser user) {
     final LikePhotoRequest request = LikePhotoRequest.newBuilder()
-        .setUserId(user.getId())
-        .setPhotoId(oldPhoto.getId().toString())
+        .setUserId(user.getId().toString())
+        .setPhotoId(user.getPhotos().get(0).getId())
         .build();
     blockingStub.likePhoto(request);
     final Photo response = blockingStub.likePhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())

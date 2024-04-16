@@ -14,8 +14,8 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -40,10 +40,10 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
   private Photo createPhotoResponse;
 
   @BeforeEach
-  void before(User user) {
+  void before(TestUser user) {
     var country = countryRepository.findCountryByCode("ru");
     final CreatePhotoRequest createPhotoRequest = CreatePhotoRequest.newBuilder()
-        .setUserId(user.getId())
+        .setUserId(user.getId().toString())
         .setSrc(ByteString.EMPTY)
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
@@ -54,14 +54,14 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
   @DisplayName("Удалить фото")
   @CreateUser
   @Test
-  void deletePhotoTest(User user) {
+  void deletePhotoTest(TestUser user) {
     final DeletePhotoRequest request = DeletePhotoRequest.newBuilder()
-        .setUserId(user.getId())
+        .setUserId(user.getId().toString())
         .setPhotoId(createPhotoResponse.getId())
         .build();
     final BoolValue response = blockingStub.deletePhoto(request);
 
-    final List<PhotoEntity> userPhotos = photoRepository.findByUserId(UUID.fromString(user.getId()));
+    final List<PhotoEntity> userPhotos = photoRepository.findByUserId(user.getId());
     SoftAssertions.assertSoftly(softAssertions -> {
       softAssertions.assertThat(response.getValue())
           .describedAs("Запрос на удаление фото вернул true")
@@ -74,8 +74,8 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
   }
 
   @AfterEach
-  void after(User user) {
-    final List<PhotoEntity> userPhotos = photoRepository.findByUserId(UUID.fromString(user.getId()));
+  void after(TestUser user) {
+    final List<PhotoEntity> userPhotos = photoRepository.findByUserId(user.getId());
     if (!userPhotos.isEmpty()) {
       photoRepository.deletePhoto(UUID.fromString(createPhotoResponse.getId()));
     }

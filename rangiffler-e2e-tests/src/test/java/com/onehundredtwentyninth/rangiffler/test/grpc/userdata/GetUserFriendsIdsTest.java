@@ -5,13 +5,12 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserIdsResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.assertj.core.api.SoftAssertions;
@@ -33,7 +32,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsIdsTest(User user, @Friends User[] friends) {
+  void getAllUserFriendsIdsTest(TestUser user) {
     final UserRequest request = UserRequest.newBuilder()
         .setUsername(user.getUsername())
         .build();
@@ -46,11 +45,11 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
 
       softAssertions.assertThat(response.getUserIdsCount())
           .describedAs("Количество id соответствует количеству созданных друзей")
-          .isEqualTo(friends.length);
+          .isEqualTo(user.getFriends().size());
 
       softAssertions.assertThat(response.getUserIdsList())
           .describedAs("id соответствуют id созданных друзей")
-          .containsExactly(friends[0].getId(), friends[1].getId());
+          .containsExactly(user.getFriends().get(0).getId().toString(), user.getFriends().get(1).getId().toString());
     });
   }
 
@@ -63,7 +62,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsIdsWithoutPendingTest(User user, @Friends User[] friends) {
+  void getAllUserFriendsIdsWithoutPendingTest(TestUser user) {
     final UserRequest request = UserRequest.newBuilder()
         .setUsername(user.getUsername())
         .build();
@@ -80,7 +79,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
 
       softAssertions.assertThat(response.getUserIdsList())
           .describedAs("id соответствуют id созданных друзей")
-          .containsExactly(friends[0].getId());
+          .containsExactly(user.getFriends().get(0).getId().toString());
     });
   }
 }

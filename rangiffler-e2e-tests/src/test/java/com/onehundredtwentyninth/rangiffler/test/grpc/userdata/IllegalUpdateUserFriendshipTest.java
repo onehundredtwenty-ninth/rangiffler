@@ -11,13 +11,12 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -39,10 +38,10 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   @DisplayName("Удалить несуществующую заявку в друзья")
   @CreateUser
   @Test
-  void deleteNonExistentFriendshipRequestTest(User user, @Extras User[] users) {
+  void deleteNonExistentFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(users[0].getId().toString())
         .setAction(FriendshipAction.DELETE)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
@@ -57,15 +56,15 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void acceptNonExistentFriendshipRequestTest(User user, @Friends User[] users) {
+  void acceptNonExistentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(users[0].getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отклонить собственную заявку в друзья")
@@ -75,15 +74,15 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void rejectNonExistentFriendshipRequestTest(User user, @Friends User[] users) {
+  void rejectNonExistentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(users[0].getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отправка FriendshipAction UNSPECIFIED")
@@ -93,10 +92,10 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void unspecifiedFriendshipActionTest(User user, @Friends User[] users) {
+  void unspecifiedFriendshipActionTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.UNSPECIFIED)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
@@ -108,10 +107,10 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   @DisplayName("Отправить повторно заявку в друзья")
   @CreateUser
   @Test
-  void sentSecondFriendshipRequestTest(User user, @Extras User[] users) {
+  void sentSecondFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(users[0].getId().toString())
         .setAction(FriendshipAction.ADD)
         .build();
     blockingStub.updateUserFriendship(request);
@@ -130,17 +129,17 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void acceptTwiceFriendshipRequestTest(User user, @Friends User[] friends) {
+  void acceptTwiceFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     blockingStub.updateUserFriendship(request);
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(friends[0].getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отклонить ранее принятую заявку в друзья")
@@ -150,23 +149,23 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void rejectTwiceFriendshipRequestTest(User user, @Friends User[] friends) {
+  void rejectTwiceFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest acceptRequest = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     blockingStub.updateUserFriendship(acceptRequest);
 
     final UpdateUserFriendshipRequest rejectRequest = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(rejectRequest))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(friends[0].getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Обновить заявку в друзья несуществующим пользователем")
@@ -185,9 +184,9 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   @DisplayName("Обновить заявку в друзья с несуществующим пользователем")
   @CreateUser
   @Test
-  void sentFriendshipRequestTest(User user) {
+  void sentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
+        .setActionAuthorUserId(user.getId().toString())
         .setActionTargetUserId("00000000-0000-0000-0000-000000000000")
         .setAction(FriendshipAction.ADD)
         .build();

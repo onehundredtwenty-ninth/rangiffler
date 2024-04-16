@@ -4,6 +4,7 @@ import com.google.protobuf.BoolValue;
 import com.onehundredtwentyninth.rangiffler.data.LikeEntity;
 import com.onehundredtwentyninth.rangiffler.data.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.data.StatisticEntity;
+import com.onehundredtwentyninth.rangiffler.data.repository.LikeRepository;
 import com.onehundredtwentyninth.rangiffler.data.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.data.repository.StatisticRepository;
 import com.onehundredtwentyninth.rangiffler.exception.IllegalPhotoAccessException;
@@ -31,12 +32,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServiceImplBase {
 
   private final PhotoRepository photoRepository;
+  private final LikeRepository likeRepository;
   private final StatisticRepository statisticRepository;
 
   @Autowired
-  public PhotoService(PhotoRepository photoRepository, StatisticRepository statisticRepository) {
+  public PhotoService(PhotoRepository photoRepository, LikeRepository likeRepository,
+      StatisticRepository statisticRepository) {
     this.photoRepository = photoRepository;
     this.statisticRepository = statisticRepository;
+    this.likeRepository = likeRepository;
   }
 
   @Override
@@ -116,6 +120,7 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
       photoRepository.save(photoEntity);
     } else {
       photoEntity.getLikes().remove(existedLikeEntity.get());
+      likeRepository.delete(existedLikeEntity.get());
       photoRepository.save(photoEntity);
     }
 

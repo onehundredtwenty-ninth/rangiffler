@@ -16,6 +16,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -38,8 +39,8 @@ class UpdateUserTest extends GrpcUserdataTestBase {
   @DisplayName("Обновление данных пользователя")
   @CreateUser
   @Test
-  void updateUserTest(User user) {
-    final CountryEntity newCountry = countryRepository.findCountryByIdNot(UUID.fromString(user.getCountryId()));
+  void updateUserTest(TestUser user) {
+    final CountryEntity newCountry = countryRepository.findCountryByIdNot(user.getCountryId());
     final User updateUserRequest = User.newBuilder()
         .setUsername(user.getUsername())
         .setFirstname(faker.name().firstName())
@@ -51,7 +52,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(updateUserRequest.getUsername())
             .hasFirstName(updateUserRequest.getFirstname())
             .hasLastName(updateUserRequest.getLastName())
@@ -59,7 +60,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
             .hasCountryId(updateUserRequest.getCountryId())
     );
 
-    final UserEntity userEntity = userRepository.findById(UUID.fromString(user.getId()));
+    final UserEntity userEntity = userRepository.findById(user.getId());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(userEntity.getId().toString())
@@ -74,17 +75,17 @@ class UpdateUserTest extends GrpcUserdataTestBase {
   @DisplayName("Отсутствие возможности изменения id пользователя")
   @CreateUser
   @Test
-  void updateUserIdImpossibleTest(User user) {
+  void updateUserIdImpossibleTest(TestUser user) {
     final User updateUserRequest = User.newBuilder()
         .setId(UUID.randomUUID().toString())
         .setUsername(user.getUsername())
-        .setCountryId(user.getCountryId())
+        .setCountryId(user.getCountryId().toString())
         .build();
     final User response = blockingStub.updateUser(updateUserRequest);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(updateUserRequest.getUsername())
     );
 

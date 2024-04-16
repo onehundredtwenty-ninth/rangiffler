@@ -12,9 +12,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.CountryStatisticResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticResponse;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -43,9 +43,9 @@ class GetStatisticTest extends GrpcStatisticTestBase {
       }
   )
   @Test
-  void getStatisticTest(User user) {
+  void getStatisticTest(TestUser user) {
     final StatisticRequest request = StatisticRequest.newBuilder()
-        .addAllUserIds(List.of(user.getId()))
+        .addAllUserIds(List.of(user.getId().toString()))
         .build();
     final StatisticResponse response = blockingStub.getStatistic(request);
 
