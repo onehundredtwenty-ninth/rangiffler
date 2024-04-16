@@ -14,9 +14,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -41,20 +41,19 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
           @WithPhoto(countryCode = "cn", image = "France.png")
       })
   @Test
-  void updatePhotoTest(User user) {
+  void updatePhotoTest(TestUser user) {
     var country = countryRepository.findCountryByCode("ru");
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
-        .setUserId(user.getId())
-        .setId(oldPhoto.getId().toString())
+        .setUserId(user.getId().toString())
+        .setId(user.getPhotos().get(0).getId())
         .setSrc(ByteString.EMPTY)
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
     final Photo response = blockingStub.updatePhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())

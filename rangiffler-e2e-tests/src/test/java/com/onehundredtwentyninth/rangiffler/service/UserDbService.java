@@ -110,9 +110,9 @@ public class UserDbService implements UserService {
             faker.name().lastName());
 
     var friends = new ArrayList<TestUser>();
-    var createdPhotos = new ArrayList<Photo>();
 
     for (var photoParameters : userParameters.photos()) {
+      var createdPhotos = new ArrayList<Photo>();
       var createdPhoto = photoService.createPhoto(createdUser.getId(), photoParameters.countryCode(),
           photoParameters.image(), photoParameters.description());
 
@@ -125,6 +125,7 @@ public class UserDbService implements UserService {
       createdPhoto = createdPhoto.toBuilder()
           .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
       createdPhotos.add(createdPhoto);
+      createdUser.getPhotos().addAll(createdPhotos);
     }
 
     for (var friendParameters : userParameters.friends()) {
@@ -132,6 +133,7 @@ public class UserDbService implements UserService {
       friends.add(createdFriend);
 
       for (var photoParameters : friendParameters.photos()) {
+        var createdPhotos = new ArrayList<Photo>();
         var createdPhoto = photoService.createPhoto(createdFriend.getId(),
             photoParameters.countryCode(), photoParameters.image(), photoParameters.description());
 
@@ -144,11 +146,11 @@ public class UserDbService implements UserService {
         createdPhoto = createdPhoto.toBuilder()
             .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
         createdPhotos.add(createdPhoto);
+        createdFriend.getPhotos().addAll(createdPhotos);
       }
     }
 
     createdUser.getFriends().addAll(friends);
-    createdUser.getPhotos().addAll(createdPhotos);
     return createdUser;
   }
 }

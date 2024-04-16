@@ -8,11 +8,11 @@ import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
+import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getAllUserFriendsTest(User user, @Friends User[] friends) {
+  void getAllUserFriendsTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
         .setPage(0)
@@ -45,8 +45,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(2)
             .hasNext(false)
-            .containsUser(friends[0])
-            .containsUser(friends[1])
+            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
+            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
     );
   }
 
@@ -58,10 +58,10 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithUsernameFilterTest(User user, @Friends User[] friends) {
+  void getUserFriendsWithUsernameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(friends[0].getUsername())
+        .setSearchQuery(user.getFriends().get(0).getUsername())
         .setPage(0)
         .setSize(10)
         .build();
@@ -71,8 +71,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(friends[0])
-            .notContainsUser(friends[1])
+            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
     );
   }
 
@@ -84,10 +84,10 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithFirstnameFilterTest(User user, @Friends User[] friends) {
+  void getUserFriendsWithFirstnameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(friends[0].getFirstname())
+        .setSearchQuery(user.getFriends().get(0).getFirstname())
         .setPage(0)
         .setSize(10)
         .build();
@@ -97,8 +97,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(friends[0])
-            .notContainsUser(friends[1])
+            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
     );
   }
 
@@ -110,10 +110,10 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithLastnameFilterTest(User user, @Friends User[] friends) {
+  void getUserFriendsWithLastnameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(friends[0].getLastName())
+        .setSearchQuery(user.getFriends().get(0).getLastName())
         .setPage(0)
         .setSize(10)
         .build();
@@ -123,8 +123,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(friends[0])
-            .notContainsUser(friends[1])
+            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
     );
   }
 
@@ -137,10 +137,10 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void getUserFriendsWithoutPendingTest(User user, @Friends User[] friends) {
+  void getUserFriendsWithoutPendingTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(friends[0].getLastName())
+        .setSearchQuery(user.getFriends().get(0).getLastName())
         .setPage(0)
         .setSize(10)
         .build();
@@ -150,8 +150,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .notContainsUser(friends[1])
-            .notContainsUser(friends[2])
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(2)))
     );
   }
 }

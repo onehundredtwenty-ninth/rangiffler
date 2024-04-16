@@ -8,15 +8,12 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
-import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -31,8 +28,6 @@ import org.junit.jupiter.api.Test;
 class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
 
   @Inject
-  private PhotoRepository photoRepository;
-  @Inject
   private CountryRepository countryRepository;
 
   @DisplayName("Изменение фото другого пользователя")
@@ -44,13 +39,12 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
       )
   )
   @Test
-  void updatePhotoTest(User user, @Friends User[] friends) {
+  void updatePhotoTest(TestUser user) {
     var country = countryRepository.findCountryByCode("ru");
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(friends[0].getId())).get(0);
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
-        .setUserId(user.getId())
-        .setId(oldPhoto.getId().toString())
+        .setUserId(user.getId().toString())
+        .setId(user.getFriends().get(0).getPhotos().get(0).getId())
         .setSrc(ByteString.EMPTY)
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
@@ -58,6 +52,6 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updatePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(oldPhoto.getId().toString(), user.getId());
+        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId(), user.getId().toString());
   }
 }

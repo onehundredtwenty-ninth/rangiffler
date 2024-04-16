@@ -18,11 +18,10 @@ import com.onehundredtwentyninth.rangiffler.jupiter.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.Optional;
-import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -43,26 +42,26 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   @DisplayName("Отправить заявку в друзья")
   @CreateUser
   @Test
-  void sentFriendshipRequestTest(User user, @Extras User[] users) {
+  void sentFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(users[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(users[0].getId().toString())
         .setAction(FriendshipAction.ADD)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        UUID.fromString(user.getId()), UUID.fromString(users[0].getId())).orElseThrow();
+        user.getId(), users[0].getId()).orElseThrow();
     Assertions.assertThat(friendship.getStatus())
         .isEqualTo(FriendshipStatus.PENDING);
   }
@@ -74,26 +73,26 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void acceptFriendshipRequestTest(User user, @Friends User[] friends) {
+  void acceptFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        UUID.fromString(friends[0].getId()), UUID.fromString(user.getId())).orElseThrow();
+        user.getFriends().get(0).getId(), user.getId()).orElseThrow();
     Assertions.assertThat(friendship.getStatus())
         .isEqualTo(FriendshipStatus.ACCEPTED);
   }
@@ -105,26 +104,26 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void rejectFriendshipRequestTest(User user, @Friends User[] friends) {
+  void rejectFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        UUID.fromString(friends[0].getId()), UUID.fromString(user.getId())
+        user.getFriends().get(0).getId(), user.getId()
     );
     Assertions.assertThat(friendship)
         .describedAs("Заявка на дружбу отсутствует в БД")
@@ -138,26 +137,26 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
       }
   )
   @Test
-  void deleteFriendshipTest(User user, @Friends User[] friends) {
+  void deleteFriendshipTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId(user.getId())
-        .setActionTargetUserId(friends[0].getId())
+        .setActionAuthorUserId(user.getId().toString())
+        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
         .setAction(FriendshipAction.DELETE)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        UUID.fromString(friends[0].getId()), UUID.fromString(user.getId())
+        user.getFriends().get(0).getId(), user.getId()
     );
     Assertions.assertThat(friendship)
         .describedAs("Запись о дружбе отсутствует в БД")

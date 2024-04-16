@@ -14,11 +14,12 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -33,21 +34,22 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
   private PhotoRepository photoRepository;
   @Inject
   private CountryRepository countryRepository;
+  private Photo response;
 
   @DisplayName("Добавление фото")
   @CreateUser
   @Test
-  void createPhotoTest(User user) {
+  void createPhotoTest(TestUser user) {
     var country = countryRepository.findCountryByCode("ru");
     final CreatePhotoRequest request = CreatePhotoRequest.newBuilder()
-        .setUserId(user.getId())
+        .setUserId(user.getId().toString())
         .setSrc(ByteString.EMPTY)
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
-    final Photo response = blockingStub.createPhoto(request);
+    response = blockingStub.createPhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId().toString())).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())
@@ -65,5 +67,10 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
             .hasCountryId(request.getCountryId())
             .hasDescription(request.getDescription())
     );
+  }
+
+  @AfterEach
+  void after() {
+    photoRepository.deletePhoto(UUID.fromString(response.getId()));
   }
 }

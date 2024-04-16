@@ -1,8 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.jupiter;
 
 import com.github.javafaker.Faker;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
-import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
@@ -53,7 +51,7 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
+    return (parameterContext.getParameter().getType().isAssignableFrom(TestUser[].class)
         && extensionContext.getRequiredTestMethod().isAnnotationPresent(CreateExtrasUsers.class)
         && parameterContext.getParameter().isAnnotationPresent(Extras.class));
   }
@@ -62,10 +60,8 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   @Override
   public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return ((List<TestUser>) extensionContext.getStore(NAMESPACE)
-        .get(extensionContext.getUniqueId(), List.class)).stream()
-        .map(UserEntityMapper::toMessage)
-        .toArray(User[]::new);
+    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class)
+        .toArray(TestUser[]::new);
   }
 
   private List<CreateUser> extractUsersForTest(ExtensionContext context) {

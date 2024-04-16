@@ -10,6 +10,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +26,7 @@ class GetUserTest extends GrpcUserdataTestBase {
   @DisplayName("Получение пользователя по username")
   @CreateUser
   @Test
-  void getUserByUsernameTest(User user) {
+  void getUserByUsernameTest(TestUser user) {
     final UserRequest request = UserRequest.newBuilder()
         .setUsername(user.getUsername())
         .build();
@@ -33,32 +34,32 @@ class GetUserTest extends GrpcUserdataTestBase {
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
   }
 
   @DisplayName("Получение пользователя по id")
   @CreateUser
   @Test
-  void getUserByIdTest(User user) {
+  void getUserByIdTest(TestUser user) {
     final UserByIdRequest request = UserByIdRequest.newBuilder()
-        .setId(user.getId())
+        .setId(user.getId().toString())
         .build();
     final User response = blockingStub.getUserById(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId())
+            .hasId(user.getId().toString())
             .hasUsername(user.getUsername())
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar().toByteArray())
-            .hasCountryId(user.getCountryId())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountryId().toString())
     );
   }
 }

@@ -2,8 +2,6 @@ package com.onehundredtwentyninth.rangiffler.jupiter;
 
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
-import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.PhotoDbService;
 import com.onehundredtwentyninth.rangiffler.service.PhotoTestService;
@@ -53,7 +51,19 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
             var username = userRepository.findById(userId).getUsername();
             userService.deleteUser(userId, username);
           });
-      createdUser.getFriends().forEach(s -> userService.deleteUser(s.getId(), s.getUsername()));
+
+      createdUser.getFriends().forEach(friend -> {
+        friend.getPhotos().forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+        friend.getPhotos().stream()
+            .flatMap(s -> s.getLikes().getLikesList().stream())
+            .forEach(s -> {
+              var userId = UUID.fromString(s.getUserId());
+              var username = userRepository.findById(userId).getUsername();
+              userService.deleteUser(userId, username);
+            });
+        userService.deleteUser(friend.getId(), friend.getUsername());
+      });
+
       userService.deleteUser(createdUser.getId(), createdUser.getUsername());
     }
   }
@@ -61,22 +71,13 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
   @Override
   public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    return (parameterContext.getParameter().getType().isAssignableFrom(User.class)
-        || (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
-        && parameterContext.getParameter().isAnnotationPresent(Friends.class))
-    )
+    return parameterContext.getParameter().getType().isAssignableFrom(TestUser.class)
         && extensionContext.getRequiredTestMethod().isAnnotationPresent(CreateUser.class);
   }
 
   @Override
-  public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
+  public TestUser resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext)
       throws ParameterResolutionException {
-    var user = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), TestUser.class);
-    if (parameterContext.getParameter().getType().isAssignableFrom(User[].class)
-        && parameterContext.getParameter().isAnnotationPresent(Friends.class)) {
-      return user.getFriends().stream().map(UserEntityMapper::toMessage).toArray(User[]::new);
-    } else {
-      return UserEntityMapper.toMessage(user);
-    }
+    return extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), TestUser.class);
   }
 }

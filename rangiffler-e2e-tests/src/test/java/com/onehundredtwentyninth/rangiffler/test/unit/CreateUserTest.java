@@ -8,8 +8,8 @@ import com.onehundredtwentyninth.rangiffler.jupiter.CreateUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,25 +19,25 @@ class CreateUserTest {
 
   @CreateUser(username = "bee48", password = "123")
   @Test
-  void createUserTest(User user) {
+  void createUserTest(TestUser user) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertEquals("bee48", user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
         () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
     );
   }
 
   @CreateUser
   @Test
-  void createRandomUserTest(User user) {
+  void createRandomUserTest(TestUser user) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
         () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId())
+        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
     );
   }
 
@@ -48,12 +48,16 @@ class CreateUserTest {
       }
   )
   @Test
-  void createRandomUserWithFriendsTest(User user) {
+  void createRandomUserWithFriendsTest(TestUser user) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(user.getId()),
-        () -> Assertions.assertNotNull(user.getUsername()),
-        () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName())
+        () -> Assertions.assertNotNull(user.getFriends()),
+        () -> Assertions.assertEquals(2, user.getFriends().size()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0)),
+        () -> Assertions.assertNotNull(user.getFriends().get(1)),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getId()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getUsername()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getFirstname()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getLastName())
     );
   }
 
@@ -64,12 +68,14 @@ class CreateUserTest {
       }
   )
   @Test
-  void createRandomUserWithFriendsRequestsTest(User user) {
+  void createRandomUserWithFriendsRequestsTest(TestUser user) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(user.getId()),
-        () -> Assertions.assertNotNull(user.getUsername()),
-        () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName())
+        () -> Assertions.assertNotNull(user.getFriends()),
+        () -> Assertions.assertEquals(2, user.getFriends().size()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getId()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getUsername()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getFirstname()),
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getLastName())
     );
   }
 
@@ -78,12 +84,19 @@ class CreateUserTest {
       @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescription2", likes = 2)
   })
   @Test
-  void createRandomUserWithPhotoTest(User user) {
+  void createRandomUserWithPhotoTest(TestUser user) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(user.getId()),
-        () -> Assertions.assertNotNull(user.getUsername()),
-        () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName())
+        () -> Assertions.assertNotNull(user.getPhotos()),
+        () -> Assertions.assertEquals(2, user.getPhotos().size()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getId()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getSrc()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCountryId()),
+        () -> Assertions.assertEquals("insertedDescription", user.getPhotos().get(0).getDescription()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCreationDate()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getLikes()),
+        () -> Assertions.assertEquals(1, user.getPhotos().get(0).getLikes().getTotal()),
+        () -> Assertions.assertEquals(2, user.getPhotos().get(1).getLikes().getTotal()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(1).getLikes().getLikesList().get(0).getUserId())
     );
   }
 
@@ -102,12 +115,18 @@ class CreateUserTest {
           @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
       })
   @Test
-  void createRandomUserWithFriendsPhotoTest(User user) {
+  void createRandomUserWithFriendsPhotoTest(TestUser user) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(user.getId()),
-        () -> Assertions.assertNotNull(user.getUsername()),
-        () -> Assertions.assertNotNull(user.getFirstname()),
-        () -> Assertions.assertNotNull(user.getLastName())
+        () -> Assertions.assertNotNull(user.getFriends().get(0).getPhotos()),
+        () -> Assertions.assertEquals(1, user.getPhotos().size()),
+        () -> Assertions.assertEquals(1, user.getFriends().get(0).getPhotos().size()),
+        () -> Assertions.assertEquals(1, user.getFriends().get(1).getPhotos().size()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getId()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getSrc()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCountryId()),
+        () -> Assertions.assertEquals("insertedDescriptionFriend2",
+            user.getFriends().get(1).getPhotos().get(0).getDescription()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCreationDate())
     );
   }
 
@@ -127,12 +146,12 @@ class CreateUserTest {
           @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
       })
   @Test
-  void createRandomUserWithFriendsPhotoAndExtrasTest(User user, @Friends User[] friends, @Extras User[] extras) {
+  void createRandomUserWithFriendsPhotoAndExtrasTest(TestUser user, @Extras User[] extras) {
     Assertions.assertAll(
         () -> Assertions.assertNotNull(extras),
         () -> Assertions.assertEquals(2, extras.length),
-        () -> Assertions.assertNotNull(friends),
-        () -> Assertions.assertEquals(2, friends.length),
+        () -> Assertions.assertNotNull(user.getFriends()),
+        () -> Assertions.assertEquals(2, user.getFriends().size()),
         () -> Assertions.assertNotNull(user.getId()),
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),

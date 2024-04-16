@@ -12,12 +12,11 @@ import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoResponse;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -41,9 +40,9 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
           @WithPhoto(countryCode = "cn", image = "France.png", likes = 1)
       })
   @Test
-  void getAllPhotosTest(User user) {
+  void getAllPhotosTest(TestUser user) {
     final PhotoRequest request = PhotoRequest.newBuilder()
-        .addAllUserIds(List.of(user.getId()))
+        .addAllUserIds(List.of(user.getId().toString()))
         .setPage(0)
         .setSize(10)
         .build();
@@ -55,7 +54,7 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
             .hasNext(false)
     );
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(UUID.fromString(user.getId())).get(0);
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     List<LikeEntity> expectedLikes = photoRepository.findLikesByPhotoId(
         UUID.fromString(response.getPhotosList().get(0).getId()));
 
@@ -87,9 +86,13 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
           @WithPhoto(countryCode = "cn", image = "France.png")
       })
   @Test
-  void getAllPhotosWithFriendsTest(User user, @Friends User[] friends) {
+  void getAllPhotosWithFriendsTest(TestUser user) {
     final PhotoRequest request = PhotoRequest.newBuilder()
-        .addAllUserIds(List.of(user.getId(), friends[0].getId(), friends[1].getId()))
+        .addAllUserIds(List.of(
+            user.getId().toString(),
+            user.getFriends().get(0).getId().toString(),
+            user.getFriends().get(1).getId().toString())
+        )
         .setPage(0)
         .setSize(10)
         .build();

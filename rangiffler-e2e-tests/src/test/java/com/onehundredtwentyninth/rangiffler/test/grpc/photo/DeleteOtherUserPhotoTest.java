@@ -11,14 +11,12 @@ import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
-import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.Friends;
 import com.onehundredtwentyninth.rangiffler.jupiter.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -43,15 +41,15 @@ class DeleteOtherUserPhotoTest extends GrpcPhotoTestBase {
       )
   )
   @Test
-  void deletePhotoTest(User user, @Friends User[] friends) {
-    final PhotoEntity oldPhoto = photoRepository.findByUserId(UUID.fromString(friends[0].getId())).get(0);
+  void deletePhotoTest(TestUser user) {
+    final PhotoEntity oldPhoto = photoRepository.findByUserId(user.getFriends().get(0).getId()).get(0);
     final DeletePhotoRequest request = DeletePhotoRequest.newBuilder()
-        .setUserId(user.getId())
+        .setUserId(user.getId().toString())
         .setPhotoId(oldPhoto.getId().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.deletePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(oldPhoto.getId().toString(), user.getId());
+        .hasPhotoPermissionDeniedMessage(oldPhoto.getId().toString(), user.getId().toString());
   }
 }
