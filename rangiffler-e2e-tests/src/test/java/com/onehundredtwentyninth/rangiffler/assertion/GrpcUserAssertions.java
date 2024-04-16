@@ -4,17 +4,17 @@ import com.onehundredtwentyninth.rangiffler.grpc.User;
 import java.util.Arrays;
 import org.assertj.core.api.AbstractAssert;
 
-public class UserAssert extends AbstractAssert<UserAssert, User> {
+public class GrpcUserAssertions extends AbstractAssert<GrpcUserAssertions, User> {
 
-  protected UserAssert(User user) {
-    super(user, UserAssert.class);
+  protected GrpcUserAssertions(User user) {
+    super(user, GrpcUserAssertions.class);
   }
 
-  public static UserAssert assertThat(User actual) {
-    return new UserAssert(actual);
+  public static GrpcUserAssertions assertThat(User actual) {
+    return new GrpcUserAssertions(actual);
   }
 
-  public UserAssert hasId(String id) {
+  public GrpcUserAssertions hasId(String id) {
     isNotNull();
     if (!id.equals(actual.getId())) {
       failWithActualExpectedAndMessage(actual, id, "Expected id to be <%s> but was <%s>", id, actual.getId());
@@ -22,7 +22,7 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
     return this;
   }
 
-  public UserAssert hasUsername(String username) {
+  public GrpcUserAssertions hasUsername(String username) {
     isNotNull();
     if (!username.equals(actual.getUsername())) {
       failWithActualExpectedAndMessage(actual, username, "Expected username to be <%s> but was <%s>", username,
@@ -31,7 +31,7 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
     return this;
   }
 
-  public UserAssert hasFirstName(String firstName) {
+  public GrpcUserAssertions hasFirstName(String firstName) {
     isNotNull();
     if (!firstName.equals(actual.getFirstname())) {
       failWithActualExpectedAndMessage(actual, firstName, "Expected firstName to be <%s> but was <%s>", firstName,
@@ -40,7 +40,7 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
     return this;
   }
 
-  public UserAssert hasLastName(String lastName) {
+  public GrpcUserAssertions hasLastName(String lastName) {
     isNotNull();
     if (!lastName.equals(actual.getLastName())) {
       failWithActualExpectedAndMessage(actual, lastName, "Expected lastName to be <%s> but was <%s>", lastName,
@@ -49,7 +49,7 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
     return this;
   }
 
-  public UserAssert hasAvatar(byte[] avatar) {
+  public GrpcUserAssertions hasAvatar(byte[] avatar) {
     isNotNull();
     if (!Arrays.equals(avatar == null ? new byte[]{} : avatar, actual.getAvatar().toByteArray())) {
       failWithActualExpectedAndMessage(actual, avatar, "Expected avatar to be <%s> but was <%s>", avatar,
@@ -58,7 +58,7 @@ public class UserAssert extends AbstractAssert<UserAssert, User> {
     return this;
   }
 
-  public UserAssert hasCountryId(String countryId) {
+  public GrpcUserAssertions hasCountryId(String countryId) {
     isNotNull();
     if (!countryId.equals(actual.getCountryId())) {
       failWithActualExpectedAndMessage(actual, countryId, "Expected countryId to be <%s> but was <%s>", countryId,
