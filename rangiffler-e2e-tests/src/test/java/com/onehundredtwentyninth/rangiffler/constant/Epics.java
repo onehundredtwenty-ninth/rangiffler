@@ -8,4 +8,5 @@ public class Epics {
 
   public static final String GEO = "Страны";
   public static final String USERS = "Пользователи";
+  public static final String PHOTOS = "Фото";
 }

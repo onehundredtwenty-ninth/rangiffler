@@ -109,4 +109,28 @@ public class GrpcStatusExceptionAssertions extends AbstractThrowableAssert<GrpcS
     }
     return this;
   }
+
+  public GrpcStatusExceptionAssertions hasPhotoPermissionDeniedMessage(String photoId, String userId) {
+    isNotNull();
+    var expectedMessage = "PERMISSION_DENIED: Photo with id " + photoId + " can't be modified by user " + userId;
+    if (!expectedMessage.equals(actual.getMessage())) {
+      failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
+          expectedMessage,
+          actual.getMessage()
+      );
+    }
+    return this;
+  }
+
+  public GrpcStatusExceptionAssertions hasPhotoNotFoundMessage(String photoId) {
+    isNotNull();
+    var expectedMessage = "NOT_FOUND: Photo with id " + photoId + " not found";
+    if (!expectedMessage.equals(actual.getMessage())) {
+      failWithActualExpectedAndMessage(actual, expectedMessage, "Expected message to be <%s> but was <%s>",
+          expectedMessage,
+          actual.getMessage()
+      );
+    }
+    return this;
+  }
 }

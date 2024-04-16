@@ -159,7 +159,12 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
   private void decreaseStatistic(UUID userId, UUID countryId) {
     var statisticEntity = statisticRepository.findByUserIdAndCountryId(userId,
         countryId).orElseThrow(() -> new StatisticNotFoundException(userId, countryId));
-    statisticEntity.setCount(statisticEntity.getCount() - 1);
-    statisticRepository.save(statisticEntity);
+
+    if (statisticEntity.getCount() - 1 == 0) {
+      statisticRepository.delete(statisticEntity);
+    } else {
+      statisticEntity.setCount(statisticEntity.getCount() - 1);
+      statisticRepository.save(statisticEntity);
+    }
   }
 }
