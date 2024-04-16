@@ -8,7 +8,7 @@ import java.util.UUID;
 import lombok.SneakyThrows;
 import org.apache.commons.io.FileUtils;
 
-public interface PhotoTestService {
+public interface PhotoService {
 
   Photo createPhoto(UUID userId, String countryCode, String image, String description);
 

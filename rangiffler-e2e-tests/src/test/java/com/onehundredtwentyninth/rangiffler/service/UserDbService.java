@@ -31,7 +31,7 @@ public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
-  private final PhotoTestService photoService = new PhotoDbService();
+  private final PhotoService photoService = new PhotoDbService();
   private final Faker faker = new Faker();
 
   @Override

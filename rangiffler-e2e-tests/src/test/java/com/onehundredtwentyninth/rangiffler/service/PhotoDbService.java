@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class PhotoDbService implements PhotoTestService {
+public class PhotoDbService implements PhotoService {
 
   private final PhotoRepository photoRepository = new PhotoRepositorySJdbc();
   private final CountryRepository countryRepository = new CountryRepositorySJdbc();
