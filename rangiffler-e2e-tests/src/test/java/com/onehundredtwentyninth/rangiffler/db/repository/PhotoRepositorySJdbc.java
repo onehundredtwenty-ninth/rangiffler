@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.db.repository;
 
 import com.onehundredtwentyninth.rangiffler.db.DataSourceProvider;
 import com.onehundredtwentyninth.rangiffler.db.JdbcUrl;
+import com.onehundredtwentyninth.rangiffler.db.mapper.PhotoEntityRowMapper;
 import com.onehundredtwentyninth.rangiffler.db.model.LikeEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.StatisticEntity;
@@ -89,37 +90,13 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
   @Override
   public PhotoEntity findPhotoById(UUID photoId) {
     return Optional.ofNullable(
-        photoTemplate.queryForObject("SELECT * FROM \"photo\" WHERE id = ?",
-            (ResultSet rs, int rowNum) -> {
-              var photoEntity = new PhotoEntity();
-              photoEntity.setId(rs.getObject("id", UUID.class));
-              photoEntity.setUserId(rs.getObject("user_id", UUID.class));
-              photoEntity.setCountryId(rs.getObject("country_id", UUID.class));
-              photoEntity.setDescription(rs.getString("description"));
-              photoEntity.setPhoto(rs.getBytes("photo"));
-              photoEntity.setCreatedDate(rs.getTimestamp("created_date"));
-              return photoEntity;
-            },
-            photoId
-        )
+        photoTemplate.queryForObject("SELECT * FROM \"photo\" WHERE id = ?", new PhotoEntityRowMapper(), photoId)
     ).orElseThrow();
   }
 
   @Override
   public List<PhotoEntity> findByUserId(UUID userId) {
-    return photoTemplate.query("SELECT * FROM \"photo\" WHERE user_id = ?",
-        (ResultSet rs, int rowNum) -> {
-          var photoEntity = new PhotoEntity();
-          photoEntity.setId(rs.getObject("id", UUID.class));
-          photoEntity.setUserId(rs.getObject("user_id", UUID.class));
-          photoEntity.setCountryId(rs.getObject("country_id", UUID.class));
-          photoEntity.setDescription(rs.getString("description"));
-          photoEntity.setPhoto(rs.getBytes("photo"));
-          photoEntity.setCreatedDate(rs.getTimestamp("created_date"));
-          return photoEntity;
-        },
-        userId
-    );
+    return photoTemplate.query("SELECT * FROM \"photo\" WHERE user_id = ?", new PhotoEntityRowMapper(), userId);
   }
 
   @Override

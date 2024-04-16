@@ -2,8 +2,8 @@ package com.onehundredtwentyninth.rangiffler.db.repository;
 
 import com.onehundredtwentyninth.rangiffler.db.DataSourceProvider;
 import com.onehundredtwentyninth.rangiffler.db.JdbcUrl;
+import com.onehundredtwentyninth.rangiffler.db.mapper.CountryEntityRowMapper;
 import com.onehundredtwentyninth.rangiffler.db.model.CountryEntity;
-import java.sql.ResultSet;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,29 +15,15 @@ public class CountryRepositorySJdbc implements CountryRepository {
   @Override
   public CountryEntity findCountryByCode(String code) {
     return Optional.ofNullable(
-        countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE code = ?", (ResultSet rs, int rowNum) -> {
-          var countryEntity = new CountryEntity();
-          countryEntity.setId(rs.getObject("id", UUID.class));
-          countryEntity.setCode(rs.getString("code"));
-          countryEntity.setName(rs.getString("name"));
-          countryEntity.setFlag(rs.getBytes("flag"));
-          return countryEntity;
-        }, code)
+        countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE code = ?", new CountryEntityRowMapper(), code)
     ).orElseThrow();
   }
 
   @Override
   public CountryEntity findCountryByIdNot(UUID id) {
     return Optional.ofNullable(
-        countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE id != ? LIMIT 1",
-            (ResultSet rs, int rowNum) -> {
-              var countryEntity = new CountryEntity();
-              countryEntity.setId(rs.getObject("id", UUID.class));
-              countryEntity.setCode(rs.getString("code"));
-              countryEntity.setName(rs.getString("name"));
-              countryEntity.setFlag(rs.getBytes("flag"));
-              return countryEntity;
-            }, id)
+        countryTemplate.queryForObject("SELECT * FROM \"country\" WHERE id != ? LIMIT 1", new CountryEntityRowMapper(),
+            id)
     ).orElseThrow();
   }
 
