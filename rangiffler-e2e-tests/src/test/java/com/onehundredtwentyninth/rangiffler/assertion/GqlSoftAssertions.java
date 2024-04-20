@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
 import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.GqlUser;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractSoftAssertions;
 import org.assertj.core.api.SoftAssertionsProvider;
@@ -19,5 +20,9 @@ public class GqlSoftAssertions extends AbstractSoftAssertions implements Standar
 
   public GqlCountryResponseAssertions assertThat(GqlCountryResponse actual) {
     return proxy(GqlCountryResponseAssertions.class, GqlCountryResponse.class, actual);
+  }
+
+  public GqlUserAssertions assertThat(GqlUser actual) {
+    return proxy(GqlUserAssertions.class, GqlUser.class, actual);
   }
 }
