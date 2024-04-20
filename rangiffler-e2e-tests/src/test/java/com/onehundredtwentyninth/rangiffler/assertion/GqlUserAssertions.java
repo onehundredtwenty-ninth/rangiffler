@@ -53,7 +53,8 @@ public class GqlUserAssertions extends AbstractAssert<GqlUserAssertions, GqlUser
 
   public GqlUserAssertions hasAvatar(byte[] avatar) {
     isNotNull();
-    if (!Arrays.equals(avatar, actual.getAvatar().getBytes(StandardCharsets.UTF_8))) {
+    var actualAvatar = actual.getAvatar() == null ? new byte[]{} : actual.getAvatar().getBytes(StandardCharsets.UTF_8);
+    if (!Arrays.equals(avatar, actualAvatar)) {
       failWithActualExpectedAndMessage(actual, avatar, "Expected avatar to be <%s> but was <%s>", avatar,
           actual.getAvatar());
     }
@@ -65,6 +66,15 @@ public class GqlUserAssertions extends AbstractAssert<GqlUserAssertions, GqlUser
     if (!countryCode.equals(actual.getLocation().getCode())) {
       failWithActualExpectedAndMessage(actual, countryCode, "Expected countryId to be <%s> but was <%s>", countryCode,
           actual.getLocation().getCode());
+    }
+    return this;
+  }
+
+  public GqlUserAssertions hasFriendsCount(int count) {
+    isNotNull();
+    if (count != actual.getFriends().getSize()) {
+      failWithActualExpectedAndMessage(actual, count, "Expected friends count to be <%s> but was <%s>", count,
+          actual.getFriends().getSize());
     }
     return this;
   }

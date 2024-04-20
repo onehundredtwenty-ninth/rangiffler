@@ -67,6 +67,7 @@ dependencies {
     implementation 'io.qameta.allure:allure-rest-assured:2.27.0'
     testImplementation 'org.assertj:assertj-core:3.25.3'
     implementation 'com.google.inject:guice:7.0.0'
+    implementation 'org.springframework.data:spring-data-commons:3.2.5'
 }
 
 tasks.withType(JavaCompile).configureEach {
