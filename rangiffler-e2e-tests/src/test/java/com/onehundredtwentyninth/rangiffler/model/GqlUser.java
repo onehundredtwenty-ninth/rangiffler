@@ -28,9 +28,9 @@ public class GqlUser extends GqlResponseType {
   private String surname;
   private String avatar;
   private FriendStatus friendStatus;
-  private RestSlice<GqlUser> friends;
-  private RestSlice<GqlUser> incomeInvitations;
-  private RestSlice<GqlUser> outcomeInvitations;
+  private GqlConnection<GqlUser> friends;
+  private GqlConnection<GqlUser> incomeInvitations;
+  private GqlConnection<GqlUser> outcomeInvitations;
   private GqlCountry location;
 
   @SuppressWarnings("unchecked")

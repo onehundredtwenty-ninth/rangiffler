@@ -55,11 +55,13 @@ class GetFriendsTest {
     );
 
     GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(user.getFriends().size());
+        .hasFriendsCount(user.getFriends().size())
+        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
+        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
 
     var expectedFriend = user.getFriends().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getFriends().getContent().get(0))
+        softAssertions.assertThat(response.getData().getUser().getFriends().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())
