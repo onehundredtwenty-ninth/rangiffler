@@ -9,12 +9,14 @@ import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
@@ -34,13 +36,15 @@ class FeedTest {
   @Inject
   private GatewayClient gatewayClient;
   @Inject
+  private PhotoRepository photoRepository;
+  @Inject
   private CountryRepository countryRepository;
 
   @DisplayName("Получение фото пользователя")
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png"),
+          @WithPhoto(countryCode = "cn", image = "France.png", likes = 2),
           @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
       }
   )
@@ -63,6 +67,9 @@ class FeedTest {
 
     var expectedPhoto = user.getPhotos().get(0);
     var expectedCountry = countryRepository.findCountryById(UUID.fromString(expectedPhoto.getCountryId()));
+    var expectedLikes = photoRepository.findLikesByPhotoId(UUID.fromString(expectedPhoto.getId())).stream()
+        .map(s -> new GqlLike(s.getUserId(), null, null))
+        .toList();
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
@@ -70,7 +77,8 @@ class FeedTest {
             .hasSrc(expectedPhoto.getSrc().toByteArray())
             .hasCountryCode(expectedCountry.getCode())
             .hasDescription(expectedPhoto.getDescription())
-            .hasTotalLikes(0)
+            .hasTotalLikes(2)
+            .hasLikes(expectedLikes)
     );
   }
 }

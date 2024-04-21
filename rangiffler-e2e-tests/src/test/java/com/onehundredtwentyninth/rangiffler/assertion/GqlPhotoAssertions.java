@@ -1,8 +1,10 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
+import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import org.assertj.core.api.AbstractAssert;
@@ -59,6 +61,15 @@ public class GqlPhotoAssertions extends AbstractAssert<GqlPhotoAssertions, GqlPh
     if (!Objects.equals(likesCount, actual.getLikes().getTotal())) {
       failWithActualExpectedAndMessage(actual, likesCount, "Expected likes count to be <%s> but was <%s>", likesCount,
           actual.getLikes().getTotal());
+    }
+    return this;
+  }
+
+  public GqlPhotoAssertions hasLikes(List<GqlLike> likes) {
+    isNotNull();
+    if (!actual.getLikes().getLikes().containsAll(likes)) {
+      failWithActualExpectedAndMessage(actual.getLikes(), likes,
+          "Expected likes contains all of <%s> but was <%s>", likes, actual.getLikes());
     }
     return this;
   }
