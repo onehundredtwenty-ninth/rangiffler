@@ -39,7 +39,7 @@ class GetCurrentUserTest {
   @CreateUser
   @Test
   void getCurrentUserTest(@Token String token, TestUser user, @GqlRequestFile("gql/getUser.json") GqlRequest request) {
-    var response = gatewayClient.getCurrentUser(token, request);
+    var response = gatewayClient.getUsers(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)

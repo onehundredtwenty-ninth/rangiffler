@@ -34,7 +34,7 @@ public class GatewayClient extends BaseClient {
         });
   }
 
-  public GqlResponse<GqlUserResponse> getCurrentUser(String bearerToken, GqlRequest request) {
+  public GqlResponse<GqlUserResponse> getUsers(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
         .filters(filterWithResponseBody(log))

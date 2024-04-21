@@ -46,7 +46,7 @@ class GetFriendsTest {
   )
   @Test
   void getFriendsTest(@Token String token, TestUser user, @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
-    var response = gatewayClient.getCurrentUser(token, request);
+    var response = gatewayClient.getUsers(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
