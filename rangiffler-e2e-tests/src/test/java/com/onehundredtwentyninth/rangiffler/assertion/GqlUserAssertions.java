@@ -89,6 +89,15 @@ public class GqlUserAssertions extends AbstractAssert<GqlUserAssertions, GqlUser
     return this;
   }
 
+  public GqlUserAssertions hasOutcomeInvitationsCount(int count) {
+    isNotNull();
+    if (count != actual.getOutcomeInvitations().getEdges().size()) {
+      failWithActualExpectedAndMessage(actual, count, "Expected outcome invites count to be <%s> but was <%s>", count,
+          actual.getOutcomeInvitations().getEdges().size());
+    }
+    return this;
+  }
+
   public GqlUserAssertions hasPrevious(GqlPageInfo pageInfo, boolean previous) {
     isNotNull();
     if (previous != pageInfo.hasPreviousPage()) {
