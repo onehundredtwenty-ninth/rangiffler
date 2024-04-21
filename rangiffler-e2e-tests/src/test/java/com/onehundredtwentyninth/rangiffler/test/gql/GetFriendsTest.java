@@ -13,6 +13,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
@@ -56,6 +57,150 @@ class GetFriendsTest {
 
     GqlUserAssertions.assertThat(response.getData().getUser())
         .hasFriendsCount(user.getFriends().size())
+        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
+        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+
+    var expectedFriend = user.getFriends().get(0);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends().getEdges().get(0))
+            .hasId(expectedFriend.getId())
+            .hasUsername(expectedFriend.getUsername())
+            .hasFirstName(expectedFriend.getFirstname())
+            .hasLastName(expectedFriend.getLastName())
+            .hasAvatar(expectedFriend.getAvatar())
+    );
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по username")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void getUserFriendsWithUsernameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getFriends().get(0).getUsername());
+    var response = gatewayClient.getUsers(token, request);
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
+    );
+
+    GqlUserAssertions.assertThat(response.getData().getUser())
+        .hasFriendsCount(1)
+        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
+        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+
+    var expectedFriend = user.getFriends().get(0);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends().getEdges().get(0))
+            .hasId(expectedFriend.getId())
+            .hasUsername(expectedFriend.getUsername())
+            .hasFirstName(expectedFriend.getFirstname())
+            .hasLastName(expectedFriend.getLastName())
+            .hasAvatar(expectedFriend.getAvatar())
+    );
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по firstname")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void getUserFriendsWithFirstnameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getFriends().get(1).getFirstname());
+    var response = gatewayClient.getUsers(token, request);
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
+    );
+
+    GqlUserAssertions.assertThat(response.getData().getUser())
+        .hasFriendsCount(1)
+        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
+        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+
+    var expectedFriend = user.getFriends().get(1);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends().getEdges().get(0))
+            .hasId(expectedFriend.getId())
+            .hasUsername(expectedFriend.getUsername())
+            .hasFirstName(expectedFriend.getFirstname())
+            .hasLastName(expectedFriend.getLastName())
+            .hasAvatar(expectedFriend.getAvatar())
+    );
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по surname")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void getUserFriendsWithSurnameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getFriends().get(1).getLastName());
+    var response = gatewayClient.getUsers(token, request);
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
+    );
+
+    GqlUserAssertions.assertThat(response.getData().getUser())
+        .hasFriendsCount(1)
+        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
+        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+
+    var expectedFriend = user.getFriends().get(1);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends().getEdges().get(0))
+            .hasId(expectedFriend.getId())
+            .hasUsername(expectedFriend.getUsername())
+            .hasFirstName(expectedFriend.getFirstname())
+            .hasLastName(expectedFriend.getLastName())
+            .hasAvatar(expectedFriend.getAvatar())
+    );
+  }
+
+  @DisplayName("Отсутствие неподтверженных друзей в списке друзей пользователя")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend(pending = true),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+      }
+  )
+  @Test
+  void getUserFriendsWithoutPendingTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
+    var response = gatewayClient.getUsers(token, request);
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
+    );
+
+    GqlUserAssertions.assertThat(response.getData().getUser())
+        .hasFriendsCount(1)
         .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
         .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
 
