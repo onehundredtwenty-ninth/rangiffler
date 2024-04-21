@@ -8,6 +8,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
@@ -18,6 +19,7 @@ import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -31,6 +33,8 @@ class FeedTest {
 
   @Inject
   private GatewayClient gatewayClient;
+  @Inject
+  private CountryRepository countryRepository;
 
   @DisplayName("Получение фото пользователя")
   @ApiLogin
@@ -55,6 +59,18 @@ class FeedTest {
             .hasEdgesCount(user.getPhotos().size())
             .hasPrevious(false)
             .hasNext(false)
+    );
+
+    var expectedPhoto = user.getPhotos().get(0);
+    var expectedCountry = countryRepository.findCountryById(UUID.fromString(expectedPhoto.getCountryId()));
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
+            .hasId(UUID.fromString(expectedPhoto.getId()))
+            .hasSrc(expectedPhoto.getSrc().toByteArray())
+            .hasCountryCode(expectedCountry.getCode())
+            .hasDescription(expectedPhoto.getDescription())
+            .hasTotalLikes(0)
     );
   }
 }
