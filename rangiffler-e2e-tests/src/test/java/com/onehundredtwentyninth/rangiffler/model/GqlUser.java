@@ -38,7 +38,7 @@ public class GqlUser extends GqlResponseType {
   private void unpackNode(Map<String, Object> node) {
     var userAsMap = node.entrySet().stream().collect(Collectors.toMap(
             Entry::getKey,
-            e -> e.getValue().toString()
+            e -> e.getValue() == null ? "" : e.getValue().toString()
         )
     );
     this.id = UUID.fromString(userAsMap.get("id"));
@@ -46,7 +46,9 @@ public class GqlUser extends GqlResponseType {
     this.firstname = userAsMap.get("firstname");
     this.surname = userAsMap.get("surname");
     this.avatar = userAsMap.get("avatar");
-    this.friendStatus = FriendStatus.valueOf(userAsMap.get("friendStatus"));
+    this.friendStatus = userAsMap.get("friendStatus").isBlank()
+        ? FriendStatus.NOT_FRIEND
+        : FriendStatus.valueOf(userAsMap.get("friendStatus"));
 
     var locationAsMap = (Map<String, String>) node.get("location");
     this.location = new GqlCountry(

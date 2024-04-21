@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
+import com.onehundredtwentyninth.rangiffler.model.GqlConnection;
 import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
 import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
 import com.onehundredtwentyninth.rangiffler.model.GqlUser;
@@ -24,5 +25,9 @@ public class GqlSoftAssertions extends AbstractSoftAssertions implements Standar
 
   public GqlUserAssertions assertThat(GqlUser actual) {
     return proxy(GqlUserAssertions.class, GqlUser.class, actual);
+  }
+
+  public GqlConnectionAssertions assertThat(GqlConnection<?> actual) {
+    return proxy(GqlConnectionAssertions.class, GqlConnection.class, actual);
   }
 }
