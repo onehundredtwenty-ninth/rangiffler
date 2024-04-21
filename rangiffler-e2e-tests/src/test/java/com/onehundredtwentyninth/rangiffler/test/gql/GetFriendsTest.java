@@ -3,7 +3,6 @@ package com.onehundredtwentyninth.rangiffler.test.gql;
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
 import com.onehundredtwentyninth.rangiffler.assertion.GqlSoftAssertions;
-import com.onehundredtwentyninth.rangiffler.assertion.GqlUserAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
@@ -47,7 +46,7 @@ class GetFriendsTest {
   )
   @Test
   void getFriendsTest(@Token String token, TestUser user, @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
-    var response = gatewayClient.getUsers(token, request);
+    var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -55,10 +54,12 @@ class GetFriendsTest {
             .dataNotNull()
     );
 
-    GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(user.getFriends().size())
-        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
-        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends())
+            .hasEdgesCount(user.getFriends().size())
+            .hasPrevious(false)
+            .hasNext(false)
+    );
 
     var expectedFriend = user.getFriends().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -83,7 +84,7 @@ class GetFriendsTest {
   void getUserFriendsWithUsernameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
     request.variables().put("searchQuery", user.getFriends().get(0).getUsername());
-    var response = gatewayClient.getUsers(token, request);
+    var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -91,10 +92,12 @@ class GetFriendsTest {
             .dataNotNull()
     );
 
-    GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(1)
-        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
-        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends())
+            .hasEdgesCount(1)
+            .hasPrevious(false)
+            .hasNext(false)
+    );
 
     var expectedFriend = user.getFriends().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -119,7 +122,7 @@ class GetFriendsTest {
   void getUserFriendsWithFirstnameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
     request.variables().put("searchQuery", user.getFriends().get(1).getFirstname());
-    var response = gatewayClient.getUsers(token, request);
+    var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -127,10 +130,12 @@ class GetFriendsTest {
             .dataNotNull()
     );
 
-    GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(1)
-        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
-        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends())
+            .hasEdgesCount(1)
+            .hasPrevious(false)
+            .hasNext(false)
+    );
 
     var expectedFriend = user.getFriends().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -155,7 +160,7 @@ class GetFriendsTest {
   void getUserFriendsWithSurnameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
     request.variables().put("searchQuery", user.getFriends().get(1).getLastName());
-    var response = gatewayClient.getUsers(token, request);
+    var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -163,10 +168,12 @@ class GetFriendsTest {
             .dataNotNull()
     );
 
-    GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(1)
-        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
-        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends())
+            .hasEdgesCount(1)
+            .hasPrevious(false)
+            .hasNext(false)
+    );
 
     var expectedFriend = user.getFriends().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -191,7 +198,7 @@ class GetFriendsTest {
   @Test
   void getUserFriendsWithoutPendingTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getFriends.json") GqlRequest request) {
-    var response = gatewayClient.getUsers(token, request);
+    var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -199,10 +206,12 @@ class GetFriendsTest {
             .dataNotNull()
     );
 
-    GqlUserAssertions.assertThat(response.getData().getUser())
-        .hasFriendsCount(1)
-        .hasPrevious(response.getData().getUser().getFriends().getPageInfo(), false)
-        .hasNext(response.getData().getUser().getFriends().getPageInfo(), false);
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getUser().getFriends())
+            .hasEdgesCount(1)
+            .hasPrevious(false)
+            .hasNext(false)
+    );
 
     var expectedFriend = user.getFriends().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->

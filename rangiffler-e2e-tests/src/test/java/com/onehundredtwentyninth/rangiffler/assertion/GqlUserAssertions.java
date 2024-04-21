@@ -1,6 +1,5 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlPageInfo;
 import com.onehundredtwentyninth.rangiffler.model.GqlUser;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -67,55 +66,6 @@ public class GqlUserAssertions extends AbstractAssert<GqlUserAssertions, GqlUser
     if (!countryCode.equals(actual.getLocation().getCode())) {
       failWithActualExpectedAndMessage(actual, countryCode, "Expected countryId to be <%s> but was <%s>", countryCode,
           actual.getLocation().getCode());
-    }
-    return this;
-  }
-
-  public GqlUserAssertions hasFriendsCount(int count) {
-    isNotNull();
-    if (count != actual.getFriends().getEdges().size()) {
-      failWithActualExpectedAndMessage(actual, count, "Expected friends count to be <%s> but was <%s>", count,
-          actual.getFriends().getEdges().size());
-    }
-    return this;
-  }
-
-  public GqlUserAssertions hasInvitationsCount(int count) {
-    isNotNull();
-    if (count != actual.getIncomeInvitations().getEdges().size()) {
-      failWithActualExpectedAndMessage(actual, count, "Expected invites count to be <%s> but was <%s>", count,
-          actual.getIncomeInvitations().getEdges().size());
-    }
-    return this;
-  }
-
-  public GqlUserAssertions hasOutcomeInvitationsCount(int count) {
-    isNotNull();
-    if (count != actual.getOutcomeInvitations().getEdges().size()) {
-      failWithActualExpectedAndMessage(actual, count, "Expected outcome invites count to be <%s> but was <%s>", count,
-          actual.getOutcomeInvitations().getEdges().size());
-    }
-    return this;
-  }
-
-  public GqlUserAssertions hasPrevious(GqlPageInfo pageInfo, boolean previous) {
-    isNotNull();
-    if (previous != pageInfo.hasPreviousPage()) {
-      failWithActualExpectedAndMessage(actual, previous, "Expected page info previous to be <%s> but was <%s>",
-          previous,
-          pageInfo.hasPreviousPage()
-      );
-    }
-    return this;
-  }
-
-  public GqlUserAssertions hasNext(GqlPageInfo pageInfo, boolean next) {
-    isNotNull();
-    if (next != pageInfo.hasNextPage()) {
-      failWithActualExpectedAndMessage(actual, next, "Expected page info next to be <%s> but was <%s>",
-          next,
-          pageInfo.hasNextPage()
-      );
     }
     return this;
   }
