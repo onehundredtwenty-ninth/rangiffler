@@ -5,6 +5,8 @@ import java.util.UUID;
 
 public interface CountryRepository {
 
+  CountryEntity findCountryById(UUID id);
+
   CountryEntity findCountryByCode(String code);
 
   CountryEntity findCountryByIdNot(UUID id);
