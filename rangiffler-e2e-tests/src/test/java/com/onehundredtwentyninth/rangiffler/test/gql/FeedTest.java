@@ -80,5 +80,11 @@ class FeedTest {
             .hasTotalLikes(2)
             .hasLikes(expectedLikes)
     );
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getFeed())
+            .hasStatCount("cn", 1)
+            .hasStatCount("ca", 1)
+    );
   }
 }
