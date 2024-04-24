@@ -12,6 +12,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
@@ -85,6 +86,59 @@ class FeedTest {
         softAssertions.assertThat(response.getData().getFeed())
             .hasStatCount("cn", 1)
             .hasStatCount("ca", 1)
+    );
+  }
+
+  @DisplayName("Получение фото пользователя и его друзей")
+  @ApiLogin
+  @CreateUser(
+      photos = {
+          @WithPhoto(countryCode = "cn", image = "France.png", likes = 2),
+          @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+      }, friends = {
+          @Friend(
+              photos = @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+          )
+  }
+  )
+  @Test
+  void getFeedWithFriendsTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getFeedWithFriends.json") GqlRequest request) {
+    var response = gatewayClient.getFeed(token, request);
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
+    );
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getFeed().getPhotos())
+            .hasEdgesCount(3)
+            .hasPrevious(false)
+            .hasNext(false)
+    );
+
+    var expectedPhoto = user.getPhotos().get(0);
+    var expectedCountry = countryRepository.findCountryById(UUID.fromString(expectedPhoto.getCountryId()));
+    var expectedLikes = photoRepository.findLikesByPhotoId(UUID.fromString(expectedPhoto.getId())).stream()
+        .map(s -> new GqlLike(s.getUserId(), null, null))
+        .toList();
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
+            .hasId(UUID.fromString(expectedPhoto.getId()))
+            .hasSrc(expectedPhoto.getSrc().toByteArray())
+            .hasCountryCode(expectedCountry.getCode())
+            .hasDescription(expectedPhoto.getDescription())
+            .hasTotalLikes(2)
+            .hasLikes(expectedLikes)
+    );
+
+    GqlSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response.getData().getFeed())
+            .hasStatCount("cn", 1)
+            .hasStatCount("ca", 2)
     );
   }
 }
