@@ -1,7 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.test.grpc.statistic;
 
 import com.google.inject.Inject;
-import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
@@ -60,7 +59,6 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
     final UpdatePhotoRequest updatePhotoRequest = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
         .setId(updatedPhoto.getId())
-        .setSrc(ByteString.EMPTY)
         .setCountryId(ruCountry.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();

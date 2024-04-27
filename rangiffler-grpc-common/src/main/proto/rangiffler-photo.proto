@@ -33,7 +33,6 @@ message CreatePhotoRequest {
 message UpdatePhotoRequest {
   string userId = 6;
   string id = 1;
-  bytes src = 2;
   string countryId = 3;
   string description = 4;
 }

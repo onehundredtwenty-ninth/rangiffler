@@ -88,7 +88,6 @@ public class PhotoService extends RangifflerPhotoServiceGrpc.RangifflerPhotoServ
       throw new IllegalPhotoAccessException(photoEntity.getId().toString(), request.getUserId());
     }
 
-    photoEntity.setPhoto(request.getSrc().toByteArray());
     photoEntity.setCountryId(UUID.fromString(request.getCountryId()));
     photoEntity.setDescription(request.getDescription());
 
