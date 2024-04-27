@@ -3,8 +3,10 @@ package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.service.FreemarkerService;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -33,7 +35,8 @@ public class GqlRequestResolver implements ParameterResolver {
     GqlRequestFile annotation = AnnotationSupport.findAnnotation(parameterContext.getParameter(), GqlRequestFile.class)
         .orElseThrow();
     try (InputStream is = cl.getResourceAsStream(annotation.value())) {
-      return om.readValue(is.readAllBytes(), GqlRequest.class);
+      var parsedValue = new FreemarkerService().replaceTokens(new String(is.readAllBytes(), StandardCharsets.UTF_8));
+      return om.readValue(parsedValue, GqlRequest.class);
     } catch (IOException e) {
       throw new ParameterResolutionException(e.getMessage());
     }

@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
+import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractSoftAssertions;
 import org.assertj.core.api.SoftAssertionsProvider;
@@ -14,5 +15,9 @@ public class EntitySoftAssertions extends AbstractSoftAssertions implements Stan
 
   public EntityPhotoAssertions assertThat(PhotoEntity actual) {
     return proxy(EntityPhotoAssertions.class, PhotoEntity.class, actual);
+  }
+
+  public EntityUserAssertions assertThat(UserEntity actual) {
+    return proxy(EntityUserAssertions.class, UserEntity.class, actual);
   }
 }
