@@ -1,7 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.test.grpc.photo;
 
 import com.google.inject.Inject;
-import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.assertion.EntitySoftAssertions;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -47,7 +46,6 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
         .setId(user.getPhotos().get(0).getId())
-        .setSrc(ByteString.EMPTY)
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
@@ -67,7 +65,6 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
         softAssertions.assertThat(expectedPhoto)
             .hasId(request.getId())
             .hasUserId(request.getUserId())
-            .hasSrc(request.getSrc().toByteArray())
             .hasCountryId(request.getCountryId())
             .hasDescription(request.getDescription())
     );

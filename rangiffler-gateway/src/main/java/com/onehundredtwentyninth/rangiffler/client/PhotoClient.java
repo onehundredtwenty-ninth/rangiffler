@@ -90,7 +90,6 @@ public class PhotoClient {
     var request = UpdatePhotoRequest.newBuilder()
         .setId(photo.id().toString())
         .setUserId(user.id().toString())
-        .setSrc(ByteString.copyFrom(photo.src() != null ? photo.src().getBytes(StandardCharsets.UTF_8) : new byte[]{}))
         .setCountryId(country)
         .setDescription(photo.description())
         .build();
