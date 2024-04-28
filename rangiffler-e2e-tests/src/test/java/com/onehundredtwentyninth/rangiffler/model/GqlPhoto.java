@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.onehundredtwentyninth.rangiffler.model.GqlPhoto.PhotoNodeSerializer;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,8 @@ public class GqlPhoto extends GqlResponseType {
 
     @Override
     public GqlPhoto deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-      var node = (JsonNode) p.readValueAsTree().get("node");
+      var value = (JsonNode) p.readValueAsTree();
+      var node = Optional.ofNullable(value.get("node")).orElse(value);
 
       var photo = new GqlPhoto();
       photo.setId(UUID.fromString(node.get("id").asText()));
