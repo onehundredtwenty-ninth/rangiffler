@@ -14,7 +14,11 @@ public interface PhotoRepository {
 
   void deletePhoto(UUID id);
 
-  PhotoEntity findPhotoById(UUID photoId);
+  PhotoEntity findRequiredPhotoById(UUID photoId);
+
+  Optional<PhotoEntity> findPhotoById(UUID photoId);
+
+  Boolean isPhotoExists(UUID photoId);
 
   List<PhotoEntity> findByUserId(UUID userId);
 

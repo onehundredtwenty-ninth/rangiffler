@@ -69,29 +69,46 @@ public class PhotoRepositorySJdbc implements PhotoRepository {
 
   @Override
   public void deletePhoto(UUID id) {
-    photoTxt.execute(status -> {
-      var photo = findPhotoById(id);
-      var statistic = findStatisticByUserIdAndCountryId(photo.getUserId(), photo.getCountryId()).orElseThrow();
+    var optionalPhoto = findPhotoById(id);
+    optionalPhoto.ifPresent(photoEntity -> photoTxt.execute(status -> {
+          var statistic = findStatisticByUserIdAndCountryId(photoEntity.getUserId(),
+              photoEntity.getCountryId()).orElseThrow();
 
-      if (statistic.getCount() - 1 == 0) {
-        deleteStatisticByUserIdAndCountryId(photo.getUserId(), photo.getCountryId());
-      } else {
-        updateStatisticByUserIdAndCountryId(photo.getUserId(), photo.getCountryId(), statistic.getCount() - 1);
-      }
+          if (statistic.getCount() - 1 == 0) {
+            deleteStatisticByUserIdAndCountryId(photoEntity.getUserId(), photoEntity.getCountryId());
+          } else {
+            updateStatisticByUserIdAndCountryId(photoEntity.getUserId(), photoEntity.getCountryId(),
+                statistic.getCount() - 1);
+          }
 
-      var likesIds = findLikesIdsByPhotoId(id);
-      photoTemplate.update("DELETE FROM \"photo_like\" WHERE photo_id = ?", id);
-      deleteLikesByIds(likesIds);
-      photoTemplate.update("DELETE FROM \"photo\" WHERE id = ?", id);
-      return null;
-    });
+          var likesIds = findLikesIdsByPhotoId(id);
+          photoTemplate.update("DELETE FROM \"photo_like\" WHERE photo_id = ?", id);
+          deleteLikesByIds(likesIds);
+          photoTemplate.update("DELETE FROM \"photo\" WHERE id = ?", id);
+          return null;
+        })
+    );
   }
 
   @Override
-  public PhotoEntity findPhotoById(UUID photoId) {
-    return Optional.ofNullable(
-        photoTemplate.queryForObject("SELECT * FROM \"photo\" WHERE id = ?", new PhotoEntityRowMapper(), photoId)
-    ).orElseThrow();
+  public PhotoEntity findRequiredPhotoById(UUID photoId) {
+    return photoTemplate.queryForObject("SELECT * FROM \"photo\" WHERE id = ?", new PhotoEntityRowMapper(), photoId);
+  }
+
+  @Override
+  public Optional<PhotoEntity> findPhotoById(UUID photoId) {
+    try {
+      return Optional.ofNullable(
+          photoTemplate.queryForObject("SELECT * FROM \"photo\" WHERE id = ?", new PhotoEntityRowMapper(), photoId)
+      );
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
+
+  @Override
+  public Boolean isPhotoExists(UUID photoId) {
+    return photoTemplate.queryForObject("SELECT EXISTS(SELECT * FROM \"photo\" WHERE id = ?)", Boolean.class, photoId);
   }
 
   @Override
