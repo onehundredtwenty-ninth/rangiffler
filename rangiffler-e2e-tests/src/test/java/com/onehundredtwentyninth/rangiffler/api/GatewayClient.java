@@ -139,4 +139,21 @@ public class GatewayClient extends BaseClient {
         .as(new TypeRef<>() {
         });
   }
+
+  public GqlResponse<GqlUserResponse> friendshipAction(String bearerToken, GqlRequest request) {
+    return given()
+        .spec(requestSpecification)
+        .filters(filterWithResponseBody(log))
+        .auth().oauth2(bearerToken)
+        .contentType(ContentType.JSON)
+        .when()
+        .body(request)
+        .post("/graphql")
+        .then()
+        .statusCode(200)
+        .extract()
+        .response()
+        .as(new TypeRef<>() {
+        });
+  }
 }

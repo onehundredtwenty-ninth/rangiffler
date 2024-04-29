@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -7,5 +8,6 @@ import lombok.Setter;
 @Setter
 public class GqlUserResponse {
 
+  @JsonAlias("friendship")
   private GqlUser user;
 }
