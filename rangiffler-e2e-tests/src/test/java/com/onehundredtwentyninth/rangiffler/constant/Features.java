@@ -17,4 +17,5 @@ public class Features {
   public static final String DELETE_PHOTO = "Удаление фото";
   public static final String STATISTIC = "Получение статистике";
   public static final String LOGIN = "Авторизация";
+  public static final String REGISTER = "Регистрация";
 }

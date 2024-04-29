@@ -20,4 +20,5 @@ public class JUnitTags {
   public static final String STATISTIC = "statistic";
   public static final String USER_FRIENDSHIP = "friendship";
   public static final String LOGIN = "login";
+  public static final String REGISTER = "register";
 }
