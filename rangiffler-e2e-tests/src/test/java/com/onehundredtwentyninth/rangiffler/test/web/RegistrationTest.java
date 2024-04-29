@@ -7,7 +7,6 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.page.RegisterPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import io.qameta.allure.Epic;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 
-@GqlTest
 @Epic(Epics.USERS)
 @Feature(Features.REGISTER)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.REGISTER)})
@@ -32,7 +30,7 @@ class RegistrationTest extends BaseWebTest {
 
   @DisplayName("Регистрация")
   @Test
-  void loginTest() {
+  void registerTest() {
     startPage
         .open()
         .clickRegisterBtn();
