@@ -27,6 +27,14 @@ public class GqlPhotoAssertions extends AbstractAssert<GqlPhotoAssertions, GqlPh
     return this;
   }
 
+  public GqlPhotoAssertions idIsNotNull() {
+    isNotNull();
+    if (actual.getId() == null) {
+      failWithActualExpectedAndMessage(actual, null, "Expected id to be not null, but ut was");
+    }
+    return this;
+  }
+
   public GqlPhotoAssertions hasSrc(byte[] src) {
     isNotNull();
     var actualAvatar = actual.getSrc() == null ? new byte[]{} : actual.getSrc().getBytes(StandardCharsets.UTF_8);
