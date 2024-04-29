@@ -38,7 +38,6 @@ class FriendsListTest extends BaseWebTest {
   void friendsShouldBePresentedInTableOnFriendsTab(TestUser user) {
     peoplePage.open()
         .openFriendsTab()
-        .userShouldBePresentedInTable(user.getFriends().get(0).getUsername())
-        .userShouldBePresentedInTable(user.getFriends().get(1).getUsername());
+        .usersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
   }
 }

@@ -6,6 +6,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.component.PeopleTable;
 
 public class PeoplePage extends BasePage<PeoplePage> {
@@ -25,6 +26,11 @@ public class PeoplePage extends BasePage<PeoplePage> {
 
   public PeoplePage userShouldBePresentedInTable(String username) {
     table.getRowByUsername(username).shouldBe(visible);
+    return this;
+  }
+
+  public PeoplePage usersShouldBePresentedInTable(TestUser... users) {
+    table.usersShouldBePresentedInTable(users);
     return this;
   }
 }

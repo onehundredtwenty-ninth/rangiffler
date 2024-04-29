@@ -4,7 +4,7 @@ buildscript {
         grpcVersion = '1.58.0'
         junitVersion = '5.10.0'
         allureVersion = '2.24.0'
-        selenideVersion = '6.18.0'
+        selenideVersion = '7.3.1'
         logbackVersion = '1.4.11'
         slf4jVersion = '2.0.9'
         springJdbcVersion = '6.0.12'
