@@ -36,7 +36,7 @@ public class GqlPhoto extends GqlResponseType {
 
       var photo = new GqlPhoto();
       photo.setId(UUID.fromString(node.get("id").asText()));
-      photo.setSrc(node.get("src").asText());
+      photo.setSrc(node.get("src") != null ? node.get("src").asText() : null);
       photo.setDescription(node.get("description").asText());
       photo.setCreationDate(node.get("creationDate") == null || node.get("creationDate").asText().isBlank()
           ? null
