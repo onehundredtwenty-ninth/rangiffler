@@ -12,6 +12,7 @@ import com.onehundredtwentyninth.rangiffler.page.component.PeopleTable;
 public class PeoplePage extends BasePage<PeoplePage> {
 
   private final SelenideElement friendsTab = $x("//button[text()='Friends']");
+  private final SelenideElement searchInput = $x("//input[@placeholder='Search people']");
   private final PeopleTable table = new PeopleTable($("//table"));
 
   public PeoplePage open() {
@@ -29,8 +30,13 @@ public class PeoplePage extends BasePage<PeoplePage> {
     return this;
   }
 
-  public PeoplePage usersShouldBePresentedInTable(TestUser... users) {
+  public PeoplePage exactlyUsersShouldBePresentedInTable(TestUser... users) {
     table.usersShouldBePresentedInTable(users);
+    return this;
+  }
+
+  public PeoplePage search(String searchQuery) {
+    searchInput.setValue(searchQuery).pressEnter();
     return this;
   }
 }

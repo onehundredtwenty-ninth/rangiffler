@@ -9,6 +9,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.PeoplePage;
 import io.qameta.allure.Epic;
@@ -35,9 +36,74 @@ class FriendsListTest extends BaseWebTest {
       }
   )
   @Test
-  void friendsShouldBePresentedInTableOnFriendsTab(TestUser user) {
+  void friendsShouldBePresented(TestUser user) {
     peoplePage.open()
         .openFriendsTab()
-        .usersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
+        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по username")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void friendsWithUsernameFilterShouldBePresented(TestUser user) {
+    peoplePage.open()
+        .openFriendsTab()
+        .search(user.getFriends().get(0).getUsername())
+        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по firstname")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void friendsWithFirstnameFilterShouldBePresented(TestUser user) {
+    peoplePage.open()
+        .openFriendsTab()
+        .search(user.getFriends().get(0).getFirstname())
+        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
+  }
+
+  @DisplayName("Получение друзей пользователя с фильтрацией по lastname")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend
+      }
+  )
+  @Test
+  void friendsWithLastnameFilterShouldBePresented(TestUser user) {
+    peoplePage.open()
+        .openFriendsTab()
+        .search(user.getFriends().get(0).getLastName())
+        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
+  }
+
+  @DisplayName("Отсутствие неподтверженных друзей в списке друзей пользователя")
+  @ApiLogin
+  @CreateUser(
+      friends = {
+          @Friend,
+          @Friend(pending = true),
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+      }
+  )
+  @Test
+  void pendingFriendsShouldNotBePresented(TestUser user) {
+    peoplePage.open()
+        .openFriendsTab()
+        .search(user.getFriends().get(0).getLastName())
+        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
   }
 }
