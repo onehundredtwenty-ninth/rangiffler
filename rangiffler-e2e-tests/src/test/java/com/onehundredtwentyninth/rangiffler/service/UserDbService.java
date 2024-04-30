@@ -6,6 +6,8 @@ import com.onehundredtwentyninth.rangiffler.db.model.AuthorityEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.model.UserAuthEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
@@ -20,6 +22,8 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,11 +36,13 @@ public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
+  private final CountryRepository countryRepository = new CountryRepositorySJdbc();
   private final PhotoService photoService = new PhotoDbService();
   private final Faker faker = new Faker();
 
   @Override
-  public TestUser createUser(String username, String password, String firstname, String lastname) {
+  public TestUser createUser(String username, String password, String firstname, String lastname, UUID countryId,
+      byte[] avatar) {
     var userAuth = new UserAuthEntity();
     userAuth.setUsername(username);
     userAuth.setPassword(password);
@@ -58,7 +64,8 @@ public class UserDbService implements UserService {
     userEntity.setUsername(username);
     userEntity.setLastName(lastname);
     userEntity.setFirstname(firstname);
-    userEntity.setCountryId(UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"));
+    userEntity.setCountryId(countryId);
+    userEntity.setAvatar(avatar);
 
     userRepository.createInAuth(userAuth);
     userEntity = userRepository.createInUserdata(userEntity);
@@ -91,7 +98,8 @@ public class UserDbService implements UserService {
   @Override
   public TestUser createRandomUser() {
     var faker = new Faker();
-    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName());
+    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName(),
+        UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"), new byte[]{});
   }
 
   @Override
@@ -122,10 +130,14 @@ public class UserDbService implements UserService {
 
   @Override
   public TestUser createTestUser(CreateUser userParameters) {
-    var createdUser = userParameters.username().isEmpty()
-        ? createRandomUser()
-        : createUser(userParameters.username(), userParameters.password(), faker.name().firstName(),
-            faker.name().lastName());
+    var username = userParameters.username().isEmpty() ? faker.name().username() : userParameters.username();
+    var password = userParameters.password().isEmpty() ? faker.internet().password() : userParameters.password();
+    var userCountry = countryRepository.findCountryByCode(userParameters.countryCode().getCode());
+    var userAvatar = ImageUtils.getImageFromResourceAsBase64(userParameters.avatar().getFileName());
+
+    var createdUser = createUser(username, password, faker.name().firstName(), faker.name().lastName(),
+        userCountry.getId(), userAvatar.getBytes(StandardCharsets.UTF_8));
+
     createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 
     var friends = new ArrayList<TestUser>();

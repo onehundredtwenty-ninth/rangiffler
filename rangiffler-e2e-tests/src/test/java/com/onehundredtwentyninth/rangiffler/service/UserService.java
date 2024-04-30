@@ -12,7 +12,8 @@ public interface UserService {
 
   TestUser createTestUser(CreateUser userParameters);
 
-  TestUser createUser(String username, String password, String firstname, String lastname);
+  TestUser createUser(String username, String password, String firstname, String lastname, UUID countryId,
+      byte[] avatar);
 
   void deleteUser(TestUser testUser);
 
