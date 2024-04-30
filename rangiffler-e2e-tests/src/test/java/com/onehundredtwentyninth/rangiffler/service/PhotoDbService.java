@@ -5,8 +5,8 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepositorySJdbc;
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.mapper.PhotoMapper;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -19,7 +19,7 @@ public class PhotoDbService implements PhotoService {
   private final CountryRepository countryRepository = new CountryRepositorySJdbc();
 
   @Override
-  public Photo createPhoto(UUID userId, String countryCode, String image, String description) {
+  public TestPhoto createPhoto(UUID userId, String countryCode, String image, String description) {
     var country = countryRepository.findCountryByCode(countryCode);
 
     var photoEntity = new PhotoEntity();
@@ -30,7 +30,7 @@ public class PhotoDbService implements PhotoService {
     photoEntity.setCreatedDate(Timestamp.from(Instant.now()));
 
     photoEntity = photoRepository.createPhoto(photoEntity);
-    return PhotoMapper.toMessage(photoEntity);
+    return PhotoMapper.toTestPhoto(photoEntity);
   }
 
   @Override

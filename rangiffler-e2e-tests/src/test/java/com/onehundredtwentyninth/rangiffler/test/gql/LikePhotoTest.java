@@ -16,14 +16,15 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.LikeInput;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -46,14 +47,14 @@ class LikePhotoTest {
   @CreateUser(
       friends = {
           @Friend(photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           })
       }
   )
   @Test
   void likePhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
-    var photoId = UUID.fromString(user.getFriends().get(0).getPhotos().get(0).getId());
+    var photoId = user.getFriends().get(0).getPhotos().get(0).getId();
     var input = new PhotoInput();
     input.setId(photoId);
     input.setLike(new LikeInput(user.getId()));
@@ -79,14 +80,14 @@ class LikePhotoTest {
   @CreateUser(
       friends = {
           @Friend(photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           })
       }
   )
   @Test
   void rejectLikePhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
-    var photoId = UUID.fromString(user.getFriends().get(0).getPhotos().get(0).getId());
+    var photoId = user.getFriends().get(0).getPhotos().get(0).getId();
     var input = new PhotoInput();
     input.setId(photoId);
     input.setLike(new LikeInput(user.getId()));

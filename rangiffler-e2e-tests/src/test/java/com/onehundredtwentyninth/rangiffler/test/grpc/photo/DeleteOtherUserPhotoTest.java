@@ -10,6 +10,8 @@ import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -27,7 +29,7 @@ class DeleteOtherUserPhotoTest extends GrpcPhotoTestBase {
   @CreateUser(
       friends = @Friend(
           photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           }
       )
   )
@@ -35,11 +37,12 @@ class DeleteOtherUserPhotoTest extends GrpcPhotoTestBase {
   void deletePhotoTest(TestUser user) {
     final DeletePhotoRequest request = DeletePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setPhotoId(user.getFriends().get(0).getPhotos().get(0).getId())
+        .setPhotoId(user.getFriends().get(0).getPhotos().get(0).getId().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.deletePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId(), user.getId().toString());
+        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId().toString(),
+            user.getId().toString());
   }
 }

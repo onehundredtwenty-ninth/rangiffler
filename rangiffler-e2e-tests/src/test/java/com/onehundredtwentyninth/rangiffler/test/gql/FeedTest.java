@@ -17,12 +17,13 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -45,8 +46,8 @@ class FeedTest {
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png", likes = 2),
-          @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
       }
   )
   @Test
@@ -67,16 +68,15 @@ class FeedTest {
     );
 
     var expectedPhoto = user.getPhotos().get(0);
-    var expectedCountry = countryRepository.findCountryById(UUID.fromString(expectedPhoto.getCountryId()));
-    var expectedLikes = photoRepository.findLikesByPhotoId(UUID.fromString(expectedPhoto.getId())).stream()
+    var expectedLikes = photoRepository.findLikesByPhotoId(expectedPhoto.getId()).stream()
         .map(s -> new GqlLike(s.getUserId(), null, null))
         .toList();
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
-            .hasId(UUID.fromString(expectedPhoto.getId()))
-            .hasSrc(expectedPhoto.getSrc().toByteArray())
-            .hasCountryCode(expectedCountry.getCode())
+            .hasId(expectedPhoto.getId())
+            .hasSrc(expectedPhoto.getPhoto())
+            .hasCountryCode(expectedPhoto.getCountry().getCode())
             .hasDescription(expectedPhoto.getDescription())
             .hasTotalLikes(2)
             .hasLikes(expectedLikes)
@@ -93,11 +93,11 @@ class FeedTest {
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png", likes = 2),
-          @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
       }, friends = {
           @Friend(
-              photos = @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+              photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
           )
   }
   )
@@ -120,16 +120,15 @@ class FeedTest {
     );
 
     var expectedPhoto = user.getPhotos().get(0);
-    var expectedCountry = countryRepository.findCountryById(UUID.fromString(expectedPhoto.getCountryId()));
-    var expectedLikes = photoRepository.findLikesByPhotoId(UUID.fromString(expectedPhoto.getId())).stream()
+    var expectedLikes = photoRepository.findLikesByPhotoId(expectedPhoto.getId()).stream()
         .map(s -> new GqlLike(s.getUserId(), null, null))
         .toList();
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
-            .hasId(UUID.fromString(expectedPhoto.getId()))
-            .hasSrc(expectedPhoto.getSrc().toByteArray())
-            .hasCountryCode(expectedCountry.getCode())
+            .hasId(expectedPhoto.getId())
+            .hasSrc(expectedPhoto.getPhoto())
+            .hasCountryCode(expectedPhoto.getCountry().getCode())
             .hasDescription(expectedPhoto.getDescription())
             .hasTotalLikes(2)
             .hasLikes(expectedLikes)

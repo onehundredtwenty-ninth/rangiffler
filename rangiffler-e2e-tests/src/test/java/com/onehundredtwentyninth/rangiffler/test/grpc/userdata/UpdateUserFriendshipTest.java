@@ -57,7 +57,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -88,7 +88,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -119,7 +119,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -152,7 +152,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(

@@ -6,20 +6,24 @@ import com.onehundredtwentyninth.rangiffler.db.model.AuthorityEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.model.UserAuthEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
-import com.onehundredtwentyninth.rangiffler.grpc.Like;
-import com.onehundredtwentyninth.rangiffler.grpc.Likes;
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
+import com.onehundredtwentyninth.rangiffler.model.TestLike;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,11 +36,13 @@ public class UserDbService implements UserService {
 
   private final UserRepository userRepository = new UserRepositorySJdbc();
   private final FriendshipRepository friendshipRepository = new FriendshipRepositorySJdbc();
+  private final CountryRepository countryRepository = new CountryRepositorySJdbc();
   private final PhotoService photoService = new PhotoDbService();
   private final Faker faker = new Faker();
 
   @Override
-  public TestUser createUser(String username, String password, String firstname, String lastname) {
+  public TestUser createUser(String username, String password, String firstname, String lastname, UUID countryId,
+      byte[] avatar) {
     var userAuth = new UserAuthEntity();
     userAuth.setUsername(username);
     userAuth.setPassword(password);
@@ -58,7 +64,8 @@ public class UserDbService implements UserService {
     userEntity.setUsername(username);
     userEntity.setLastName(lastname);
     userEntity.setFirstname(firstname);
-    userEntity.setCountryId(UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"));
+    userEntity.setCountryId(countryId);
+    userEntity.setAvatar(avatar);
 
     userRepository.createInAuth(userAuth);
     userEntity = userRepository.createInUserdata(userEntity);
@@ -71,11 +78,11 @@ public class UserDbService implements UserService {
 
   @Override
   public void deleteUser(TestUser testUser) {
-    testUser.getPhotos().forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+    testUser.getPhotos().forEach(s -> photoService.deletePhoto(s.getId()));
     testUser.getPhotos().stream()
-        .flatMap(s -> s.getLikes().getLikesList().stream())
+        .flatMap(s -> s.getLikes().stream())
         .forEach(s -> {
-          var userId = UUID.fromString(s.getUserId());
+          var userId = s.getUserId();
           var username = userRepository.findById(userId).getUsername();
           deleteUser(userId, username);
         });
@@ -91,7 +98,8 @@ public class UserDbService implements UserService {
   @Override
   public TestUser createRandomUser() {
     var faker = new Faker();
-    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName());
+    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName(),
+        UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"), new byte[]{});
   }
 
   @Override
@@ -122,10 +130,15 @@ public class UserDbService implements UserService {
 
   @Override
   public TestUser createTestUser(CreateUser userParameters) {
-    var createdUser = userParameters.username().isEmpty()
-        ? createRandomUser()
-        : createUser(userParameters.username(), userParameters.password(), faker.name().firstName(),
-            faker.name().lastName());
+    var username = userParameters.username().isEmpty() ? faker.name().username() : userParameters.username();
+    var password = userParameters.password().isEmpty() ? faker.internet().password() : userParameters.password();
+    var userCountry = countryRepository.findCountryByCode(userParameters.countryCode().getCode());
+    var userAvatar = ImageUtils.getImageFromResourceAsBase64(userParameters.avatar().getFileName());
+
+    var createdUser = createUser(username, password, faker.name().firstName(), faker.name().lastName(),
+        userCountry.getId(), userAvatar.getBytes(StandardCharsets.UTF_8));
+    createdUser.setCountry(CountryMapper.toTestCountry(userCountry));
+
     createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 
     var friends = new ArrayList<TestUser>();
@@ -140,20 +153,24 @@ public class UserDbService implements UserService {
   }
 
   @Override
-  public List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters) {
-    var createdPhotos = new ArrayList<Photo>();
+  public List<TestPhoto> createPhotos(UUID userId, WithPhoto[] photosParameters) {
+    var createdPhotos = new ArrayList<TestPhoto>();
     for (var photoParameters : photosParameters) {
-      var createdPhoto = photoService.createPhoto(userId, photoParameters.countryCode(), photoParameters.image(),
-          photoParameters.description());
+      var photoCountry = countryRepository.findCountryByCode(photoParameters.countryCode().getCode());
+      var createdPhoto = photoService.createPhoto(userId,
+          photoParameters.countryCode().getCode(),
+          photoParameters.image().getFileName(),
+          photoParameters.description()
+      );
+      createdPhoto.setCountry(CountryMapper.toTestCountry(photoCountry));
 
-      var likes = new ArrayList<Like>();
+      var likes = new ArrayList<TestLike>();
       for (var i = 0; i < photoParameters.likes(); i++) {
         var likeUser = createRandomUser();
-        photoService.likePhoto(likeUser.getId(), UUID.fromString(createdPhoto.getId()));
-        likes.add(Like.newBuilder().setUserId(likeUser.getId().toString()).build());
+        photoService.likePhoto(likeUser.getId(), createdPhoto.getId());
+        likes.add(new TestLike(null, likeUser.getId(), null));
       }
-      createdPhoto = createdPhoto.toBuilder()
-          .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
+      createdPhoto.setLikes(likes);
       createdPhotos.add(createdPhoto);
     }
     return createdPhotos;

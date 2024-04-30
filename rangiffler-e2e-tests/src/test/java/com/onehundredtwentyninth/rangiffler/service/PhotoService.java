@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Objects;
@@ -10,7 +10,7 @@ import org.apache.commons.io.FileUtils;
 
 public interface PhotoService {
 
-  Photo createPhoto(UUID userId, String countryCode, String image, String description);
+  TestPhoto createPhoto(UUID userId, String countryCode, String image, String description);
 
   void deletePhoto(UUID id);
 

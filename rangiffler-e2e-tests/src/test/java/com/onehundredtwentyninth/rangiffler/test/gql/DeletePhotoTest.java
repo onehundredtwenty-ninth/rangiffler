@@ -15,11 +15,12 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -40,7 +41,7 @@ class DeletePhotoTest {
   @DisplayName("Удаление фото")
   @ApiLogin
   @CreateUser(
-      photos = @WithPhoto(countryCode = "ca", image = "Amsterdam.png")
+      photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
   )
   @Test
   void deletePhotoTest(@Token String token, TestUser user, @GqlRequestFile("gql/deletePhoto.json") GqlRequest request) {
@@ -53,7 +54,7 @@ class DeletePhotoTest {
             .dataNotNull()
     );
 
-    var isPhotoExistsInDb = photoRepository.isPhotoExists(UUID.fromString(user.getPhotos().get(0).getId()));
+    var isPhotoExistsInDb = photoRepository.isPhotoExists(user.getPhotos().get(0).getId());
 
     SoftAssertions.assertSoftly(softAssertions -> {
       softAssertions.assertThat(response.getData().getDeletePhoto())

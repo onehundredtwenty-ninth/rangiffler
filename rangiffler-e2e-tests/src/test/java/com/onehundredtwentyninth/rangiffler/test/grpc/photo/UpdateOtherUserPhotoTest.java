@@ -12,6 +12,8 @@ import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -33,7 +35,7 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
   @CreateUser(
       friends = @Friend(
           photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           }
       )
   )
@@ -43,13 +45,14 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setId(user.getFriends().get(0).getPhotos().get(0).getId())
+        .setId(user.getFriends().get(0).getPhotos().get(0).getId().toString())
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updatePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId(), user.getId().toString());
+        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId().toString(),
+            user.getId().toString());
   }
 }

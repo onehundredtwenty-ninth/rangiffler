@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
@@ -31,8 +30,6 @@ class GetCurrentUserTest {
 
   @Inject
   private GatewayClient gatewayClient;
-  @Inject
-  private CountryRepository countryRepository;
 
   @DisplayName("Получение текущего пользователя")
   @ApiLogin
@@ -47,8 +44,6 @@ class GetCurrentUserTest {
             .dataNotNull()
     );
 
-    var country = countryRepository.findCountryById(user.getCountryId());
-
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
             .hasId(user.getId())
@@ -56,7 +51,7 @@ class GetCurrentUserTest {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryCode(country.getCode())
+            .hasCountryCode(user.getCountry().getCode())
     );
   }
 }

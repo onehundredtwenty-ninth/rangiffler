@@ -8,6 +8,7 @@ import com.codeborne.selenide.SelenideElement;
 public class StartPage extends BasePage<StartPage> {
 
   private final SelenideElement loginBtn = $x("//button[text() = 'Login']");
+  private final SelenideElement registerBtn = $x("//a[text() = 'Register']");
 
   public StartPage open() {
     Selenide.open("/");
@@ -16,5 +17,9 @@ public class StartPage extends BasePage<StartPage> {
 
   public void clickLoginBtn() {
     loginBtn.click();
+  }
+
+  public void clickRegisterBtn() {
+    registerBtn.click();
   }
 }

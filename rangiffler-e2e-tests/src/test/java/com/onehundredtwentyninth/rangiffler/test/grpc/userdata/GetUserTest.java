@@ -39,7 +39,7 @@ class GetUserTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
   }
 
@@ -59,7 +59,7 @@ class GetUserTest extends GrpcUserdataTestBase {
             .hasFirstName(user.getFirstname())
             .hasLastName(user.getLastName())
             .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountryId().toString())
+            .hasCountryId(user.getCountry().getId().toString())
     );
   }
 }

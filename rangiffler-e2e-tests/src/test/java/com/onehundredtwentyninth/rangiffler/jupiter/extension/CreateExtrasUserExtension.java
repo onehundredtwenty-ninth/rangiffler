@@ -33,10 +33,7 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
 
     List<TestUser> createdUsers = new ArrayList<>();
     for (var userParameters : usersParameters) {
-      var createdUser = userParameters.username().isEmpty()
-          ? userService.createRandomUser()
-          : userService.createUser(userParameters.username(), userParameters.password(),
-              faker.name().firstName(), faker.name().lastName());
+      var createdUser = userService.createRandomUser();
       createdUsers.add(createdUser);
     }
     extensionContext.getStore(NAMESPACE).put(extensionContext.getUniqueId(), createdUsers);
