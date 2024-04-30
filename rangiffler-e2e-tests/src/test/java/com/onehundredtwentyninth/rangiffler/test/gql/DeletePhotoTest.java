@@ -21,7 +21,6 @@ import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -55,7 +54,7 @@ class DeletePhotoTest {
             .dataNotNull()
     );
 
-    var isPhotoExistsInDb = photoRepository.isPhotoExists(UUID.fromString(user.getPhotos().get(0).getId()));
+    var isPhotoExistsInDb = photoRepository.isPhotoExists(user.getPhotos().get(0).getId());
 
     SoftAssertions.assertSoftly(softAssertions -> {
       softAssertions.assertThat(response.getData().getDeletePhoto())

@@ -37,11 +37,12 @@ class DeleteOtherUserPhotoTest extends GrpcPhotoTestBase {
   void deletePhotoTest(TestUser user) {
     final DeletePhotoRequest request = DeletePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setPhotoId(user.getFriends().get(0).getPhotos().get(0).getId())
+        .setPhotoId(user.getFriends().get(0).getPhotos().get(0).getId().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.deletePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId(), user.getId().toString());
+        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId().toString(),
+            user.getId().toString());
   }
 }

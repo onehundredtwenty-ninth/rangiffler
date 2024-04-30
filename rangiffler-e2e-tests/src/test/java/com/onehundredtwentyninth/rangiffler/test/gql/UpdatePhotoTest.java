@@ -25,7 +25,6 @@ import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -54,7 +53,7 @@ class UpdatePhotoTest {
   @Test
   void updatePhotoTest(@Token String token, TestUser user, @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
     var photoInput = mapper.convertValue(request.variables().get("input"), PhotoInput.class);
-    photoInput.setId(UUID.fromString(user.getPhotos().get(0).getId()));
+    photoInput.setId(user.getPhotos().get(0).getId());
     request.variables().put("input", photoInput);
 
     var response = gatewayClient.updatePhoto(token, request);
@@ -65,13 +64,13 @@ class UpdatePhotoTest {
             .dataNotNull()
     );
 
-    var dbPhoto = photoRepository.findRequiredPhotoById(UUID.fromString(user.getPhotos().get(0).getId()));
+    var dbPhoto = photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId());
     var country = countryRepository.findCountryByCode(photoInput.getCountry().code());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getPhoto())
-            .hasId(UUID.fromString(user.getPhotos().get(0).getId()))
-            .hasSrc(user.getPhotos().get(0).getSrc().toByteArray())
+            .hasId(user.getPhotos().get(0).getId())
+            .hasSrc(user.getPhotos().get(0).getPhoto())
             .hasCountryCode(photoInput.getCountry().code())
             .hasDescription(photoInput.getDescription())
             .hasTotalLikes(0)
@@ -79,7 +78,7 @@ class UpdatePhotoTest {
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbPhoto)
-            .hasId(user.getPhotos().get(0).getId())
+            .hasId(user.getPhotos().get(0).getId().toString())
             .hasUserId(user.getId().toString())
             .hasCountryId(country.getId().toString())
             .hasDescription(photoInput.getDescription())

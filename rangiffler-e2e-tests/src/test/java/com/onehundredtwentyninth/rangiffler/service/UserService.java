@@ -1,9 +1,9 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.util.List;
 import java.util.UUID;
@@ -25,5 +25,5 @@ public interface UserService {
 
   TestUser createFriend(UUID userId, Friend friendParameters);
 
-  List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters);
+  List<TestPhoto> createPhotos(UUID userId, WithPhoto[] photosParameters);
 }

@@ -45,13 +45,14 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setId(user.getFriends().get(0).getPhotos().get(0).getId())
+        .setId(user.getFriends().get(0).getPhotos().get(0).getId().toString())
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updatePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId(), user.getId().toString());
+        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId().toString(),
+            user.getId().toString());
   }
 }

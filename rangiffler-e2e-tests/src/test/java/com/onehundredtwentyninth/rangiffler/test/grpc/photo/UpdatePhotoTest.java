@@ -47,7 +47,7 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setId(user.getPhotos().get(0).getId())
+        .setId(user.getPhotos().get(0).getId().toString())
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();

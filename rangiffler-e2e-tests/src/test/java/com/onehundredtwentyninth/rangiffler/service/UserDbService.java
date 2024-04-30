@@ -12,9 +12,6 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
-import com.onehundredtwentyninth.rangiffler.grpc.Like;
-import com.onehundredtwentyninth.rangiffler.grpc.Likes;
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
@@ -22,6 +19,8 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
+import com.onehundredtwentyninth.rangiffler.model.TestLike;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import java.nio.charset.StandardCharsets;
@@ -79,11 +78,11 @@ public class UserDbService implements UserService {
 
   @Override
   public void deleteUser(TestUser testUser) {
-    testUser.getPhotos().forEach(s -> photoService.deletePhoto(UUID.fromString(s.getId())));
+    testUser.getPhotos().forEach(s -> photoService.deletePhoto(s.getId()));
     testUser.getPhotos().stream()
-        .flatMap(s -> s.getLikes().getLikesList().stream())
+        .flatMap(s -> s.getLikes().stream())
         .forEach(s -> {
-          var userId = UUID.fromString(s.getUserId());
+          var userId = s.getUserId();
           var username = userRepository.findById(userId).getUsername();
           deleteUser(userId, username);
         });
@@ -154,23 +153,24 @@ public class UserDbService implements UserService {
   }
 
   @Override
-  public List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters) {
-    var createdPhotos = new ArrayList<Photo>();
+  public List<TestPhoto> createPhotos(UUID userId, WithPhoto[] photosParameters) {
+    var createdPhotos = new ArrayList<TestPhoto>();
     for (var photoParameters : photosParameters) {
+      var photoCountry = countryRepository.findCountryByCode(photoParameters.countryCode().getCode());
       var createdPhoto = photoService.createPhoto(userId,
           photoParameters.countryCode().getCode(),
           photoParameters.image().getFileName(),
           photoParameters.description()
       );
+      createdPhoto.setCountry(CountryMapper.toTestCountry(photoCountry));
 
-      var likes = new ArrayList<Like>();
+      var likes = new ArrayList<TestLike>();
       for (var i = 0; i < photoParameters.likes(); i++) {
         var likeUser = createRandomUser();
-        photoService.likePhoto(likeUser.getId(), UUID.fromString(createdPhoto.getId()));
-        likes.add(Like.newBuilder().setUserId(likeUser.getId().toString()).build());
+        photoService.likePhoto(likeUser.getId(), createdPhoto.getId());
+        likes.add(new TestLike(null, likeUser.getId(), null));
       }
-      createdPhoto = createdPhoto.toBuilder()
-          .setLikes(Likes.newBuilder().setTotal(likes.size()).addAllLikes(likes).build()).build();
+      createdPhoto.setLikes(likes);
       createdPhotos.add(createdPhoto);
     }
     return createdPhotos;

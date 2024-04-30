@@ -10,7 +10,6 @@ import com.onehundredtwentyninth.rangiffler.db.model.CountryEntity;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.CountryStatisticResponse;
-import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
@@ -53,14 +52,14 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
     final CountryEntity caCountry = countryRepository.findCountryByCode("ca");
     final CountryEntity ruCountry = countryRepository.findCountryByCode("ru");
 
-    final Photo updatedPhoto = user.getPhotos()
-        .stream().filter(s -> s.getCountryId().equals(caCountry.getId().toString()))
+    final var updatedPhoto = user.getPhotos()
+        .stream().filter(s -> s.getCountry().getId().equals(caCountry.getId()))
         .findFirst()
         .orElseThrow();
 
     final UpdatePhotoRequest updatePhotoRequest = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setId(updatedPhoto.getId())
+        .setId(updatedPhoto.getId().toString())
         .setCountryId(ruCountry.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();

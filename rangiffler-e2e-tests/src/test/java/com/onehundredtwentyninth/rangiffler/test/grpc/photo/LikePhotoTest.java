@@ -40,7 +40,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
   void likePhotoTest(TestUser user) {
     final LikePhotoRequest request = LikePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setPhotoId(user.getPhotos().get(0).getId())
+        .setPhotoId(user.getPhotos().get(0).getId().toString())
         .build();
     final Photo response = blockingStub.likePhoto(request);
 
@@ -66,7 +66,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
   void rejectLikePhotoTest(TestUser user) {
     final LikePhotoRequest request = LikePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setPhotoId(user.getPhotos().get(0).getId())
+        .setPhotoId(user.getPhotos().get(0).getId().toString())
         .build();
     blockingStub.likePhoto(request);
     final Photo response = blockingStub.likePhoto(request);

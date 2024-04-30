@@ -90,14 +90,14 @@ class CreateUserTest {
         () -> Assertions.assertNotNull(user.getPhotos()),
         () -> Assertions.assertEquals(2, user.getPhotos().size()),
         () -> Assertions.assertNotNull(user.getPhotos().get(0).getId()),
-        () -> Assertions.assertNotNull(user.getPhotos().get(0).getSrc()),
-        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCountryId()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getPhoto()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCountry().getId()),
         () -> Assertions.assertEquals("insertedDescription", user.getPhotos().get(0).getDescription()),
-        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCreationDate()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(0).getCreatedDate()),
         () -> Assertions.assertNotNull(user.getPhotos().get(0).getLikes()),
-        () -> Assertions.assertEquals(1, user.getPhotos().get(0).getLikes().getTotal()),
-        () -> Assertions.assertEquals(2, user.getPhotos().get(1).getLikes().getTotal()),
-        () -> Assertions.assertNotNull(user.getPhotos().get(1).getLikes().getLikesList().get(0).getUserId())
+        () -> Assertions.assertEquals(1, user.getPhotos().get(0).getLikes().size()),
+        () -> Assertions.assertEquals(2, user.getPhotos().get(1).getLikes().size()),
+        () -> Assertions.assertNotNull(user.getPhotos().get(1).getLikes().get(0).getUserId())
     );
   }
 
@@ -123,11 +123,11 @@ class CreateUserTest {
         () -> Assertions.assertEquals(1, user.getFriends().get(0).getPhotos().size()),
         () -> Assertions.assertEquals(1, user.getFriends().get(1).getPhotos().size()),
         () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getId()),
-        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getSrc()),
-        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCountryId()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getPhoto()),
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCountry().getId()),
         () -> Assertions.assertEquals("insertedDescriptionFriend2",
             user.getFriends().get(1).getPhotos().get(0).getDescription()),
-        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCreationDate())
+        () -> Assertions.assertNotNull(user.getFriends().get(1).getPhotos().get(0).getCreatedDate())
     );
   }
 

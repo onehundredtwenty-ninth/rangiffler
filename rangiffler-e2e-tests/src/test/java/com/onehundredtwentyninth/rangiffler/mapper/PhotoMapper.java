@@ -5,11 +5,25 @@ import com.google.protobuf.Timestamp;
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
 import com.onehundredtwentyninth.rangiffler.grpc.Likes;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.model.TestCountry;
+import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import java.util.Collections;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PhotoMapper {
+
+  public static TestPhoto toTestPhoto(PhotoEntity photoEntity) {
+    return TestPhoto.builder()
+        .id(photoEntity.getId())
+        .photo(photoEntity.getPhoto())
+        .country(new TestCountry(photoEntity.getCountryId(), null, null, null))
+        .description(photoEntity.getDescription() != null ? photoEntity.getDescription() : "")
+        .createdDate(photoEntity.getCreatedDate().toLocalDateTime())
+        .likes(Collections.emptyList())
+        .build();
+  }
 
   public static Photo toMessage(PhotoEntity photoEntity) {
     return Photo.newBuilder()
