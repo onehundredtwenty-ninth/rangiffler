@@ -21,6 +21,10 @@ public class PeopleCollectionCondition {
       @Nonnull
       @Override
       public CheckResult check(Driver driver, List<WebElement> elements) {
+        if (elements.size() != expectedPeople.length) {
+          return CheckResult.rejected("Incorrect table size", elements);
+        }
+
         boolean isCheckSuccess = true;
         List<TestUser> actualUsers = new ArrayList<>();
 
