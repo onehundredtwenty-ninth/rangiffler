@@ -19,6 +19,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
@@ -137,6 +138,7 @@ public class UserDbService implements UserService {
 
     var createdUser = createUser(username, password, faker.name().firstName(), faker.name().lastName(),
         userCountry.getId(), userAvatar.getBytes(StandardCharsets.UTF_8));
+    createdUser.setCountry(CountryMapper.toTestCountry(userCountry));
 
     createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 

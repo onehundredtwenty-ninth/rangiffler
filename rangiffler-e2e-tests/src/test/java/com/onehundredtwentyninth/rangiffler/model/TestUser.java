@@ -19,6 +19,7 @@ public class TestUser {
   private String lastName;
   private byte[] avatar;
   private UUID countryId;
+  private TestCountry country;
   private List<TestUser> friends;
   private List<Photo> photos;
   @JsonIgnore
