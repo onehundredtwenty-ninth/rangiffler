@@ -13,6 +13,8 @@ import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -32,7 +34,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
   @DisplayName("Лайк фото пользователя")
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
       })
   @Test
   void likePhotoTest(TestUser user) {
@@ -58,7 +60,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
   @DisplayName("Снять лайк с фото пользователя")
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
       })
   @Test
   void rejectLikePhotoTest(TestUser user) {

@@ -157,8 +157,11 @@ public class UserDbService implements UserService {
   public List<Photo> createPhotos(UUID userId, WithPhoto[] photosParameters) {
     var createdPhotos = new ArrayList<Photo>();
     for (var photoParameters : photosParameters) {
-      var createdPhoto = photoService.createPhoto(userId, photoParameters.countryCode(), photoParameters.image(),
-          photoParameters.description());
+      var createdPhoto = photoService.createPhoto(userId,
+          photoParameters.countryCode().getCode(),
+          photoParameters.image().getFileName(),
+          photoParameters.description()
+      );
 
       var likes = new ArrayList<Like>();
       for (var i = 0; i < photoParameters.likes(); i++) {

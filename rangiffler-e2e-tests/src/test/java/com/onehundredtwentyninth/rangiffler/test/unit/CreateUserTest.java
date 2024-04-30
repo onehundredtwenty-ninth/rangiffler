@@ -1,13 +1,15 @@
 package com.onehundredtwentyninth.rangiffler.test.unit;
 
-import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateExtrasUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateExtrasUserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -79,8 +81,8 @@ class CreateUserTest {
   }
 
   @CreateUser(photos = {
-      @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription", likes = 1),
-      @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescription2", likes = 2)
+      @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, description = "insertedDescription", likes = 1),
+      @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescription2", likes = 2)
   })
   @Test
   void createRandomUserWithPhotoTest(TestUser user) {
@@ -103,15 +105,15 @@ class CreateUserTest {
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
               photos = {
-                  @WithPhoto(countryCode = "mx", image = "France.png", description = "insertedDescriptionFriend"),
+                  @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
               photos = {
-                  @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescriptionFriend2"),
+                  @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })
       },
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, description = "insertedDescription"),
       })
   @Test
   void createRandomUserWithFriendsPhotoTest(TestUser user) {
@@ -134,15 +136,15 @@ class CreateUserTest {
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
               photos = {
-                  @WithPhoto(countryCode = "mx", image = "France.png", description = "insertedDescriptionFriend"),
+                  @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
               photos = {
-                  @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescriptionFriend2"),
+                  @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })
       },
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png", description = "insertedDescription"),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, description = "insertedDescription"),
       })
   @Test
   void createRandomUserWithFriendsPhotoAndExtrasTest(TestUser user, @Extras TestUser[] extras) {

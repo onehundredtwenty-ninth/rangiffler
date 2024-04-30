@@ -16,9 +16,11 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.LikeInput;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
@@ -46,7 +48,7 @@ class LikePhotoTest {
   @CreateUser(
       friends = {
           @Friend(photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           })
       }
   )
@@ -79,7 +81,7 @@ class LikePhotoTest {
   @CreateUser(
       friends = {
           @Friend(photos = {
-              @WithPhoto(countryCode = "cn", image = "France.png")
+              @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
           })
       }
   )

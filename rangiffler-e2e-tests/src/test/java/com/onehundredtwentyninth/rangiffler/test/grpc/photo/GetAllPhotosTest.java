@@ -16,6 +16,8 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -37,7 +39,7 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
   @DisplayName("Получение всех фото пользователя")
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png", likes = 1)
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 1)
       })
   @Test
   void getAllPhotosTest(TestUser user) {
@@ -75,15 +77,15 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
               photos = {
-                  @WithPhoto(countryCode = "mx", image = "France.png", description = "insertedDescriptionFriend"),
+                  @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
               photos = {
-                  @WithPhoto(countryCode = "ca", image = "Amsterdam.png", description = "insertedDescriptionFriend2"),
+                  @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })
       },
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
       })
   @Test
   void getAllPhotosWithFriendsTest(TestUser user) {

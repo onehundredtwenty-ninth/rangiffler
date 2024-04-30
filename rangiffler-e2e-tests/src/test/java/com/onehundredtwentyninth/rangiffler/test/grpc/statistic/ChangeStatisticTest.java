@@ -16,6 +16,8 @@ import com.onehundredtwentyninth.rangiffler.grpc.StatisticResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -40,9 +42,9 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
   @DisplayName("Изменение статистики при обновлении фото")
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = "cn", image = "France.png"),
-          @WithPhoto(countryCode = "cn", image = "France.png"),
-          @WithPhoto(countryCode = "ca", image = "France.png")
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.FRANCE)
       }
   )
   @Test
