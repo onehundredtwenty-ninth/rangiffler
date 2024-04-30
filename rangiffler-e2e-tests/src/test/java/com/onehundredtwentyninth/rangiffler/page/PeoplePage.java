@@ -13,6 +13,7 @@ public class PeoplePage extends BasePage<PeoplePage> {
 
   private final SelenideElement friendsTab = $x("//button[text()='Friends']");
   private final SelenideElement incomeInvitationsTab = $x("//button[text()='Income invitations']");
+  private final SelenideElement outcomeInvitationsTab = $x("//button[text()='Outcome invitations']");
   private final SelenideElement searchInput = $x("//input[@placeholder='Search people']");
   private final PeopleTable table = new PeopleTable($("//table"));
 
@@ -28,6 +29,11 @@ public class PeoplePage extends BasePage<PeoplePage> {
 
   public PeoplePage openIncomeInvitationsTab() {
     incomeInvitationsTab.click();
+    return this;
+  }
+
+  public PeoplePage openOutcomeInvitationsTab() {
+    outcomeInvitationsTab.click();
     return this;
   }
 
