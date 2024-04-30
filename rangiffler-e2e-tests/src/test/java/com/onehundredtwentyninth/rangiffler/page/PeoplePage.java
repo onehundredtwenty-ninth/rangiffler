@@ -14,7 +14,9 @@ public class PeoplePage extends BasePage<PeoplePage> {
   private final SelenideElement friendsTab = $x("//button[text()='Friends']");
   private final SelenideElement incomeInvitationsTab = $x("//button[text()='Income invitations']");
   private final SelenideElement outcomeInvitationsTab = $x("//button[text()='Outcome invitations']");
+  private final SelenideElement allPeopleTab = $x("//button[text()='All People']");
   private final SelenideElement searchInput = $x("//input[@placeholder='Search people']");
+  private final SelenideElement noUserYetMessage = $x("//p[text()='There are no users yet']");
   private final PeopleTable table = new PeopleTable($("//table"));
 
   public PeoplePage open() {
@@ -37,8 +39,13 @@ public class PeoplePage extends BasePage<PeoplePage> {
     return this;
   }
 
-  public PeoplePage userShouldBePresentedInTable(String username) {
-    table.getRowByUsername(username).shouldBe(visible);
+  public PeoplePage openAllPeopleTab() {
+    allPeopleTab.click();
+    return this;
+  }
+
+  public PeoplePage noUserYetMessageShouldBePresented() {
+    noUserYetMessage.shouldBe(visible);
     return this;
   }
 
