@@ -59,12 +59,12 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void acceptNonExistentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getOutcomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отклонить собственную заявку в друзья")
@@ -77,12 +77,12 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void rejectNonExistentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getOutcomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отправка FriendshipAction UNSPECIFIED")
@@ -95,7 +95,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void unspecifiedFriendshipActionTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getOutcomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.UNSPECIFIED)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
@@ -132,14 +132,14 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void acceptTwiceFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     blockingStub.updateUserFriendship(request);
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Отклонить ранее принятую заявку в друзья")
@@ -152,20 +152,20 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void rejectTwiceFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest acceptRequest = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     blockingStub.updateUserFriendship(acceptRequest);
 
     final UpdateUserFriendshipRequest rejectRequest = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(rejectRequest))
         .isInstanceOfStatusRuntimeException()
-        .hasFriendshipRequestNotFoundMessage(user.getFriends().get(0).getUsername(), user.getUsername());
+        .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
   @DisplayName("Обновить заявку в друзья несуществующим пользователем")

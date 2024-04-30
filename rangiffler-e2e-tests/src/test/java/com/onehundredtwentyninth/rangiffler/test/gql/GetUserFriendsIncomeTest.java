@@ -53,12 +53,12 @@ class GetUserFriendsIncomeTest {
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
-            .hasEdgesCount(user.getFriends().size())
+            .hasEdgesCount(user.getIncomeInvitations().size())
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getFriends().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
@@ -80,7 +80,7 @@ class GetUserFriendsIncomeTest {
   @Test
   void getIncomeInvitationsWithUsernameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getFriends().get(0).getUsername());
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(0).getUsername());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -96,7 +96,7 @@ class GetUserFriendsIncomeTest {
             .hasNext(false)
     );
 
-    var expectedFriend = user.getFriends().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
@@ -118,7 +118,7 @@ class GetUserFriendsIncomeTest {
   @Test
   void getIncomeInvitationsWithFirstnameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getFriends().get(1).getFirstname());
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(1).getFirstname());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -134,7 +134,7 @@ class GetUserFriendsIncomeTest {
             .hasNext(false)
     );
 
-    var expectedFriend = user.getFriends().get(1);
+    var expectedFriend = user.getIncomeInvitations().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
@@ -156,7 +156,7 @@ class GetUserFriendsIncomeTest {
   @Test
   void getIncomeInvitationsWithSurnameFilterTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getFriends().get(1).getLastName());
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(1).getLastName());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -172,7 +172,7 @@ class GetUserFriendsIncomeTest {
             .hasNext(false)
     );
 
-    var expectedFriend = user.getFriends().get(1);
+    var expectedFriend = user.getIncomeInvitations().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
@@ -210,7 +210,7 @@ class GetUserFriendsIncomeTest {
             .hasNext(false)
     );
 
-    var expectedFriend = user.getFriends().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())

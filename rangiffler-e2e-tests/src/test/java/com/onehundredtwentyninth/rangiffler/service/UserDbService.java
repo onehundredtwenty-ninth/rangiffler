@@ -13,7 +13,6 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJ
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
@@ -113,22 +112,6 @@ public class UserDbService implements UserService {
   }
 
   @Override
-  public TestUser createFriend(UUID userId, Friend friendParameters) {
-    var createdFriend = createRandomUser();
-
-    if (!friendParameters.pending()) {
-      createFriendship(userId, createdFriend.getId(), false);
-    } else {
-      if (friendParameters.friendshipRequestType() == FriendshipRequestType.OUTCOME) {
-        createFriendship(userId, createdFriend.getId(), true);
-      } else {
-        createFriendship(createdFriend.getId(), userId, true);
-      }
-    }
-    return createdFriend;
-  }
-
-  @Override
   public TestUser createTestUser(CreateUser userParameters) {
     var username = userParameters.username().isEmpty() ? faker.name().username() : userParameters.username();
     var password = userParameters.password().isEmpty() ? faker.internet().password() : userParameters.password();
@@ -141,13 +124,23 @@ public class UserDbService implements UserService {
 
     createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 
-    var friends = new ArrayList<TestUser>();
     for (var friendParameters : userParameters.friends()) {
-      var createdFriend = createFriend(createdUser.getId(), friendParameters);
-      friends.add(createdFriend);
+      var createdFriend = createRandomUser();
       createdFriend.getPhotos().addAll(createPhotos(createdFriend.getId(), friendParameters.photos()));
+
+      if (!friendParameters.pending()) {
+        createFriendship(createdUser.getId(), createdFriend.getId(), false);
+        createdUser.getFriends().add(createdFriend);
+      } else {
+        if (friendParameters.friendshipRequestType() == FriendshipRequestType.OUTCOME) {
+          createFriendship(createdUser.getId(), createdFriend.getId(), true);
+          createdUser.getOutcomeInvitations().add(createdFriend);
+        } else {
+          createFriendship(createdFriend.getId(), createdUser.getId(), true);
+          createdUser.getIncomeInvitations().add(createdFriend);
+        }
+      }
     }
-    createdUser.getFriends().addAll(friends);
 
     return createdUser;
   }

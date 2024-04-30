@@ -14,7 +14,6 @@ import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoResponse;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
@@ -75,11 +74,11 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
   @DisplayName("Получение всех фото пользователя и его друзей")
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })

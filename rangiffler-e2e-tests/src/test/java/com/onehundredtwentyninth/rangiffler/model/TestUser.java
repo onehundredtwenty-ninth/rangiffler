@@ -19,6 +19,8 @@ public class TestUser {
   private byte[] avatar;
   private TestCountry country;
   private List<TestUser> friends;
+  private List<TestUser> incomeInvitations;
+  private List<TestUser> outcomeInvitations;
   private List<TestPhoto> photos;
   @JsonIgnore
   private TestData testData;

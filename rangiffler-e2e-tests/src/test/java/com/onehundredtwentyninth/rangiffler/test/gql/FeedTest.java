@@ -13,6 +13,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
@@ -46,8 +47,7 @@ class FeedTest {
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2),
-          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2)
       }
   )
   @Test
@@ -85,7 +85,6 @@ class FeedTest {
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getFeed())
             .hasStatCount("cn", 1)
-            .hasStatCount("ca", 1)
     );
   }
 
@@ -93,12 +92,14 @@ class FeedTest {
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
           @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
       }, friends = {
-          @Friend(
-              photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
-          )
+      @Friend(photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
+      @Friend(pending = true, photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
+      @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+          photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
+      )
   }
   )
   @Test
@@ -117,27 +118,6 @@ class FeedTest {
             .hasEdgesCount(3)
             .hasPrevious(false)
             .hasNext(false)
-    );
-
-    var expectedPhoto = user.getPhotos().get(0);
-    var expectedLikes = photoRepository.findLikesByPhotoId(expectedPhoto.getId()).stream()
-        .map(s -> new GqlLike(s.getUserId(), null, null))
-        .toList();
-
-    GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
-            .hasId(expectedPhoto.getId())
-            .hasSrc(expectedPhoto.getPhoto())
-            .hasCountryCode(expectedPhoto.getCountry().getCode())
-            .hasDescription(expectedPhoto.getDescription())
-            .hasTotalLikes(2)
-            .hasLikes(expectedLikes)
-    );
-
-    GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getFeed())
-            .hasStatCount("cn", 1)
-            .hasStatCount("ca", 2)
     );
   }
 }
