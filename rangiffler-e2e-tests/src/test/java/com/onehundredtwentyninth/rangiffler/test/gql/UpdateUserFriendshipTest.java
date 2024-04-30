@@ -91,7 +91,7 @@ class UpdateUserFriendshipTest {
   @Test
   void acceptFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getFriends().get(0).getId(), FriendshipAction.ACCEPT);
+    final var input = new FriendshipInput(user.getIncomeInvitations().get(0).getId(), FriendshipAction.ACCEPT);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -108,7 +108,7 @@ class UpdateUserFriendshipTest {
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getFriends().get(0).getId(),
+        user.getIncomeInvitations().get(0).getId(),
         user.getId()
     );
 
@@ -131,7 +131,7 @@ class UpdateUserFriendshipTest {
   @Test
   void rejectFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getFriends().get(0).getId(), FriendshipAction.REJECT);
+    final var input = new FriendshipInput(user.getIncomeInvitations().get(0).getId(), FriendshipAction.REJECT);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -148,7 +148,7 @@ class UpdateUserFriendshipTest {
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getFriends().get(0).getId(),
+        user.getIncomeInvitations().get(0).getId(),
         user.getId()
     );
 

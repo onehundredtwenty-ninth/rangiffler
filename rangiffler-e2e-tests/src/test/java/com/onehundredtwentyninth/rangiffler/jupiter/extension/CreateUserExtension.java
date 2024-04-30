@@ -38,6 +38,8 @@ public class CreateUserExtension implements BeforeEachCallback, AfterEachCallbac
     var createdUser = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), TestUser.class);
     if (createdUser != null) {
       createdUser.getFriends().forEach(userService::deleteUser);
+      createdUser.getIncomeInvitations().forEach(userService::deleteUser);
+      createdUser.getOutcomeInvitations().forEach(userService::deleteUser);
       userService.deleteUser(createdUser);
     }
   }

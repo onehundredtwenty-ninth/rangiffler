@@ -1,7 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
@@ -17,13 +16,11 @@ public interface UserService {
 
   void deleteUser(TestUser testUser);
 
-  void deleteUser(UUID id, String username);
+  void deleteUser(String username);
 
   TestUser createRandomUser();
 
   void createFriendship(UUID firstFriendId, UUID secondFriendId, Boolean isPending);
-
-  TestUser createFriend(UUID userId, Friend friendParameters);
 
   List<TestPhoto> createPhotos(UUID userId, WithPhoto[] photosParameters);
 }

@@ -13,15 +13,16 @@ import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepositorySJ
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestLike;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.UserAvatars;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -84,22 +85,26 @@ public class UserDbService implements UserService {
         .forEach(s -> {
           var userId = s.getUserId();
           var username = userRepository.findById(userId).getUsername();
-          deleteUser(userId, username);
+          deleteUser(username);
         });
-    deleteUser(testUser.getId(), testUser.getUsername());
+    deleteUser(testUser.getUsername());
   }
 
   @Override
-  public void deleteUser(UUID id, String username) {
+  public void deleteUser(String username) {
     userRepository.deleteInAuthByUsername(username);
-    userRepository.deleteInUserdataById(id);
+    userRepository.deleteInUserdataByUsername(username);
   }
 
   @Override
   public TestUser createRandomUser() {
-    var faker = new Faker();
-    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName(),
-        UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"), new byte[]{});
+    var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
+    return createUser(faker.name().username(), faker.internet().password(),
+        faker.random().hex(8),
+        faker.random().hex(8),
+        userCountry.getId(),
+        ImageUtils.getImageFromResourceAsBase64(UserAvatars.DEFAULT.getFileName()).getBytes(StandardCharsets.UTF_8)
+    );
   }
 
   @Override
@@ -113,41 +118,35 @@ public class UserDbService implements UserService {
   }
 
   @Override
-  public TestUser createFriend(UUID userId, Friend friendParameters) {
-    var createdFriend = createRandomUser();
-
-    if (!friendParameters.pending()) {
-      createFriendship(userId, createdFriend.getId(), false);
-    } else {
-      if (friendParameters.friendshipRequestType() == FriendshipRequestType.OUTCOME) {
-        createFriendship(userId, createdFriend.getId(), true);
-      } else {
-        createFriendship(createdFriend.getId(), userId, true);
-      }
-    }
-    return createdFriend;
-  }
-
-  @Override
   public TestUser createTestUser(CreateUser userParameters) {
     var username = userParameters.username().isEmpty() ? faker.name().username() : userParameters.username();
     var password = userParameters.password().isEmpty() ? faker.internet().password() : userParameters.password();
     var userCountry = countryRepository.findCountryByCode(userParameters.countryCode().getCode());
     var userAvatar = ImageUtils.getImageFromResourceAsBase64(userParameters.avatar().getFileName());
 
-    var createdUser = createUser(username, password, faker.name().firstName(), faker.name().lastName(),
+    var createdUser = createUser(username, password, faker.random().hex(8), faker.random().hex(8),
         userCountry.getId(), userAvatar.getBytes(StandardCharsets.UTF_8));
     createdUser.setCountry(CountryMapper.toTestCountry(userCountry));
 
     createdUser.getPhotos().addAll(createPhotos(createdUser.getId(), userParameters.photos()));
 
-    var friends = new ArrayList<TestUser>();
     for (var friendParameters : userParameters.friends()) {
-      var createdFriend = createFriend(createdUser.getId(), friendParameters);
-      friends.add(createdFriend);
+      var createdFriend = createRandomUser();
       createdFriend.getPhotos().addAll(createPhotos(createdFriend.getId(), friendParameters.photos()));
+
+      if (!friendParameters.pending()) {
+        createFriendship(createdUser.getId(), createdFriend.getId(), false);
+        createdUser.getFriends().add(createdFriend);
+      } else {
+        if (friendParameters.friendshipRequestType() == FriendshipRequestType.OUTCOME) {
+          createFriendship(createdUser.getId(), createdFriend.getId(), true);
+          createdUser.getOutcomeInvitations().add(createdFriend);
+        } else {
+          createFriendship(createdFriend.getId(), createdUser.getId(), true);
+          createdUser.getIncomeInvitations().add(createdFriend);
+        }
+      }
     }
-    createdUser.getFriends().addAll(friends);
 
     return createdUser;
   }

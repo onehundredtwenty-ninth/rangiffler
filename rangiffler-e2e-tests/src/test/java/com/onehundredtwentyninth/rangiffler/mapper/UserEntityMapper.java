@@ -22,6 +22,8 @@ public class UserEntityMapper {
         .avatar(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{})
         .country(new TestCountry(entity.getCountryId(), null, null, null))
         .friends(new ArrayList<>())
+        .incomeInvitations(new ArrayList<>())
+        .outcomeInvitations(new ArrayList<>())
         .photos(new ArrayList<>())
         .build();
   }

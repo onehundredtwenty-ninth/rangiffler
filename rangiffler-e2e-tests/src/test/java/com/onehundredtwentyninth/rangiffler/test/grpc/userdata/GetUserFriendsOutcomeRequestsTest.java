@@ -45,8 +45,8 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(2)
             .hasNext(false)
-            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
-            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
+            .containsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(0)))
+            .containsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(1)))
     );
   }
 
@@ -61,7 +61,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
   void getUserFriendsOutcomeInvitationsWithUsernameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(user.getFriends().get(0).getUsername())
+        .setSearchQuery(user.getOutcomeInvitations().get(0).getUsername())
         .setPage(0)
         .setSize(10)
         .build();
@@ -71,8 +71,8 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
+            .containsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(1)))
     );
   }
 
@@ -87,7 +87,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
   void getUserFriendsOutcomeInvitationsWithFirstnameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(user.getFriends().get(0).getFirstname())
+        .setSearchQuery(user.getOutcomeInvitations().get(0).getFirstname())
         .setPage(0)
         .setSize(10)
         .build();
@@ -97,8 +97,8 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
+            .containsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(1)))
     );
   }
 
@@ -113,7 +113,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
   void getUserFriendsOutcomeInvitationsWithLastnameFilterTest(TestUser user) {
     final AllUsersRequest request = AllUsersRequest.newBuilder()
         .setUsername(user.getUsername())
-        .setSearchQuery(user.getFriends().get(0).getLastName())
+        .setSearchQuery(user.getOutcomeInvitations().get(0).getLastName())
         .setPage(0)
         .setSize(10)
         .build();
@@ -123,8 +123,8 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .containsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
+            .containsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(1)))
     );
   }
 
@@ -149,8 +149,8 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(2)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getIncomeInvitations().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(0)))
     );
   }
 }

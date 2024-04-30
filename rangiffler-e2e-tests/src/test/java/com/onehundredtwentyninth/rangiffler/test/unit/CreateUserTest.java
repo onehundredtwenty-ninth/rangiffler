@@ -71,12 +71,12 @@ class CreateUserTest {
   @Test
   void createRandomUserWithFriendsRequestsTest(TestUser user) {
     Assertions.assertAll(
-        () -> Assertions.assertNotNull(user.getFriends()),
-        () -> Assertions.assertEquals(2, user.getFriends().size()),
-        () -> Assertions.assertNotNull(user.getFriends().get(0).getId()),
-        () -> Assertions.assertNotNull(user.getFriends().get(0).getUsername()),
-        () -> Assertions.assertNotNull(user.getFriends().get(0).getFirstname()),
-        () -> Assertions.assertNotNull(user.getFriends().get(0).getLastName())
+        () -> Assertions.assertEquals(1, user.getIncomeInvitations().size()),
+        () -> Assertions.assertEquals(1, user.getOutcomeInvitations().size()),
+        () -> Assertions.assertNotNull(user.getIncomeInvitations().get(0).getId()),
+        () -> Assertions.assertNotNull(user.getIncomeInvitations().get(0).getUsername()),
+        () -> Assertions.assertNotNull(user.getIncomeInvitations().get(0).getFirstname()),
+        () -> Assertions.assertNotNull(user.getIncomeInvitations().get(0).getLastName())
     );
   }
 
@@ -103,11 +103,11 @@ class CreateUserTest {
 
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })
@@ -134,11 +134,11 @@ class CreateUserTest {
   @CreateExtrasUsers({@CreateUser, @CreateUser})
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.FRANCE, description = "insertedDescriptionFriend"),
               }),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME,
+          @Friend(
               photos = {
                   @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM, description = "insertedDescriptionFriend2"),
               })

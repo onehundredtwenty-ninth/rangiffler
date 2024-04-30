@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum UserAvatars {
 
+  DEFAULT("defaultAvatar.jpg"),
   BEE("bee.jpg");
 
   private final String fileName;

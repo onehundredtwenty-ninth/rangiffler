@@ -16,6 +16,8 @@ public interface UserRepository {
 
   void deleteInUserdataById(UUID id);
 
+  void deleteInUserdataByUsername(String username);
+
   Integer count();
 
   UserEntity findById(UUID id);

@@ -76,7 +76,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void acceptFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
@@ -92,7 +92,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getFriends().get(0).getId(), user.getId()).orElseThrow();
+        user.getIncomeInvitations().get(0).getId(), user.getId()).orElseThrow();
     Assertions.assertThat(friendship.getStatus())
         .isEqualTo(FriendshipStatus.ACCEPTED);
   }
@@ -107,7 +107,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void rejectFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
@@ -123,7 +123,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getFriends().get(0).getId(), user.getId()
+        user.getIncomeInvitations().get(0).getId(), user.getId()
     );
     Assertions.assertThat(friendship)
         .describedAs("Заявка на дружбу отсутствует в БД")

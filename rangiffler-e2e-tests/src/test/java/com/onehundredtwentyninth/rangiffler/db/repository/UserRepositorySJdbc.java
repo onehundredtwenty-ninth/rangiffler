@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.NonNull;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
@@ -110,9 +109,7 @@ public class UserRepositorySJdbc implements UserRepository {
 
   @Override
   public void deleteInAuthByUsername(String username) {
-    var userId = Optional.ofNullable(
-        authTemplate.queryForObject("SELECT id FROM \"user\" WHERE username = ?", UUID.class, username)
-    ).orElseThrow();
+    var userId = authTemplate.queryForObject("SELECT id FROM \"user\" WHERE username = ?", UUID.class, username);
     deleteInAuthById(userId);
   }
 
@@ -127,35 +124,34 @@ public class UserRepositorySJdbc implements UserRepository {
   }
 
   @Override
+  public void deleteInUserdataByUsername(String username) {
+    var user = findByUsername(username);
+    deleteInUserdataById(user.getId());
+  }
+
+  @Override
   public Integer count() {
     return udTemplate.queryForObject("SELECT COUNT(*) FROM \"user\"", Integer.class);
   }
 
   @Override
   public UserEntity findById(UUID id) {
-    return Optional.ofNullable(
-        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE id = ?", new UserEntityRowMapper(), id)
-    ).orElseThrow();
+    return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE id = ?", new UserEntityRowMapper(), id);
   }
 
   @Override
   public UserEntity findByUsername(String username) {
-    return Optional.ofNullable(
-        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", new UserEntityRowMapper(), username)
-    ).orElseThrow();
+    return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", new UserEntityRowMapper(), username);
   }
 
   @Override
   public UserEntity findByFirstname(String firstname) {
-    return Optional.ofNullable(
-        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE firstname = ?", new UserEntityRowMapper(), firstname)
-    ).orElseThrow();
+    return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE firstname = ?", new UserEntityRowMapper(),
+        firstname);
   }
 
   @Override
   public UserEntity findByLastname(String lastName) {
-    return Optional.ofNullable(
-        udTemplate.queryForObject("SELECT * FROM \"user\" WHERE last_name = ?", new UserEntityRowMapper(), lastName)
-    ).orElseThrow();
+    return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE last_name = ?", new UserEntityRowMapper(), lastName);
   }
 }

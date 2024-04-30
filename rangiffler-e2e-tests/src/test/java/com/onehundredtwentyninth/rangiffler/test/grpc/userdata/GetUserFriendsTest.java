@@ -150,8 +150,8 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
         softAssertions.assertThat(response)
             .hasPageSize(1)
             .hasNext(false)
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(1)))
-            .notContainsUser(UserEntityMapper.toMessage(user.getFriends().get(2)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getIncomeInvitations().get(0)))
+            .notContainsUser(UserEntityMapper.toMessage(user.getOutcomeInvitations().get(0)))
     );
   }
 }
