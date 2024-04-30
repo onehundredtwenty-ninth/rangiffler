@@ -17,10 +17,12 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.TestData;
 import com.onehundredtwentyninth.rangiffler.model.TestLike;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.UserAvatars;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -96,9 +98,13 @@ public class UserDbService implements UserService {
 
   @Override
   public TestUser createRandomUser() {
-    var faker = new Faker();
-    return createUser(faker.name().username(), "123", faker.name().firstName(), faker.name().lastName(),
-        UUID.fromString("4cca3bae-f195-11ee-9b32-0242ac110002"), new byte[]{});
+    var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
+    return createUser(faker.name().username(), faker.internet().password(),
+        faker.name().firstName(),
+        faker.name().lastName(),
+        userCountry.getId(),
+        ImageUtils.getImageFromResourceAsBase64(UserAvatars.DEFAULT.getFileName()).getBytes(StandardCharsets.UTF_8)
+    );
   }
 
   @Override
