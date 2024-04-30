@@ -28,12 +28,18 @@ public class PeopleCollectionCondition {
           var element = elements.get(i);
           var tds = element.findElements(By.xpath("td"));
           var avatar = element.findElement(By.xpath("th//img")).getAttribute("src").getBytes(StandardCharsets.UTF_8);
+          var uiCountry = new TestCountry(
+              null,
+              null,
+              tds.get(3).getText(),
+              tds.get(3).findElement(By.xpath("img")).getAttribute("src").getBytes(StandardCharsets.UTF_8)
+          );
 
           var userFromUi = TestUser.builder()
               .username(tds.get(0).getText())
               .firstname(tds.get(1).getText())
               .lastName(tds.get(2).getText())
-              .country(new TestCountry(null, null, tds.get(3).getText(), null))
+              .country(uiCountry)
               .avatar(avatar)
               .build();
 
@@ -42,6 +48,7 @@ public class PeopleCollectionCondition {
               && userFromUi.getFirstname().equals(expectedPeople[i].getFirstname())
               && userFromUi.getLastName().equals(expectedPeople[i].getLastName())
               && userFromUi.getCountry().getName().equals(expectedPeople[i].getCountry().getName())
+              && Arrays.equals(userFromUi.getCountry().getFlag(), expectedPeople[i].getCountry().getFlag())
               && Arrays.equals(userFromUi.getAvatar(), expectedPeople[i].getAvatar());
 
           if (!isUserTableDataMath) {
