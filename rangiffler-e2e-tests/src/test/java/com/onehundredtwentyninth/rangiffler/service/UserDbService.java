@@ -100,8 +100,8 @@ public class UserDbService implements UserService {
   public TestUser createRandomUser() {
     var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
     return createUser(faker.name().username(), faker.internet().password(),
-        faker.name().firstName(),
-        faker.name().lastName(),
+        faker.random().hex(8),
+        faker.random().hex(8),
         userCountry.getId(),
         ImageUtils.getImageFromResourceAsBase64(UserAvatars.DEFAULT.getFileName()).getBytes(StandardCharsets.UTF_8)
     );
@@ -124,7 +124,7 @@ public class UserDbService implements UserService {
     var userCountry = countryRepository.findCountryByCode(userParameters.countryCode().getCode());
     var userAvatar = ImageUtils.getImageFromResourceAsBase64(userParameters.avatar().getFileName());
 
-    var createdUser = createUser(username, password, faker.name().firstName(), faker.name().lastName(),
+    var createdUser = createUser(username, password, faker.random().hex(8), faker.random().hex(8),
         userCountry.getId(), userAvatar.getBytes(StandardCharsets.UTF_8));
     createdUser.setCountry(CountryMapper.toTestCountry(userCountry));
 
