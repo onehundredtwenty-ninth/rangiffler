@@ -44,7 +44,7 @@ public class CreateExtrasUserExtension implements BeforeEachCallback, AfterEachC
   public void afterEach(ExtensionContext extensionContext) {
     List<TestUser> createdUsers = extensionContext.getStore(NAMESPACE).get(extensionContext.getUniqueId(), List.class);
     for (var createdUser : createdUsers) {
-      userService.deleteUser(createdUser.getId(), createdUser.getUsername());
+      userService.deleteUser(createdUser.getUsername());
     }
   }
 

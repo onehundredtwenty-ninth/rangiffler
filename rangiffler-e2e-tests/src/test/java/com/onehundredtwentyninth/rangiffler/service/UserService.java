@@ -16,7 +16,7 @@ public interface UserService {
 
   void deleteUser(TestUser testUser);
 
-  void deleteUser(UUID id, String username);
+  void deleteUser(String username);
 
   TestUser createRandomUser();
 

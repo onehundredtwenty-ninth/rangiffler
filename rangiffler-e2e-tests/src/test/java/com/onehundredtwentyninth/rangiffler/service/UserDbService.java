@@ -85,15 +85,15 @@ public class UserDbService implements UserService {
         .forEach(s -> {
           var userId = s.getUserId();
           var username = userRepository.findById(userId).getUsername();
-          deleteUser(userId, username);
+          deleteUser(username);
         });
-    deleteUser(testUser.getId(), testUser.getUsername());
+    deleteUser(testUser.getUsername());
   }
 
   @Override
-  public void deleteUser(UUID id, String username) {
+  public void deleteUser(String username) {
     userRepository.deleteInAuthByUsername(username);
-    userRepository.deleteInUserdataById(id);
+    userRepository.deleteInUserdataByUsername(username);
   }
 
   @Override
