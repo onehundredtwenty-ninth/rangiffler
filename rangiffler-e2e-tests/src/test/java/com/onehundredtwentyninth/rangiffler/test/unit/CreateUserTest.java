@@ -24,7 +24,7 @@ class CreateUserTest {
         () -> Assertions.assertEquals("bee48", user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
         () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
+        () -> Assertions.assertEquals("4cc91f80-f195-11ee-9b32-0242ac110002", user.getCountry().getId().toString())
     );
   }
 
@@ -36,7 +36,7 @@ class CreateUserTest {
         () -> Assertions.assertNotNull(user.getUsername()),
         () -> Assertions.assertNotNull(user.getFirstname()),
         () -> Assertions.assertNotNull(user.getLastName()),
-        () -> Assertions.assertEquals("4cca3bae-f195-11ee-9b32-0242ac110002", user.getCountryId().toString())
+        () -> Assertions.assertEquals("4cc91f80-f195-11ee-9b32-0242ac110002", user.getCountry().getId().toString())
     );
   }
 

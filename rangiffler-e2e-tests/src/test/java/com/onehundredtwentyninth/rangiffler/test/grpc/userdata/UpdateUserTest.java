@@ -40,7 +40,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
   @CreateUser
   @Test
   void updateUserTest(TestUser user) {
-    final CountryEntity newCountry = countryRepository.findCountryByIdNot(user.getCountryId());
+    final CountryEntity newCountry = countryRepository.findCountryByIdNot(user.getCountry().getId());
     final User updateUserRequest = User.newBuilder()
         .setUsername(user.getUsername())
         .setFirstname(faker.name().firstName())
@@ -79,7 +79,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
     final User updateUserRequest = User.newBuilder()
         .setId(UUID.randomUUID().toString())
         .setUsername(user.getUsername())
-        .setCountryId(user.getCountryId().toString())
+        .setCountryId(user.getCountry().getId().toString())
         .build();
     final User response = blockingStub.updateUser(updateUserRequest);
 
