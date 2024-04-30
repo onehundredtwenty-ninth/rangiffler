@@ -99,12 +99,14 @@ public class UserDbService implements UserService {
   @Override
   public TestUser createRandomUser() {
     var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
-    return createUser(faker.name().username(), faker.internet().password(),
+    var createdUser =  createUser(faker.name().username(), faker.internet().password(),
         faker.random().hex(8),
         faker.random().hex(8),
         userCountry.getId(),
         ImageUtils.getImageFromResourceAsBase64(UserAvatars.DEFAULT.getFileName()).getBytes(StandardCharsets.UTF_8)
     );
+    createdUser.setCountry(CountryMapper.toTestCountry(userCountry));
+    return createdUser;
   }
 
   @Override

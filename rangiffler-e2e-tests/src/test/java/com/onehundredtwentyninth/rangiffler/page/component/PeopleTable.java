@@ -3,7 +3,7 @@ package com.onehundredtwentyninth.rangiffler.page.component;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
-import static com.onehundredtwentyninth.rangiffler.condition.PeopleCollectionCondition.people;
+import static com.onehundredtwentyninth.rangiffler.condition.PeopleCollectionCondition.peopleExactly;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
@@ -28,7 +28,7 @@ public class PeopleTable extends BaseComponent<PeopleTable> {
   }
 
   public PeopleTable usersShouldBePresentedInTable(TestUser... users) {
-    getAllRows().shouldHave(people(users));
+    getAllRows().shouldHave(peopleExactly(users));
     return this;
   }
 }
