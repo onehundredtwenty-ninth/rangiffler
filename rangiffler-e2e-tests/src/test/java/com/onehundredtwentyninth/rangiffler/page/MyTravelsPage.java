@@ -73,4 +73,16 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
     Selenide.refresh();
     return this;
   }
+
+  public MyTravelsPage likePhoto(TestPhoto photo) {
+    var photoCard = photoCardsBar.getPhotoCard(photo);
+    photoCard.$x(".//*[@data-testid='FavoriteBorderOutlinedIcon']").click();
+    return this;
+  }
+
+  public MyTravelsPage dislikePhoto(TestPhoto photo) {
+    var photoCard = photoCardsBar.getPhotoWithoutLikesCard(photo);
+    photoCard.$x("(.//*[@data-testid='FavoriteOutlinedIcon'])[2]").click();
+    return this;
+  }
 }
