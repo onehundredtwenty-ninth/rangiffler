@@ -27,6 +27,11 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
     return this;
   }
 
+  public MyTravelsPage clickWithFriendsButton() {
+    withFriendsButton.click();
+    return this;
+  }
+
   public MyTravelsPage exactlyPhotoCardsShouldBePresented(TestPhoto... expectedPhotos) {
     photoCardsBar.exactlyPhotoCardsShouldBePresented(expectedPhotos);
     return this;

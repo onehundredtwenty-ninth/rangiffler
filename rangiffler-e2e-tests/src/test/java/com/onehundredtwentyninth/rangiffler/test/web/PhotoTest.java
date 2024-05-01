@@ -8,6 +8,8 @@ import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
@@ -37,8 +39,33 @@ class PhotoTest extends BaseWebTest {
       }
   )
   @Test
-  void currentUserInfoTest(TestUser user) {
+  void userPhotoTest(TestUser user) {
     myTravelsPage.open()
         .exactlyPhotoCardsShouldBePresented(user.getPhotos().toArray(new TestPhoto[0]));
+  }
+
+  @DisplayName("Получение фото пользователя и его друзей")
+  @ApiLogin
+  @CreateUser(
+      photos = {
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
+      }, friends = {
+      @Friend(photos = @WithPhoto(countryCode = CountryCodes.MX, image = PhotoFiles.AMSTERDAM)),
+      @Friend(pending = true, photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
+      @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
+          photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
+      )
+  }
+  )
+  @Test
+  void userPhotoWithFriendsTest(TestUser user) {
+    myTravelsPage.open()
+        .clickWithFriendsButton()
+        .exactlyPhotoCardsShouldBePresented(
+            user.getPhotos().get(0),
+            user.getPhotos().get(1),
+            user.getFriends().get(0).getPhotos().get(0)
+        );
   }
 }
