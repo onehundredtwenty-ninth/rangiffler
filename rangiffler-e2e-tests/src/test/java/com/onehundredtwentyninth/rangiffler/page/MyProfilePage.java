@@ -91,4 +91,9 @@ public class MyProfilePage extends BasePage<MyProfilePage> {
     saveButton.click();
     return this;
   }
+
+  public MyProfilePage resetChanges() {
+    resetButton.click();
+    return this;
+  }
 }

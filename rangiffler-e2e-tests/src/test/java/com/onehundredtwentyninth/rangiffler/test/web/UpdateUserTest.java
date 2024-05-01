@@ -69,4 +69,37 @@ class UpdateUserTest extends BaseWebTest {
             .hasCountryId(country.getId())
     );
   }
+
+  @DisplayName("Отмена обновления данных пользователя")
+  @ApiLogin
+  @CreateUser
+  @Test
+  void resetUpdateUserTest(TestUser user) {
+    myProfilePage.open()
+        .pageHeaderShouldBeVisible()
+        .setFirstname(faker.name().firstName())
+        .setLastname(faker.name().lastName())
+        .setLocation(CountryCodes.CN.getCode())
+        .setAvatar("image/defaultAvatar.png")
+        .resetChanges();
+
+    myProfilePage
+        .firstnameShouldBe(user.getFirstname())
+        .lastnameShouldBe(user.getLastName())
+        .locationNameShouldBe(user.getCountry().getName())
+        .locationFlagShouldBe(user.getCountry().getFlag())
+        .avatarShouldBe(user.getAvatar());
+
+    final var dbUser = userRepository.findById(user.getId());
+
+    EntitySoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(dbUser)
+            .hasId(user.getId())
+            .hasUsername(user.getUsername())
+            .hasFirstName(user.getFirstname())
+            .hasLastName(user.getLastName())
+            .hasAvatar(user.getAvatar())
+            .hasCountryId(user.getCountry().getId())
+    );
+  }
 }
