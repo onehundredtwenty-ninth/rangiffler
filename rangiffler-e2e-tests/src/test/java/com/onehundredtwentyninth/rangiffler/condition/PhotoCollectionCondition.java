@@ -83,4 +83,67 @@ public class PhotoCollectionCondition {
       }
     };
   }
+
+  public static WebElementsCondition containsPhoto(TestPhoto expectedPhoto) {
+    return new WebElementsCondition() {
+
+      @Nonnull
+      @Override
+      public CheckResult check(Driver driver, List<WebElement> elements) {
+        boolean isCheckSuccess = false;
+        List<TestPhoto> actualPhotos = new ArrayList<>();
+
+        for (var i = 0; i < elements.size(); i++) {
+          var element = elements.get(i);
+          var actualPhoto = element.findElement(By.xpath("img")).getAttribute("src").getBytes(StandardCharsets.UTF_8);
+          var actualDescription = element.findElement(By.xpath(".//p[contains(@class, 'photo-card__content')]")).getText();
+          var actualLikes = element.findElement(By.xpath(".//p[text()=' likes']")).getText();
+
+          var countryElement = element.findElement(By.xpath(".//h3"));
+          var actualCountry = new TestCountry(
+              null,
+              null,
+              countryElement.getText(),
+              countryElement.findElement(By.xpath("img")).getAttribute("src").getBytes(StandardCharsets.UTF_8)
+          );
+
+          var actualPhotoCard = TestPhoto.builder()
+              .country(actualCountry)
+              .description(actualDescription)
+              .photo(actualPhoto)
+              .build();
+
+          actualPhotos.add(actualPhotoCard);
+          var isUserTableDataMath = actualPhotoCard.getDescription().equals(expectedPhoto.getDescription())
+              && actualPhotoCard.getCountry().getName().equals(expectedPhoto.getCountry().getName())
+              && Arrays.equals(actualPhotoCard.getCountry().getFlag(), expectedPhoto.getCountry().getFlag())
+              && Arrays.equals(actualPhotoCard.getPhoto(), expectedPhoto.getPhoto())
+              && Integer.parseInt(actualLikes.split(" ")[0]) == expectedPhoto.getLikes().size();
+
+          if (isUserTableDataMath) {
+            isCheckSuccess = true;
+          }
+        }
+
+        if (isCheckSuccess) {
+          return CheckResult.accepted();
+        } else {
+          var errorMsg = String.format("Incorrect photo content. Expected photo: %s, actual photo list: %s",
+              expectedPhoto, actualPhotos);
+          return CheckResult.rejected(errorMsg, elements);
+        }
+      }
+
+      @Override
+      public void fail(CollectionSource collection, CheckResult lastCheckResult, @Nullable Exception cause,
+          long timeoutMs) {
+        throw new AssertionError(lastCheckResult.message());
+      }
+
+      @Override
+      public String toString() {
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
+      }
+    };
+  }
 }

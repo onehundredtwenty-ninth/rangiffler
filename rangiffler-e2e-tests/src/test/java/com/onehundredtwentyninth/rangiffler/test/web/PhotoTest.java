@@ -62,7 +62,8 @@ class PhotoTest extends BaseWebTest {
   void userPhotoWithFriendsTest(TestUser user) {
     myTravelsPage.open()
         .clickWithFriendsButton()
-        .exactlyPhotoCardsShouldBePresented(
+        .photosCountShouldBeEqualTo(user.getPhotos().size() + user.getFriends().get(0).getPhotos().size())
+        .photoCardsShouldBePresented(
             user.getPhotos().get(0),
             user.getPhotos().get(1),
             user.getFriends().get(0).getPhotos().get(0)

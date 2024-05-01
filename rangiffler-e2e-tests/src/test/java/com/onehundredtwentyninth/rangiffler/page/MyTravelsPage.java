@@ -36,4 +36,14 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
     photoCardsBar.exactlyPhotoCardsShouldBePresented(expectedPhotos);
     return this;
   }
+
+  public MyTravelsPage photoCardsShouldBePresented(TestPhoto... expectedPhotos) {
+    photoCardsBar.photoCardsShouldBePresented(expectedPhotos);
+    return this;
+  }
+
+  public MyTravelsPage photosCountShouldBeEqualTo(int expectedCount) {
+    photoCardsBar.photosCountShouldBeEqualTo(expectedCount);
+    return this;
+  }
 }
