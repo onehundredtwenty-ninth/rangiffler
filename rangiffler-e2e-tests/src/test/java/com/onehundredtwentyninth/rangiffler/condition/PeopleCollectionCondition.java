@@ -3,6 +3,7 @@ package com.onehundredtwentyninth.rangiffler.condition;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
+import com.codeborne.selenide.impl.CollectionSource;
 import com.onehundredtwentyninth.rangiffler.model.TestCountry;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import java.nio.charset.StandardCharsets;
@@ -10,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -70,8 +72,14 @@ public class PeopleCollectionCondition {
       }
 
       @Override
+      public void fail(CollectionSource collection, CheckResult lastCheckResult, @Nullable Exception cause,
+          long timeoutMs) {
+        throw new AssertionError(lastCheckResult.message());
+      }
+
+      @Override
       public String toString() {
-        return null;
+        return getClass().getName() + "@" + Integer.toHexString(hashCode());
       }
     };
   }

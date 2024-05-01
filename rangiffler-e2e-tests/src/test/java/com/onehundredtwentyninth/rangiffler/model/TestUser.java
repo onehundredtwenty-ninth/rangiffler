@@ -6,10 +6,12 @@ import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Builder
 @Getter
 @Setter
+@ToString(exclude = "avatar")
 public class TestUser {
 
   private UUID id;
