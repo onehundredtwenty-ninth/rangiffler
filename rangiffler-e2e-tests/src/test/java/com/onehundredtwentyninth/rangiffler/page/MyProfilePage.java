@@ -22,6 +22,7 @@ public class MyProfilePage extends BasePage<MyProfilePage> {
   private final SelenideElement saveButton = $x("//button[@type='submit']");
   private final SelenideElement resetButton = $x("//button[text()='Reset']");
   private final SelenideElement updateAvatarButton = $x("//span[text()='Update avatar']");
+  private final SelenideElement avatarImageInput = $x("//input[@id='image__input']");
 
   public MyProfilePage open() {
     Selenide.open("/profile");
@@ -62,6 +63,32 @@ public class MyProfilePage extends BasePage<MyProfilePage> {
   public MyProfilePage avatarShouldBe(byte[] expectedAvatar) {
     avatar.find(By.xpath("img"))
         .shouldHave(attribute("src", new String(expectedAvatar, StandardCharsets.UTF_8)));
+    return this;
+  }
+
+  public MyProfilePage setFirstname(String firstname) {
+    firstnameInput.setValue(firstname);
+    return this;
+  }
+
+  public MyProfilePage setLastname(String lastname) {
+    surnameInput.setValue(lastname);
+    return this;
+  }
+
+  public MyProfilePage setLocation(String locationCode) {
+    locationInput.click();
+    $x("//li[@data-value='" + locationCode + "']").click();
+    return this;
+  }
+
+  public MyProfilePage setAvatar(String fileName) {
+    avatarImageInput.uploadFromClasspath(fileName);
+    return this;
+  }
+
+  public MyProfilePage saveChanges() {
+    saveButton.click();
     return this;
   }
 }
