@@ -99,7 +99,7 @@ public class UserDbService implements UserService {
   @Override
   public TestUser createRandomUser() {
     var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
-    var createdUser =  createUser(faker.name().username(), faker.internet().password(),
+    var createdUser = createUser(faker.name().username(), faker.internet().password(),
         faker.random().hex(8),
         faker.random().hex(8),
         userCountry.getId(),
@@ -158,10 +158,13 @@ public class UserDbService implements UserService {
     var createdPhotos = new ArrayList<TestPhoto>();
     for (var photoParameters : photosParameters) {
       var photoCountry = countryRepository.findCountryByCode(photoParameters.countryCode().getCode());
+      var photoDescription = photoParameters.description().isBlank()
+          ? faker.internet().uuid()
+          : photoParameters.description();
       var createdPhoto = photoService.createPhoto(userId,
           photoParameters.countryCode().getCode(),
           photoParameters.image().getFileName(),
-          photoParameters.description()
+          photoDescription
       );
       createdPhoto.setCountry(CountryMapper.toTestCountry(photoCountry));
 

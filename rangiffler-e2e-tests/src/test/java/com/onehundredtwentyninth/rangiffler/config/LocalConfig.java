@@ -11,6 +11,7 @@ public class LocalConfig implements Config {
 
   static {
     Configuration.baseUrl = "http://127.0.0.1:3001";
+    Configuration.browserSize = "1920x1080";
   }
 
   @Override

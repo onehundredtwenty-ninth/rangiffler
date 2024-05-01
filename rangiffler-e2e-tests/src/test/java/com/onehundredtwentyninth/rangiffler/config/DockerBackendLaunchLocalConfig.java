@@ -11,6 +11,7 @@ public class DockerBackendLaunchLocalConfig implements Config {
 
   static {
     Configuration.baseUrl = "http://frontend.rangiffler.dc";
+    Configuration.browserSize = "1920x1080";
   }
 
   @Override
