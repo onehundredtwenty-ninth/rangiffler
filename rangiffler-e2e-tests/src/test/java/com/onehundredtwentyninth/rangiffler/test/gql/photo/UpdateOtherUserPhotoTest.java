@@ -24,7 +24,6 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -60,16 +59,14 @@ class UpdateOtherUserPhotoTest {
 
     var response = gatewayClient.updatePhoto(token, request);
 
-    var expectedMessage =
-        "PERMISSION_DENIED: Photo with id " + photo.getId() + " can't be modified by user " + user.getId();
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasPhotoPermissionDeniedMessage(photo.getId(), user.getId())
               .hasPath(List.of("photo"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }

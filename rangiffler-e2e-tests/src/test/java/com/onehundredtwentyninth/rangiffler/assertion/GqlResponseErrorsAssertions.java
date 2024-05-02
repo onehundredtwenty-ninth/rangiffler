@@ -3,6 +3,7 @@ package com.onehundredtwentyninth.rangiffler.assertion;
 import com.onehundredtwentyninth.rangiffler.model.GqlError;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.assertj.core.api.AbstractAssert;
 
 public class GqlResponseErrorsAssertions extends AbstractAssert<GqlResponseErrorsAssertions, GqlError> {
@@ -61,5 +62,29 @@ public class GqlResponseErrorsAssertions extends AbstractAssert<GqlResponseError
       );
     }
     return this;
+  }
+
+  public GqlResponseErrorsAssertions hasPhotoPermissionDeniedMessage(UUID photoId, UUID userId) {
+    return hasMessage("PERMISSION_DENIED: Photo with id " + photoId + " can't be modified by user " + userId);
+  }
+
+  public GqlResponseErrorsAssertions hasPhotoNotFoundMessage(UUID photoId) {
+    return hasMessage("NOT_FOUND: Photo with id " + photoId + " not found");
+  }
+
+  public GqlResponseErrorsAssertions hasFriendshipNotFoundMessage(String username, String friendUsername) {
+    return hasMessage("NOT_FOUND: Friendship between " + username + " and " + friendUsername + " not found");
+  }
+
+  public GqlResponseErrorsAssertions hasFriendshipRequestNotFoundMessage(String username, String friendUsername) {
+    return hasMessage("NOT_FOUND: Friendship request from " + username + " to " + friendUsername + " not found");
+  }
+
+  public GqlResponseErrorsAssertions hasUserNotFoundMessage(UUID photoId) {
+    return hasMessage("NOT_FOUND: User " + photoId + " not found");
+  }
+
+  public GqlResponseErrorsAssertions hasInternalErrorExtension() {
+    return hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
   }
 }

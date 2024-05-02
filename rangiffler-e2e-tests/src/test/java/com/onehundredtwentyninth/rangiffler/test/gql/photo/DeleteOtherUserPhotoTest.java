@@ -22,7 +22,6 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -51,18 +50,17 @@ class DeleteOtherUserPhotoTest {
   void deletePhotoTest(@Token String token, TestUser user, @GqlRequestFile("gql/deletePhoto.json") GqlRequest request) {
     var photo = user.getFriends().get(0).getPhotos().get(0);
     request.variables().put("id", photo.getId());
+
     var response = gatewayClient.deletePhoto(token, request);
 
-    var expectedMessage =
-        "PERMISSION_DENIED: Photo with id " + photo.getId() + " can't be modified by user " + user.getId();
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasPhotoPermissionDeniedMessage(photo.getId(), user.getId())
               .hasPath(List.of("deletePhoto"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }

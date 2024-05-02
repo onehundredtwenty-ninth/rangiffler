@@ -21,7 +21,6 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -52,15 +51,14 @@ class ModifyNonExistentPhotoTest {
 
     var response = gatewayClient.updatePhoto(token, request);
 
-    var expectedMessage = "NOT_FOUND: Photo with id 00000000-0000-0000-0000-000000000000 not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
               .hasPath(List.of("photo"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -75,17 +73,17 @@ class ModifyNonExistentPhotoTest {
     input.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
     input.setLike(new LikeInput(user.getId()));
     request.variables().put("input", input);
+
     var response = gatewayClient.updatePhoto(token, request);
 
-    var expectedMessage = "NOT_FOUND: Photo with id 00000000-0000-0000-0000-000000000000 not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
               .hasPath(List.of("photo"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -98,15 +96,14 @@ class ModifyNonExistentPhotoTest {
     request.variables().put("id", "00000000-0000-0000-0000-000000000000");
     var response = gatewayClient.deletePhoto(token, request);
 
-    var expectedMessage = "NOT_FOUND: Photo with id 00000000-0000-0000-0000-000000000000 not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
               .hasPath(List.of("deletePhoto"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }

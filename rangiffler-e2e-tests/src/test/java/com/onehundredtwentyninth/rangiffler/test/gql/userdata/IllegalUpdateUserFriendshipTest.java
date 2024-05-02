@@ -59,16 +59,14 @@ class IllegalUpdateUserFriendshipTest {
 
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage =
-        "NOT_FOUND: Friendship between " + user.getUsername() + " and " + users[0].getUsername() + " not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasFriendshipNotFoundMessage(user.getUsername(), users[0].getUsername())
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -88,17 +86,14 @@ class IllegalUpdateUserFriendshipTest {
 
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage =
-        "NOT_FOUND: Friendship request from " + user.getOutcomeInvitations().get(0).getUsername() + " to "
-            + user.getUsername() + " not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername())
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -118,17 +113,14 @@ class IllegalUpdateUserFriendshipTest {
 
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage =
-        "NOT_FOUND: Friendship request from " + user.getOutcomeInvitations().get(0).getUsername() + " to "
-            + user.getUsername() + " not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername())
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -184,7 +176,7 @@ class IllegalUpdateUserFriendshipTest {
           softAssertions.assertThat(response.getErrors().get(0))
               .messageContains(expectedMessage)
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -205,17 +197,14 @@ class IllegalUpdateUserFriendshipTest {
     gatewayClient.friendshipAction(token, request);
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage =
-        "NOT_FOUND: Friendship request from " + user.getIncomeInvitations().get(0).getUsername() + " to "
-            + user.getUsername() + " not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername())
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -239,17 +228,14 @@ class IllegalUpdateUserFriendshipTest {
     request.variables().put("input", rejectInput);
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage =
-        "NOT_FOUND: Friendship request from " + user.getIncomeInvitations().get(0).getUsername() + " to "
-            + user.getUsername() + " not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername())
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
@@ -265,15 +251,14 @@ class IllegalUpdateUserFriendshipTest {
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
-    var expectedMessage = "NOT_FOUND: User 00000000-0000-0000-0000-000000000000 not found";
     GqlSoftAssertions.assertSoftly(softAssertions -> {
           softAssertions.assertThat(response)
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasMessage(expectedMessage)
+              .hasUserNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
               .hasPath(List.of("friendship"))
-              .hasExtensions(Map.of("classification", "INTERNAL_ERROR"));
+              .hasInternalErrorExtension();
         }
     );
   }
