@@ -85,4 +85,10 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
     photoCard.$x("(.//*[@data-testid='FavoriteOutlinedIcon'])[2]").click();
     return this;
   }
+
+  public MyTravelsPage deletePhoto(TestPhoto photo) {
+    var photoCard = photoCardsBar.getPhotoCard(photo);
+    photoCard.$x(".//button[text() = 'Delete']").click();
+    return this;
+  }
 }
