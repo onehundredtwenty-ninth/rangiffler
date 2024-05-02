@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.STATISTIC)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.STATISTIC)})
+@DisplayName("[grpc] Statistic")
 class GetStatisticTest extends GrpcStatisticTestBase {
 
   @Inject
@@ -36,7 +37,7 @@ class GetStatisticTest extends GrpcStatisticTestBase {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Получение статистики")
+  @DisplayName("[grpc] Получение статистики")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),

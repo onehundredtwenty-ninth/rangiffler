@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.STATISTIC)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.STATISTIC)})
+@DisplayName("[grpc] Statistic")
 class ChangeStatisticTest extends GrpcStatisticTestBase {
 
   @Inject
@@ -38,7 +39,7 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Изменение статистики при обновлении фото")
+  @DisplayName("[grpc] Изменение статистики при обновлении фото")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
