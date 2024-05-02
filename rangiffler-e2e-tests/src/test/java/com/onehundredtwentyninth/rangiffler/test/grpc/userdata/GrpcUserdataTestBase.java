@@ -7,17 +7,17 @@ import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 @GrpcTest
 public abstract class GrpcUserdataTestBase {
 
   protected static final Config CFG = Config.getInstance();
-  protected RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub blockingStub;
+  protected static RangifflerUserdataServiceGrpc.RangifflerUserdataServiceBlockingStub blockingStub;
 
-  @BeforeEach
-  void before() {
+  @BeforeAll
+  static void before() {
     var channel = ManagedChannelBuilder.forAddress(CFG.userdataHost(), CFG.userdataPort())
         .intercept(new AllureGrpc(), new GrpcConsoleInterceptor())
         .usePlaintext()
@@ -25,8 +25,8 @@ public abstract class GrpcUserdataTestBase {
     blockingStub = RangifflerUserdataServiceGrpc.newBlockingStub(channel);
   }
 
-  @AfterEach
-  void after() {
+  @AfterAll
+  static void after() {
     ((ManagedChannel) blockingStub.getChannel()).shutdownNow();
   }
 }
