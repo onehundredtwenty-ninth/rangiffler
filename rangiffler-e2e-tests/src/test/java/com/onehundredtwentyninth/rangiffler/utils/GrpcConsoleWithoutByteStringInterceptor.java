@@ -84,9 +84,17 @@ public class GrpcConsoleWithoutByteStringInterceptor implements ClientIntercepto
             : field.getValue();
         messageBuilder.setField(field.getKey(), valueToPrint);
       } else {
-        var messages = (List<Message>) field.getValue();
+        var messages = (List<?>) field.getValue();
         for (int i = 0; i < messages.size(); i++) {
-          messageBuilder.setRepeatedField(field.getKey(), i, getMessageForPrint(messages.get(i).toBuilder()));
+          if (Message.class.isAssignableFrom(messages.get(0).getClass())) {
+            messageBuilder.setRepeatedField(
+                field.getKey(),
+                i,
+                getMessageForPrint(((Message) messages.get(i)).toBuilder())
+            );
+          } else {
+            messageBuilder.setRepeatedField(field.getKey(), i, messages.get(i));
+          }
         }
       }
     }
