@@ -22,12 +22,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.GEO)
 @Feature(Features.COUNTRY)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.GEO), @Tag(JUnitTags.COUNTRY)})
+@DisplayName("[grpc] Geo")
 class GetCountryTest extends GrpcGeoTestBase {
 
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Получение страны по коду")
+  @DisplayName("[grpc] Получение страны по коду")
   @Test
   void getCountryByCodeTest() {
     final Country response = blockingStub.getCountryByCode(
@@ -46,7 +47,7 @@ class GetCountryTest extends GrpcGeoTestBase {
     );
   }
 
-  @DisplayName("Получение страны по id")
+  @DisplayName("[grpc] Получение страны по id")
   @Test
   void getCountryByIdTest() {
     final CountryEntity expectedCountry = countryRepository.findCountryByCode("ru");
