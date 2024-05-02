@@ -16,7 +16,8 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.assertj.core.api.Assertions;
+import java.time.Duration;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -42,8 +43,9 @@ class DeletePhotoTest extends BaseWebTest {
     myTravelsPage.open()
         .deletePhoto(user.getPhotos().get(0));
 
-    final var userPhotos = photoRepository.findPhotoById(user.getPhotos().get(0).getId());
-    Assertions.assertThat(userPhotos)
-        .isEmpty();
+    Awaitility.await("Ожидаем удаления фото из БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty());
   }
 }
