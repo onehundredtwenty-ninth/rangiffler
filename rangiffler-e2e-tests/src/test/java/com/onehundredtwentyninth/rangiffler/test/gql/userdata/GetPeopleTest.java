@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -29,12 +29,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[gql] Userdata")
 class GetPeopleTest {
 
   @Inject
   private GatewayClient gatewayClient;
 
-  @DisplayName("Получение всех пользователей")
+  @DisplayName("[gql] Получение всех пользователей")
   @ApiLogin
   @CreateUser
   @Test
@@ -55,7 +56,7 @@ class GetPeopleTest {
     );
   }
 
-  @DisplayName("Получение пользователей при передаче SearchQuery username автора запроса")
+  @DisplayName("[gql] Получение пользователей при передаче SearchQuery username автора запроса")
   @ApiLogin
   @CreateUser
   @Test
@@ -75,7 +76,7 @@ class GetPeopleTest {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному username")
+  @DisplayName("[gql] Получение всех пользователей по переданному username")
   @ApiLogin
   @CreateUser
   @Test
@@ -109,7 +110,7 @@ class GetPeopleTest {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному firstname")
+  @DisplayName("[gql] Получение всех пользователей по переданному firstname")
   @ApiLogin
   @CreateUser
   @Test
@@ -143,7 +144,7 @@ class GetPeopleTest {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному surname")
+  @DisplayName("[gql] Получение всех пользователей по переданному surname")
   @ApiLogin
   @CreateUser
   @Test
