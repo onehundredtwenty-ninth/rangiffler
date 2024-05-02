@@ -27,6 +27,18 @@ public class GqlResponseErrorsAssertions extends AbstractAssert<GqlResponseError
     return this;
   }
 
+  public GqlResponseErrorsAssertions messageContains(String expectedMessage) {
+    isNotNull();
+    if (!actual.message().contains(expectedMessage)) {
+      failWithActualExpectedAndMessage(actual, expectedMessage,
+          "Expected error message to contain <%s> but was <%s>",
+          expectedMessage,
+          actual.message()
+      );
+    }
+    return this;
+  }
+
   public GqlResponseErrorsAssertions hasPath(List<String> expectedPath) {
     isNotNull();
     if (!expectedPath.equals(actual.path())) {
