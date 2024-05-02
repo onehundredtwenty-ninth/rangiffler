@@ -7,6 +7,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
@@ -19,6 +20,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -66,6 +68,14 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
+
+    final var friendshipEntity = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+        user.getId(),
+        user.getOutcomeInvitations().get(0).getId()
+    );
+    Assertions.assertThat(friendshipEntity.orElseThrow().getStatus())
+        .describedAs("Статус заявки в друзья не изменился")
+        .isEqualTo(FriendshipStatus.PENDING);
   }
 
   @DisplayName("[grpc] Отклонить собственную заявку в друзья")
@@ -84,6 +94,14 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
+
+    final var friendshipEntity = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+        user.getId(),
+        user.getOutcomeInvitations().get(0).getId()
+    );
+    Assertions.assertThat(friendshipEntity.orElseThrow().getStatus())
+        .describedAs("Статус заявки в друзья не изменился")
+        .isEqualTo(FriendshipStatus.PENDING);
   }
 
   @DisplayName("[grpc] Отправка FriendshipAction UNSPECIFIED")
