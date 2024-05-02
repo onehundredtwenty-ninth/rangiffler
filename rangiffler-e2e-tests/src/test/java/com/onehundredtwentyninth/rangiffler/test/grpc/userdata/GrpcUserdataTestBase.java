@@ -3,7 +3,7 @@ package com.onehundredtwentyninth.rangiffler.test.grpc.userdata;
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GrpcTest;
-import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
+import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleWithoutByteStringInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
@@ -19,7 +19,7 @@ public abstract class GrpcUserdataTestBase {
   @BeforeAll
   static void before() {
     var channel = ManagedChannelBuilder.forAddress(CFG.userdataHost(), CFG.userdataPort())
-        .intercept(new AllureGrpc(), new GrpcConsoleInterceptor())
+        .intercept(new AllureGrpc(), new GrpcConsoleWithoutByteStringInterceptor())
         .usePlaintext()
         .build();
     blockingStub = RangifflerUserdataServiceGrpc.newBlockingStub(channel);

@@ -4,7 +4,7 @@ import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerStatisticServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GrpcTest;
-import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
+import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleWithoutByteStringInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
@@ -21,7 +21,7 @@ public abstract class GrpcStatisticTestBase {
   @BeforeAll
   static void before() {
     var channel = ManagedChannelBuilder.forAddress(CFG.photoHost(), CFG.photoPort())
-        .intercept(new AllureGrpc(), new GrpcConsoleInterceptor())
+        .intercept(new AllureGrpc(), new GrpcConsoleWithoutByteStringInterceptor())
         .usePlaintext()
         .build();
     blockingStub = RangifflerStatisticServiceGrpc.newBlockingStub(channel);
