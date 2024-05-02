@@ -63,6 +63,8 @@ class AddPhotoTest extends BaseWebTest {
     final var userPhotos = photoRepository.findByUserId(user.getId());
     Assertions.assertThat(userPhotos)
         .hasSize(1);
+    createdPhoto = userPhotos.get(0);
+
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(userPhotos.get(0))
             .hasUserId(user.getId().toString())
