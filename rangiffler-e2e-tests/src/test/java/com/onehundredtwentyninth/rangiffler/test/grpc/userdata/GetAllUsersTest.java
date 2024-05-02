@@ -26,12 +26,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_LIST)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_LIST)})
+@DisplayName("[grpc] Userdata")
 class GetAllUsersTest extends GrpcUserdataTestBase {
 
   @Inject
   private UserRepository userRepository;
 
-  @DisplayName("Получение всех пользователей")
+  @DisplayName("[grpc] Получение всех пользователей")
   @CreateUser
   @Test
   void getAllUsersTest(TestUser user) {
@@ -60,7 +61,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение второй страницы всех пользователей")
+  @DisplayName("[grpc] Получение второй страницы всех пользователей")
   @CreateUser
   @Test
   void getAllUsersPageTwoTest(TestUser user) {
@@ -80,7 +81,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному username")
+  @DisplayName("[grpc] Получение всех пользователей по переданному username")
   @CreateUser
   @Test
   void getAllUsersWithUsernameSearchTest(TestUser user, @Extras TestUser[] users) {
@@ -111,7 +112,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение пользователей при передаче SearchQuery username автора запроса")
+  @DisplayName("[grpc] Получение пользователей при передаче SearchQuery username автора запроса")
   @CreateUser
   @Test
   void getAllUsersWithCurrentUserUsernameSearchTest(TestUser user) {
@@ -132,7 +133,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному firstname")
+  @DisplayName("[grpc] Получение всех пользователей по переданному firstname")
   @CreateUser
   @Test
   void getAllUsersWithFirstnameSearchTest(TestUser user, @Extras TestUser[] users) {
@@ -164,7 +165,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Получение всех пользователей по переданному lastName")
+  @DisplayName("[grpc] Получение всех пользователей по переданному lastName")
   @CreateUser
   @Test
   void getAllUsersWithLastnameSearchTest(TestUser user, @Extras TestUser[] users) {

@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
 
   @Inject
@@ -39,7 +40,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   private FriendshipRepository friendshipRepository;
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Отправить заявку в друзья")
+  @DisplayName("[grpc] Отправить заявку в друзья")
   @CreateUser
   @Test
   void sentFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
@@ -66,7 +67,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("Принять заявку в друзья")
+  @DisplayName("[grpc] Принять заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true)
@@ -97,7 +98,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .isEqualTo(FriendshipStatus.ACCEPTED);
   }
 
-  @DisplayName("Отклонить заявку в друзья")
+  @DisplayName("[grpc] Отклонить заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true)
@@ -130,7 +131,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .isEmpty();
   }
 
-  @DisplayName("Удаление из друзей")
+  @DisplayName("[grpc] Удаление из друзей")
   @CreateUser(
       friends = {
           @Friend

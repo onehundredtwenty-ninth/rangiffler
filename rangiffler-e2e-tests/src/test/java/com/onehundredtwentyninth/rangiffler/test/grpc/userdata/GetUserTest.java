@@ -21,9 +21,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER)})
+@DisplayName("[grpc] Userdata")
 class GetUserTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение пользователя по username")
+  @DisplayName("[grpc] Получение пользователя по username")
   @CreateUser
   @Test
   void getUserByUsernameTest(TestUser user) {
@@ -43,7 +44,7 @@ class GetUserTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение пользователя по id")
+  @DisplayName("[grpc] Получение пользователя по id")
   @CreateUser
   @Test
   void getUserByIdTest(TestUser user) {

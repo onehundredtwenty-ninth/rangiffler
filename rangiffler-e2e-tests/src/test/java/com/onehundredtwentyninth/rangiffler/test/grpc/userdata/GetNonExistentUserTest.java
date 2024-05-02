@@ -18,9 +18,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER)})
+@DisplayName("[grpc] Userdata")
 class GetNonExistentUserTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение пользователя по несуществующему username")
+  @DisplayName("[grpc] Получение пользователя по несуществующему username")
   @Test
   void getUserByNonExistentCodeTest() {
     var request = UserRequest.newBuilder().setUsername("nonExistentUsername").build();
@@ -29,7 +30,7 @@ class GetNonExistentUserTest extends GrpcUserdataTestBase {
         .hasUserNotFoundMessage(request.getUsername());
   }
 
-  @DisplayName("Получение пользователя по несуществующему id")
+  @DisplayName("[grpc] Получение пользователя по несуществующему id")
   @Test
   void getUserByNonExistentIdTest() {
     var request = UserByIdRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
@@ -38,7 +39,7 @@ class GetNonExistentUserTest extends GrpcUserdataTestBase {
         .hasUserNotFoundMessage(request.getId());
   }
 
-  @DisplayName("Получение пользователя по невалидному id")
+  @DisplayName("[grpc] Получение пользователя по невалидному id")
   @Test
   void getUserByInvalidIdTest() {
     var request = UserByIdRequest.newBuilder().setId("notValidId").build();
