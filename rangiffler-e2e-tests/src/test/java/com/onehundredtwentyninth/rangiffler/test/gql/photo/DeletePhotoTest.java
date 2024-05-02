@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.UPDATE_PHOTO)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[gql] Photo")
 class DeletePhotoTest {
 
   @Inject
@@ -38,7 +39,7 @@ class DeletePhotoTest {
   @Inject
   private PhotoRepository photoRepository;
 
-  @DisplayName("Удаление фото")
+  @DisplayName("[gql] Удаление фото")
   @ApiLogin
   @CreateUser(
       photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)

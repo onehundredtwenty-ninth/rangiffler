@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -34,7 +34,8 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.PHOTO_LIST)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.PHOTO_LIST)})
-class FeedTest {
+@DisplayName("[gql] Photo")
+class GetAllPhotosTest {
 
   @Inject
   private GatewayClient gatewayClient;
@@ -43,7 +44,7 @@ class FeedTest {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Получение фото пользователя")
+  @DisplayName("[gql] Получение всех фото пользователя")
   @ApiLogin
   @CreateUser(
       photos = {
@@ -88,7 +89,7 @@ class FeedTest {
     );
   }
 
-  @DisplayName("Получение фото пользователя и его друзей")
+  @DisplayName("[gql] Получение всех фото пользователя и его друзей")
   @ApiLogin
   @CreateUser(
       photos = {
