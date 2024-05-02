@@ -42,7 +42,7 @@ class DeletePhotoTest extends BaseWebTest {
     myTravelsPage.open()
         .deletePhoto(user.getPhotos().get(0));
 
-    final var userPhotos = photoRepository.findByUserId(user.getId());
+    final var userPhotos = photoRepository.findPhotoById(user.getPhotos().get(0).getId());
     Assertions.assertThat(userPhotos)
         .isEmpty();
   }

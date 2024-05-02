@@ -19,6 +19,8 @@ import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -56,8 +58,14 @@ class UpdateUserTest extends BaseWebTest {
         .setAvatar("image/defaultAvatar.png")
         .saveChanges();
 
-    final var dbUser = userRepository.findById(user.getId());
     final var country = countryRepository.findCountryByCode(CountryCodes.CN.getCode());
+    final var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> userRepository.findById(user.getId()),
+            userEntity -> newUserData.getFirstname().equals(userEntity.getFirstname())
+        );
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbUser)
