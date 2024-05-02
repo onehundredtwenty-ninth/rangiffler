@@ -2,16 +2,23 @@ package com.onehundredtwentyninth.rangiffler.test.web;
 
 import com.github.javafaker.Faker;
 import com.google.inject.Inject;
+import com.onehundredtwentyninth.rangiffler.assertion.EntitySoftAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
+import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.page.RegisterPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
+import java.util.Objects;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -26,6 +33,10 @@ class RegistrationTest extends BaseWebTest {
   @Inject
   private UserService userService;
   @Inject
+  private UserRepository userRepository;
+  @Inject
+  private CountryRepository countryRepository;
+  @Inject
   private StartPage startPage;
   @Inject
   private RegisterPage registerPage;
@@ -36,12 +47,31 @@ class RegistrationTest extends BaseWebTest {
   @DisplayName("Регистрация")
   @Test
   void registerTest() {
+    username = faker.name().username();
+    final var defaultCountry = countryRepository.findCountryByCode(CountryCodes.DE.getCode());
+
     startPage
         .open()
         .clickRegisterBtn();
-    username = faker.name().username();
+
     registerPage.fillRegisterPage(username, faker.internet().password(3, 12));
     registerPage.successSubmit();
+
+    final var userInUserdata = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> userRepository.findByUsername(username),
+            Objects::nonNull
+        );
+
+    EntitySoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(userInUserdata)
+            .hasUsername(username)
+            .hasFirstName(username)
+            .hasLastName(username)
+            .hasCountryId(defaultCountry.getId())
+    );
   }
 
   @AfterEach

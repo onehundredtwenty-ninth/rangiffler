@@ -70,6 +70,7 @@ dependencies {
     implementation 'org.springframework.data:spring-data-commons:3.2.5'
     implementation 'org.freemarker:freemarker:2.3.32'
     implementation 'com.codeborne:selenide-clear-with-shortcut:7.3.1'
+    testImplementation 'org.awaitility:awaitility:4.2.1'
 }
 
 tasks.withType(JavaCompile).configureEach {
