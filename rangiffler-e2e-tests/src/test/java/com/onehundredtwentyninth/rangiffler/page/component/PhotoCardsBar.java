@@ -4,6 +4,8 @@ import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.onehundredtwentyninth.rangiffler.condition.PhotoCollectionCondition.containsPhoto;
 import static com.onehundredtwentyninth.rangiffler.condition.PhotoCollectionCondition.photosExactly;
+import static com.onehundredtwentyninth.rangiffler.condition.PhotoCondition.exactlyPhoto;
+import static com.onehundredtwentyninth.rangiffler.condition.PhotoCondition.photoWithoutLikes;
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
@@ -32,5 +34,13 @@ public class PhotoCardsBar extends BaseComponent<PhotoCardsBar> {
   public PhotoCardsBar photosCountShouldBeEqualTo(int expectedCount) {
     photoCards.shouldHave(size(expectedCount));
     return this;
+  }
+
+  public PhotoCard getPhotoCard(TestPhoto photo) {
+    return new PhotoCard(photoCards.filter(exactlyPhoto(photo)).get(0));
+  }
+
+  public PhotoCard getPhotoWithoutLikesCard(TestPhoto photo) {
+    return new PhotoCard(photoCards.filter(photoWithoutLikes(photo)).get(0));
   }
 }
