@@ -23,9 +23,9 @@ public class EditPhotoForm extends BaseComponent<EditPhotoForm> {
   }
 
   public EditPhotoForm editPhoto(String countryCode, String description) {
+    descriptionInput.setValue(description);
     locationInput.click();
     $x("//li[@data-value='" + countryCode + "']").click();
-    descriptionInput.setValue(description);
     saveButton.click();
     return this;
   }

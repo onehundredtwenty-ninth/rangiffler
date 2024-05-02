@@ -44,7 +44,7 @@ class UpdatePhotoTest extends BaseWebTest {
       photos = @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
   )
   @Test
-  void createPhotoTest(TestUser user) {
+  void updatePhotoTest(TestUser user) {
     final var country = countryRepository.findCountryByCode("ru");
     final var newDescription = UUID.randomUUID().toString();
 
