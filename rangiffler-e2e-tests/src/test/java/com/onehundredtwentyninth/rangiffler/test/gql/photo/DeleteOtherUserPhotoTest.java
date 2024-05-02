@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
@@ -38,8 +37,6 @@ class DeleteOtherUserPhotoTest {
 
   @Inject
   private GatewayClient gatewayClient;
-  @Inject
-  private PhotoRepository photoRepository;
 
   @DisplayName("[gql] Удаление фото другого пользователя")
   @ApiLogin
