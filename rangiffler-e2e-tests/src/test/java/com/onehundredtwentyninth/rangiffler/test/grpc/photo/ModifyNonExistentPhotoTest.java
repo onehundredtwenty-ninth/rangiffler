@@ -19,9 +19,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.UPDATE_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[grpc] Photo")
 class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
 
-  @DisplayName("Обновление несуществующего фото")
+  @DisplayName("[grpc] Обновление несуществующего фото")
   @Test
   void updateNonExistentPhotoTest() {
     var request = UpdatePhotoRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
@@ -30,7 +31,7 @@ class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
         .hasPhotoNotFoundMessage(request.getId());
   }
 
-  @DisplayName("Проставление лайка несуществующему фото")
+  @DisplayName("[grpc] Проставление лайка несуществующему фото")
   @Test
   void likeNonExistentPhotoTest() {
     var request = LikePhotoRequest.newBuilder().setPhotoId("00000000-0000-0000-0000-000000000000").build();
@@ -39,7 +40,7 @@ class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
         .hasPhotoNotFoundMessage(request.getPhotoId());
   }
 
-  @DisplayName("Удаление несуществующего фото")
+  @DisplayName("[grpc] Удаление несуществующего фото")
   @Test
   void deleteNonExistentPhotoTest() {
     var request = DeletePhotoRequest.newBuilder().setPhotoId("00000000-0000-0000-0000-000000000000").build();

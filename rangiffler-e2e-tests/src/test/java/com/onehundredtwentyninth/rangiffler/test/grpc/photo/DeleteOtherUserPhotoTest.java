@@ -23,9 +23,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.DELETE_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.DELETE_PHOTO)})
+@DisplayName("[grpc] Photo")
 class DeleteOtherUserPhotoTest extends GrpcPhotoTestBase {
 
-  @DisplayName("Удаление фото другого пользователя")
+  @DisplayName("[grpc] Удаление фото другого пользователя")
   @CreateUser(
       friends = @Friend(
           photos = {

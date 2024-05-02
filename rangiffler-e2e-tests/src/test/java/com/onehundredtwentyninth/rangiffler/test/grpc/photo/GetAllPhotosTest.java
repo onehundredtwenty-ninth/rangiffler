@@ -30,12 +30,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.PHOTO_LIST)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.PHOTO_LIST)})
+@DisplayName("[grpc] Photo")
 class GetAllPhotosTest extends GrpcPhotoTestBase {
 
   @Inject
   private PhotoRepository photoRepository;
 
-  @DisplayName("Получение всех фото пользователя")
+  @DisplayName("[grpc] Получение всех фото пользователя")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 1)
@@ -71,7 +72,7 @@ class GetAllPhotosTest extends GrpcPhotoTestBase {
     );
   }
 
-  @DisplayName("Получение всех фото пользователя и его друзей")
+  @DisplayName("[grpc] Получение всех фото пользователя и его друзей")
   @CreateUser(
       friends = {
           @Friend(

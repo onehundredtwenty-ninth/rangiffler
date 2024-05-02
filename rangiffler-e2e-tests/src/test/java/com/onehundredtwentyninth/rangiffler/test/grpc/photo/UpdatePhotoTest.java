@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.UPDATE_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[grpc] Photo")
 class UpdatePhotoTest extends GrpcPhotoTestBase {
 
   @Inject
@@ -36,7 +37,7 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Изменение фото пользователя")
+  @DisplayName("[grpc] Изменение фото пользователя")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)

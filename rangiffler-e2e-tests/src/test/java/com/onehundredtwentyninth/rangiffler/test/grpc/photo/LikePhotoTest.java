@@ -26,12 +26,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.UPDATE_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[grpc] Photo")
 class LikePhotoTest extends GrpcPhotoTestBase {
 
   @Inject
   private PhotoRepository photoRepository;
 
-  @DisplayName("Лайк фото пользователя")
+  @DisplayName("[grpc] Лайк фото пользователя")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
@@ -57,7 +58,7 @@ class LikePhotoTest extends GrpcPhotoTestBase {
     );
   }
 
-  @DisplayName("Снять лайк с фото пользователя")
+  @DisplayName("[grpc] Снять лайк с фото пользователя")
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)

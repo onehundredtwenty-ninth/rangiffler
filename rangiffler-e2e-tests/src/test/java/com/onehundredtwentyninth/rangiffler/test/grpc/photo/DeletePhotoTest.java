@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.DELETE_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.DELETE_PHOTO)})
+@DisplayName("[grpc] Photo")
 class DeletePhotoTest extends GrpcPhotoTestBase {
 
   @Inject
@@ -51,7 +52,7 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
     createPhotoResponse = blockingStub.createPhoto(createPhotoRequest);
   }
 
-  @DisplayName("Удалить фото")
+  @DisplayName("[grpc] Удалить фото")
   @CreateUser
   @Test
   void deletePhotoTest(TestUser user) {
