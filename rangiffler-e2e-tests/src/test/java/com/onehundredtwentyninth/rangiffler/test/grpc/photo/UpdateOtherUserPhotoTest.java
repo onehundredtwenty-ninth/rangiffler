@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.test.grpc.photo;
 
 import com.google.inject.Inject;
+import com.onehundredtwentyninth.rangiffler.assertion.EntitySoftAssertions;
 import com.onehundredtwentyninth.rangiffler.assertion.GrpcStatusExceptionAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
@@ -8,6 +9,7 @@ import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
+import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
@@ -30,6 +32,8 @@ import org.junit.jupiter.api.Test;
 class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
 
   @Inject
+  private PhotoRepository photoRepository;
+  @Inject
   private CountryRepository countryRepository;
 
   @DisplayName("[grpc] Изменение фото другого пользователя")
@@ -43,17 +47,26 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
   @Test
   void updatePhotoTest(TestUser user) {
     var country = countryRepository.findCountryByCode("ru");
+    var originalPhoto = user.getFriends().get(0).getPhotos().get(0);
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
-        .setId(user.getFriends().get(0).getPhotos().get(0).getId().toString())
+        .setId(originalPhoto.getId().toString())
         .setCountryId(country.getId().toString())
         .setDescription(UUID.randomUUID().toString())
         .build();
 
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updatePhoto(request))
         .isInstanceOfStatusRuntimeException()
-        .hasPhotoPermissionDeniedMessage(user.getFriends().get(0).getPhotos().get(0).getId().toString(),
-            user.getId().toString());
+        .hasPhotoPermissionDeniedMessage(originalPhoto.getId().toString(), user.getId().toString());
+
+    final var expectedPhoto = photoRepository.findRequiredPhotoById(originalPhoto.getId());
+    EntitySoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(expectedPhoto)
+            .hasId(originalPhoto.getId().toString())
+            .hasUserId(user.getFriends().get(0).getId().toString())
+            .hasCountryId(originalPhoto.getCountry().getId().toString())
+            .hasDescription(originalPhoto.getDescription())
+    );
   }
 }
