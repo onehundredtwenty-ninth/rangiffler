@@ -17,7 +17,10 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.PeoplePage;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -44,14 +47,16 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .search(users[0].getUsername())
         .addFriend(users[0].getUsername());
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getId(),
-        users[0].getId()
-    );
-
-    Assertions.assertThat(friendship)
-        .describedAs("Заявка в друзья есть в БД")
-        .isPresent();
+    final var friendship = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getId(),
+                users[0].getId()
+            ),
+            Optional::isPresent
+        );
 
     Assertions.assertThat(friendship.orElseThrow().getStatus())
         .describedAs("Статус заявки в друзья")
@@ -71,14 +76,16 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .openIncomeInvitationsTab()
         .acceptInvitation(user.getIncomeInvitations().get(0).getUsername());
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getIncomeInvitations().get(0).getId(),
-        user.getId()
-    );
-
-    Assertions.assertThat(friendship)
-        .describedAs("Заявка в друзья есть в БД")
-        .isPresent();
+    final var friendship = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getIncomeInvitations().get(0).getId(),
+                user.getId()
+            ),
+            Optional::isPresent
+        );
 
     Assertions.assertThat(friendship.orElseThrow().getStatus())
         .describedAs("Статус заявки в друзья")
@@ -98,14 +105,14 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .openIncomeInvitationsTab()
         .rejectInvitation(user.getIncomeInvitations().get(0).getUsername());
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getIncomeInvitations().get(0).getId(),
-        user.getId()
-    );
-
-    Assertions.assertThat(friendship)
-        .describedAs("Заявка на дружбу отсутствует в БД")
-        .isEmpty();
+    Awaitility.await("Ожидаем удаления заявки на дружбу из БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getIncomeInvitations().get(0).getId(),
+                user.getId()
+            ).isEmpty()
+        );
   }
 
   @DisplayName("Удаление из друзей")
@@ -121,13 +128,13 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .openFriendsTab()
         .deleteFriend(user.getFriends().get(0).getUsername());
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getId(),
-        user.getFriends().get(0).getId()
-    );
-
-    Assertions.assertThat(friendship)
-        .describedAs("Запись о дружбе отсутствует в БД")
-        .isEmpty();
+    Awaitility.await("Ожидаем удаления дружбы из БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getId(),
+                user.getFriends().get(0).getId()
+            ).isEmpty()
+        );
   }
 }
