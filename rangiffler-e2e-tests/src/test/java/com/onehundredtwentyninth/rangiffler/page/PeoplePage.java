@@ -58,4 +58,24 @@ public class PeoplePage extends BasePage<PeoplePage> {
     searchInput.setValue(searchQuery).pressEnter();
     return this;
   }
+
+  public PeoplePage addFriend(String username) {
+    table.addFriend(username);
+    return this;
+  }
+
+  public PeoplePage acceptInvitation(String username) {
+    table.acceptInvitation(username);
+    return this;
+  }
+
+  public PeoplePage rejectInvitation(String username) {
+    table.rejectInvitation(username);
+    return this;
+  }
+
+  public PeoplePage deleteFriend(String username) {
+    table.deleteFriend(username);
+    return this;
+  }
 }
