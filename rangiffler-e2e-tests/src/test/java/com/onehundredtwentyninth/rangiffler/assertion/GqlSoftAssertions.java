@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.model.GqlConnection;
 import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
+import com.onehundredtwentyninth.rangiffler.model.GqlError;
 import com.onehundredtwentyninth.rangiffler.model.GqlFeed;
 import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
 import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
@@ -39,5 +40,9 @@ public class GqlSoftAssertions extends AbstractSoftAssertions implements Standar
 
   public GqlFeedAssertions assertThat(GqlFeed actual) {
     return proxy(GqlFeedAssertions.class, GqlFeed.class, actual);
+  }
+
+  public GqlResponseErrorsAssertions assertThat(GqlError actual) {
+    return proxy(GqlResponseErrorsAssertions.class, GqlError.class, actual);
   }
 }
