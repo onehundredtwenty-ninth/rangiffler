@@ -1,6 +1,5 @@
 package com.onehundredtwentyninth.rangiffler.test.web;
 
-import com.codeborne.selenide.Selenide;
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
@@ -18,8 +17,10 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -47,12 +48,21 @@ class LikePhotoTest extends BaseWebTest {
         .clickWithFriendsButton()
         .likePhoto(photoToLike);
 
-    final var like = photoRepository.findLikesByPhotoId(photoToLike.getId());
+    final var likes = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> photoRepository.findLikesByPhotoId(photoToLike.getId()),
+            photoLikes -> !photoLikes.isEmpty()
+        );
+
     SoftAssertions.assertSoftly(softAssertions -> {
-      softAssertions.assertThat(like)
+      softAssertions.assertThat(likes)
+          .describedAs("У фото есть один лайк")
           .hasSize(1);
 
-      softAssertions.assertThat(like.get(0).getUserId())
+      softAssertions.assertThat(likes.get(0).getUserId())
+          .describedAs("UserId лайка совпадает с id текущего пользователя")
           .isEqualTo(user.getId());
     });
   }
@@ -68,14 +78,16 @@ class LikePhotoTest extends BaseWebTest {
     myTravelsPage.open()
         .clickWithFriendsButton()
         .likePhoto(photoToLike);
-    Selenide.refresh();
 
-    myTravelsPage
-        .clickWithFriendsButton()
-        .dislikePhoto(photoToLike);
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(() -> !photoRepository.findLikesByPhotoId(photoToLike.getId()).isEmpty());
 
-    final var like = photoRepository.findLikesByPhotoId(photoToLike.getId());
-    Assertions.assertThat(like)
+    myTravelsPage.dislikePhoto(photoToLike);
+
+    final var likes = photoRepository.findLikesByPhotoId(photoToLike.getId());
+    Assertions.assertThat(likes)
         .isEmpty();
   }
 }
