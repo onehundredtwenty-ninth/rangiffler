@@ -71,7 +71,7 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
   }
 
   @AfterEach
-  void after() {
+  void deletePhoto() {
     photoRepository.deletePhoto(UUID.fromString(response.getId()));
   }
 }
