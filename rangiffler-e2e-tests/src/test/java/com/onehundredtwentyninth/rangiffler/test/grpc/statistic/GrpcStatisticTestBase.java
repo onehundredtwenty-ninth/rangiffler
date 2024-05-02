@@ -8,18 +8,18 @@ import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 
 @GrpcTest
 public abstract class GrpcStatisticTestBase {
 
   protected static final Config CFG = Config.getInstance();
-  protected RangifflerStatisticServiceGrpc.RangifflerStatisticServiceBlockingStub blockingStub;
-  protected RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub photoServiceBlockingStub;
+  protected static RangifflerStatisticServiceGrpc.RangifflerStatisticServiceBlockingStub blockingStub;
+  protected static RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub photoServiceBlockingStub;
 
-  @BeforeEach
-  void before() {
+  @BeforeAll
+  static void before() {
     var channel = ManagedChannelBuilder.forAddress(CFG.photoHost(), CFG.photoPort())
         .intercept(new AllureGrpc(), new GrpcConsoleInterceptor())
         .usePlaintext()
@@ -28,8 +28,8 @@ public abstract class GrpcStatisticTestBase {
     photoServiceBlockingStub = RangifflerPhotoServiceGrpc.newBlockingStub(channel);
   }
 
-  @AfterEach
-  void after() {
+  @AfterAll
+  static void after() {
     ((ManagedChannel) blockingStub.getChannel()).shutdownNow();
   }
 }
