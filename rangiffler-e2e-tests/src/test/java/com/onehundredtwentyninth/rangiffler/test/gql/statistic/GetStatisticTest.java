@@ -1,7 +1,8 @@
-package com.onehundredtwentyninth.rangiffler.test.gql.photo;
+package com.onehundredtwentyninth.rangiffler.test.gql.statistic;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
+import com.onehundredtwentyninth.rangiffler.assertion.GqlFeedAssertions;
 import com.onehundredtwentyninth.rangiffler.assertion.GqlSoftAssertions;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
 import com.onehundredtwentyninth.rangiffler.constant.Features;
@@ -13,16 +14,13 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
-import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.GqlLike;
 import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -34,8 +32,8 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.PHOTO_LIST)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.PHOTO_LIST)})
-@DisplayName("[gql] Photo")
-class GetAllPhotosTest {
+@DisplayName("[gql] Statistic")
+class GetStatisticTest {
 
   @Inject
   private GatewayClient gatewayClient;
@@ -44,15 +42,17 @@ class GetAllPhotosTest {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("[gql] Получение всех фото пользователя")
+  @DisplayName("[gql] Получение статистики по фото пользователя")
   @ApiLogin
   @CreateUser(
       photos = {
-          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE, likes = 2)
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
       }
   )
   @Test
-  void getFeedTest(@Token String token, TestUser user, @GqlRequestFile("gql/getFeed.json") GqlRequest request) {
+  void getFeedStatisticTest(@Token String token, @GqlRequestFile("gql/getFeed.json") GqlRequest request) {
     var response = gatewayClient.getFeed(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -61,45 +61,25 @@ class GetAllPhotosTest {
             .dataNotNull()
     );
 
-    GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getFeed().getPhotos())
-            .hasEdgesCount(user.getPhotos().size())
-            .hasPrevious(false)
-            .hasNext(false)
-    );
-
-    var expectedPhoto = user.getPhotos().get(0);
-    var expectedLikes = photoRepository.findLikesByPhotoId(expectedPhoto.getId()).stream()
-        .map(s -> new GqlLike(s.getUserId(), null, null))
-        .toList();
-
-    GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getFeed().getPhotos().getEdges().get(0))
-            .hasId(expectedPhoto.getId())
-            .hasSrc(expectedPhoto.getPhoto())
-            .hasCountryCode(expectedPhoto.getCountry().getCode())
-            .hasDescription(expectedPhoto.getDescription())
-            .hasTotalLikes(2)
-            .hasLikes(expectedLikes)
-    );
+    GqlFeedAssertions.assertThat(response.getData().getFeed())
+        .hasStatCount(CountryCodes.CN.getCode(), 2)
+        .hasStatCount(CountryCodes.CA.getCode(), 1);
   }
 
-  @DisplayName("[gql] Получение всех фото пользователя и его друзей")
+  @DisplayName("[gql] Получение статистики по фото пользователяи его друзей")
   @ApiLogin
   @CreateUser(
       photos = {
           @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
           @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
       }, friends = {
       @Friend(photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
-      @Friend(pending = true, photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
-      @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME,
-          photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
-      )
+      @Friend(photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM))
   }
   )
   @Test
-  void getFeedWithFriendsTest(@Token String token, TestUser user,
+  void getFeedStatisticWithFriendsTest(@Token String token,
       @GqlRequestFile("gql/getFeedWithFriends.json") GqlRequest request) {
     var response = gatewayClient.getFeed(token, request);
 
@@ -109,11 +89,36 @@ class GetAllPhotosTest {
             .dataNotNull()
     );
 
+    GqlFeedAssertions.assertThat(response.getData().getFeed())
+        .hasStatCount(CountryCodes.CN.getCode(), 2)
+        .hasStatCount(CountryCodes.CA.getCode(), 3);
+  }
+
+  @DisplayName("[gql] Отсутствие неподтвержденных друзей в статистике")
+  @ApiLogin
+  @CreateUser(
+      photos = {
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE),
+          @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)
+      }, friends = {
+      @Friend(pending = true, photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM)),
+      @Friend(pending = true, photos = @WithPhoto(countryCode = CountryCodes.CA, image = PhotoFiles.AMSTERDAM))
+  }
+  )
+  @Test
+  void getFeedStatisticWithoutInvitationsTest(@Token String token,
+      @GqlRequestFile("gql/getFeedWithFriends.json") GqlRequest request) {
+    var response = gatewayClient.getFeed(token, request);
+
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getFeed().getPhotos())
-            .hasEdgesCount(3)
-            .hasPrevious(false)
-            .hasNext(false)
+        softAssertions.assertThat(response)
+            .hasNotErrors()
+            .dataNotNull()
     );
+
+    GqlFeedAssertions.assertThat(response.getData().getFeed())
+        .hasStatCount(CountryCodes.CN.getCode(), 2)
+        .hasStatCount(CountryCodes.CA.getCode(), 1);
   }
 }
