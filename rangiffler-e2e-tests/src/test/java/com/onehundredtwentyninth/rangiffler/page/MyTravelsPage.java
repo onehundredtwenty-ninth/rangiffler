@@ -7,7 +7,6 @@ import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.page.component.AddNewPhotoForm;
-import com.onehundredtwentyninth.rangiffler.page.component.EditPhotoForm;
 import com.onehundredtwentyninth.rangiffler.page.component.PhotoCardsBar;
 import com.onehundredtwentyninth.rangiffler.page.component.WorldMap;
 
@@ -20,7 +19,6 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
   private final SelenideElement addPhotoButton = $x("//button[text()='Add photo']");
   private final PhotoCardsBar photoCardsBar = new PhotoCardsBar($x("//div[contains(@class,'MuiGrid-root MuiGrid-container')]"));
   private final AddNewPhotoForm addNewPhotoForm = new AddNewPhotoForm($x("//form[contains(@class, 'MuiBox-root')]"));
-  private final EditPhotoForm editPhotoForm = new EditPhotoForm($x("//form[contains(@class, 'MuiBox-root')]"));
 
   public MyTravelsPage open() {
     Selenide.open("/my-travels");
@@ -66,8 +64,7 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
 
   public MyTravelsPage editPhoto(TestPhoto photo, String newCountryCode, String newDescription) {
     var photoCard = photoCardsBar.getPhotoCard(photo);
-    photoCard.$x(".//*[text() = 'Edit']").click();
-    editPhotoForm
+    photoCard.editPhoto()
         .imageShouldBePresented(photo.getPhoto())
         .editPhoto(newCountryCode, newDescription);
     Selenide.refresh();
@@ -76,19 +73,19 @@ public class MyTravelsPage extends BasePage<MyTravelsPage> {
 
   public MyTravelsPage likePhoto(TestPhoto photo) {
     var photoCard = photoCardsBar.getPhotoCard(photo);
-    photoCard.$x(".//*[@data-testid='FavoriteBorderOutlinedIcon']").click();
+    photoCard.likePhoto();
     return this;
   }
 
   public MyTravelsPage dislikePhoto(TestPhoto photo) {
     var photoCard = photoCardsBar.getPhotoWithoutLikesCard(photo);
-    photoCard.$x("(.//*[@data-testid='FavoriteOutlinedIcon'])[2]").click();
+    photoCard.dislikePhoto();
     return this;
   }
 
   public MyTravelsPage deletePhoto(TestPhoto photo) {
     var photoCard = photoCardsBar.getPhotoCard(photo);
-    photoCard.$x(".//button[text() = 'Delete']").click();
+    photoCard.deletePhoto();
     return this;
   }
 }

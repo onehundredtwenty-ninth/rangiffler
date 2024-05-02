@@ -36,11 +36,11 @@ public class PhotoCardsBar extends BaseComponent<PhotoCardsBar> {
     return this;
   }
 
-  public SelenideElement getPhotoCard(TestPhoto photo) {
-    return photoCards.filter(exactlyPhoto(photo)).get(0);
+  public PhotoCard getPhotoCard(TestPhoto photo) {
+    return new PhotoCard(photoCards.filter(exactlyPhoto(photo)).get(0));
   }
 
-  public SelenideElement getPhotoWithoutLikesCard(TestPhoto photo) {
-    return photoCards.filter(photoWithoutLikes(photo)).get(0);
+  public PhotoCard getPhotoWithoutLikesCard(TestPhoto photo) {
+    return new PhotoCard(photoCards.filter(photoWithoutLikes(photo)).get(0));
   }
 }
