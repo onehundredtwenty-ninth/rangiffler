@@ -18,8 +18,10 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.UUID;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -50,8 +52,16 @@ class UpdatePhotoTest extends BaseWebTest {
     myTravelsPage.open()
         .editPhoto(user.getPhotos().get(0), country.getCode(), newDescription);
 
-    final var userPhotos = photoRepository.findByUserId(user.getId());
+    final var userPhotos = Awaitility.await("Ожидаем обновления фото в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> photoRepository.findByUserId(user.getId()),
+            photoEntities -> newDescription.equals(photoEntities.get(0).getDescription())
+        );
+
     Assertions.assertThat(userPhotos)
+        .describedAs("Количество фото пользователя равно 1")
         .hasSize(1);
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(userPhotos.get(0))
