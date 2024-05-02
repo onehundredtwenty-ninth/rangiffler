@@ -61,7 +61,7 @@ public class GrpcConsoleWithoutByteStringInterceptor implements ClientIntercepto
               var msgToPrint = getMessageForPrint(((Message) message).toBuilder());
               log.info("Response body:\n {}", JSON_PRINTER.print(msgToPrint));
             } catch (Exception e) {
-              log.warn("Can't log parsed message to console");
+              log.error("Can't log parsed message to console");
             }
             super.onMessage(message);
           }
