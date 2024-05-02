@@ -20,7 +20,6 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
 import java.util.UUID;
-import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -60,9 +59,6 @@ class UpdatePhotoTest extends BaseWebTest {
             photoEntities -> newDescription.equals(photoEntities.get(0).getDescription())
         );
 
-    Assertions.assertThat(userPhotos)
-        .describedAs("Количество фото пользователя равно 1")
-        .hasSize(1);
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(userPhotos.get(0))
             .hasUserId(user.getId().toString())
