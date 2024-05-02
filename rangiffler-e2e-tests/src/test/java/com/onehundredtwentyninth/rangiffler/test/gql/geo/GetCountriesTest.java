@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.geo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.GEO)
 @Feature(Features.COUNTRY_LIST)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.GEO), @Tag(JUnitTags.COUNTRY_LIST)})
+@DisplayName("[gql] Geo")
 class GetCountriesTest {
 
   @Inject
@@ -34,7 +35,7 @@ class GetCountriesTest {
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Получение списка стран")
+  @DisplayName("[gql] Получение списка всех стран")
   @ApiLogin
   @CreateUser
   @Test
