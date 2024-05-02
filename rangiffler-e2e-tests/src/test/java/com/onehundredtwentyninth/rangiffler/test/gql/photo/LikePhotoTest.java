@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.UPDATE_PHOTO)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[gql] Photo")
 class LikePhotoTest {
 
   @Inject
@@ -42,7 +43,7 @@ class LikePhotoTest {
   @Inject
   private PhotoRepository photoRepository;
 
-  @DisplayName("Лайк фото пользователя")
+  @DisplayName("[gql] Лайк фото пользователя")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -75,7 +76,7 @@ class LikePhotoTest {
     );
   }
 
-  @DisplayName("Снять лайк с фото пользователя")
+  @DisplayName("[gql] Снять лайк с фото пользователя")
   @ApiLogin
   @CreateUser(
       friends = {

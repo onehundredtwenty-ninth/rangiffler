@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
@@ -29,24 +28,22 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
-class GetUserFriendsOutcomeTest {
+@DisplayName("[gql] Userdata")
+class GetUserIncomeInvitationsTest {
 
   @Inject
   private GatewayClient gatewayClient;
-  @Inject
-  private CountryRepository countryRepository;
 
-  @DisplayName("Получение всех исходящих заявок в друзья")
+  @DisplayName("[gql] Получение всех входящих заявок в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+          @Friend(pending = true),
+          @Friend(pending = true)
       }
   )
   @Test
-  void getOutcomeInvitationsTest(@Token String token, TestUser user,
-      @GqlRequestFile("gql/getOutcomeInvitations.json") GqlRequest request) {
+  void getIncomeInvitationsTest(@Token String token, TestUser user, @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -56,15 +53,15 @@ class GetUserFriendsOutcomeTest {
     );
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations())
-            .hasEdgesCount(user.getOutcomeInvitations().size())
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
+            .hasEdgesCount(user.getIncomeInvitations().size())
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getOutcomeInvitations().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations().getEdges().get(0))
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())
@@ -73,18 +70,18 @@ class GetUserFriendsOutcomeTest {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по username")
+  @DisplayName("[gql] Получение входящих заявок в друзья пользователя с фильтрацией по username")
   @ApiLogin
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+          @Friend(pending = true),
+          @Friend(pending = true)
       }
   )
   @Test
-  void getOutcomeInvitationsWithUsernameFilterTest(@Token String token, TestUser user,
-      @GqlRequestFile("gql/getOutcomeInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getOutcomeInvitations().get(0).getUsername());
+  void getIncomeInvitationsWithUsernameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(0).getUsername());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -94,15 +91,15 @@ class GetUserFriendsOutcomeTest {
     );
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations())
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
             .hasEdgesCount(1)
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getOutcomeInvitations().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations().getEdges().get(0))
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())
@@ -111,18 +108,18 @@ class GetUserFriendsOutcomeTest {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по firstname")
+  @DisplayName("[gql] Получение входящих заявок в друзья пользователя с фильтрацией по firstname")
   @ApiLogin
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+          @Friend(pending = true),
+          @Friend(pending = true)
       }
   )
   @Test
-  void getOutcomeInvitationsWithFirstnameFilterTest(@Token String token, TestUser user,
-      @GqlRequestFile("gql/getOutcomeInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getOutcomeInvitations().get(1).getFirstname());
+  void getIncomeInvitationsWithFirstnameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(1).getFirstname());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -132,15 +129,15 @@ class GetUserFriendsOutcomeTest {
     );
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations())
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
             .hasEdgesCount(1)
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getOutcomeInvitations().get(1);
+    var expectedFriend = user.getIncomeInvitations().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations().getEdges().get(0))
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())
@@ -149,18 +146,18 @@ class GetUserFriendsOutcomeTest {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по lastname")
+  @DisplayName("[gql] Получение входящих заявок в друзья пользователя с фильтрацией по lastname")
   @ApiLogin
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
+          @Friend(pending = true),
+          @Friend(pending = true)
       }
   )
   @Test
-  void getOutcomeInvitationsWithSurnameFilterTest(@Token String token, TestUser user,
-      @GqlRequestFile("gql/getOutcomeInvitations.json") GqlRequest request) {
-    request.variables().put("searchQuery", user.getOutcomeInvitations().get(1).getLastName());
+  void getIncomeInvitationsWithSurnameFilterTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
+    request.variables().put("searchQuery", user.getIncomeInvitations().get(1).getLastName());
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -170,15 +167,15 @@ class GetUserFriendsOutcomeTest {
     );
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations())
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
             .hasEdgesCount(1)
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getOutcomeInvitations().get(1);
+    var expectedFriend = user.getIncomeInvitations().get(1);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations().getEdges().get(0))
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())
@@ -187,18 +184,18 @@ class GetUserFriendsOutcomeTest {
     );
   }
 
-  @DisplayName("Отсутствие друзей и входящих заявок в списке исходящих заявок в друзья")
+  @DisplayName("[gql] Отсутствие друзей и исходящих заявок в списке входящих заявок в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
+          @Friend(pending = true),
           @Friend,
-          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.INCOME)
+          @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
       }
   )
   @Test
-  void getOutcomeInvitationsWithoutPendingTest(@Token String token, TestUser user,
-      @GqlRequestFile("gql/getOutcomeInvitations.json") GqlRequest request) {
+  void getIncomeInvitationsWithoutPendingTest(@Token String token, TestUser user,
+      @GqlRequestFile("gql/getInvitations.json") GqlRequest request) {
     var response = gatewayClient.getUser(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -208,15 +205,15 @@ class GetUserFriendsOutcomeTest {
     );
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations())
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations())
             .hasEdgesCount(1)
             .hasPrevious(false)
             .hasNext(false)
     );
 
-    var expectedFriend = user.getOutcomeInvitations().get(0);
+    var expectedFriend = user.getIncomeInvitations().get(0);
     GqlSoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(response.getData().getUser().getOutcomeInvitations().getEdges().get(0))
+        softAssertions.assertThat(response.getData().getUser().getIncomeInvitations().getEdges().get(0))
             .hasId(expectedFriend.getId())
             .hasUsername(expectedFriend.getUsername())
             .hasFirstName(expectedFriend.getFirstname())

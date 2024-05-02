@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.api.GatewayClient;
@@ -35,6 +35,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[gql] Userdata")
 class UpdateUserFriendshipTest {
 
   @Inject
@@ -45,7 +46,7 @@ class UpdateUserFriendshipTest {
   private FriendshipRepository friendshipRepository;
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Отправить заявку в друзья")
+  @DisplayName("[gql] Отправить заявку в друзья")
   @ApiLogin
   @CreateUser
   @Test
@@ -81,7 +82,7 @@ class UpdateUserFriendshipTest {
         .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("Принять заявку в друзья")
+  @DisplayName("[gql] Принять заявку в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -121,7 +122,7 @@ class UpdateUserFriendshipTest {
         .isEqualTo(FriendshipStatus.ACCEPTED);
   }
 
-  @DisplayName("Отклонить заявку в друзья")
+  @DisplayName("[gql] Отклонить заявку в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -157,7 +158,7 @@ class UpdateUserFriendshipTest {
         .isEmpty();
   }
 
-  @DisplayName("Удаление из друзей")
+  @DisplayName("[gql] Удаление из друзей")
   @ApiLogin
   @CreateUser(
       friends = {

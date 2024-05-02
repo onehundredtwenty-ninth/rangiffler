@@ -22,6 +22,26 @@ public class GqlResponseAssertions extends AbstractAssert<GqlResponseAssertions,
     return this;
   }
 
+  public GqlResponseAssertions hasErrors() {
+    isNotNull();
+    if (actual.getErrors() == null) {
+      failWithActualExpectedAndMessage(actual, null, "Expected errors to be not null but it was");
+    }
+    return this;
+  }
+
+  public GqlResponseAssertions hasErrorsCount(int expectedCount) {
+    isNotNull();
+    if (actual.getErrors() == null || actual.getErrors().size() != expectedCount) {
+      failWithActualExpectedAndMessage(actual, null,
+          "Expected errors to have size <%s> but was <%s>",
+          expectedCount,
+          actual.getErrors()
+      );
+    }
+    return this;
+  }
+
   public GqlResponseAssertions dataNotNull() {
     isNotNull();
     if (actual.getData() == null) {

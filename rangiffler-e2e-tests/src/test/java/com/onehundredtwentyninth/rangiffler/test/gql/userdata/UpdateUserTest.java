@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.gql;
+package com.onehundredtwentyninth.rangiffler.test.gql.userdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.GQL), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER)})
+@DisplayName("[gql] Userdata")
 class UpdateUserTest {
 
   @Inject
@@ -43,7 +44,7 @@ class UpdateUserTest {
   @Inject
   private ObjectMapper mapper;
 
-  @DisplayName("Обновление пользователя")
+  @DisplayName("[gql] Обновление данных пользователя")
   @ApiLogin
   @CreateUser
   @Test
