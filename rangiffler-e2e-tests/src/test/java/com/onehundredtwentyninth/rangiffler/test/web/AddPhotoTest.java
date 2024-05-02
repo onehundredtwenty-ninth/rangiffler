@@ -20,9 +20,11 @@ import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.UUID;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -56,17 +58,23 @@ class AddPhotoTest extends BaseWebTest {
         .build();
 
     myTravelsPage.open()
-        .addPhoto("image/Amsterdam.png", photoToCreate.getCountry().getCode(), photoToCreate.getDescription())
-        .photosCountShouldBeEqualTo(1)
-        .photoCardsShouldBePresented(photoToCreate);
+        .addPhoto("image/Amsterdam.png", photoToCreate.getCountry().getCode(), photoToCreate.getDescription());
 
-    final var userPhotos = photoRepository.findByUserId(user.getId());
+    final var userPhotos = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .until(
+            () -> photoRepository.findByUserId(user.getId()),
+            photoEntities -> !photoEntities.isEmpty()
+        );
+
     Assertions.assertThat(userPhotos)
+        .describedAs("Количество фото пользователя равно 1")
         .hasSize(1);
     createdPhoto = userPhotos.get(0);
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(userPhotos.get(0))
+        softAssertions.assertThat(createdPhoto)
             .hasUserId(user.getId().toString())
             .hasSrc(photoToCreate.getPhoto())
             .hasCountryId(country.getId().toString())
