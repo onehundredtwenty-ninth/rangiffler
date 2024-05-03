@@ -52,8 +52,8 @@ class GetStatisticTest extends GrpcStatisticTestBase {
         .build();
     final StatisticResponse response = blockingStub.getStatistic(request);
 
-    final CountryEntity cnCountry = countryRepository.findCountryByCode("cn");
-    final CountryEntity caCountry = countryRepository.findCountryByCode("ca");
+    final CountryEntity cnCountry = countryRepository.findRequiredCountryByCode("cn");
+    final CountryEntity caCountry = countryRepository.findRequiredCountryByCode("ca");
 
     final CountryStatisticResponse expectedStatisticForCn = CountryStatisticResponse.newBuilder()
         .setCountryId(cnCountry.getId().toString())

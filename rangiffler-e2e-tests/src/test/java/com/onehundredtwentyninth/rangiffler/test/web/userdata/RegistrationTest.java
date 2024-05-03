@@ -50,7 +50,7 @@ class RegistrationTest extends BaseWebTest {
   @Test
   void registerTest() {
     username = faker.name().username();
-    final var defaultCountry = countryRepository.findCountryByCode(CountryCodes.DE.getCode());
+    final var defaultCountry = countryRepository.findRequiredCountryByCode(CountryCodes.DE.getCode());
 
     startPage
         .open()
@@ -63,7 +63,7 @@ class RegistrationTest extends BaseWebTest {
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
         .until(
-            () -> userRepository.findByUsername(username),
+            () -> userRepository.findRequiredByUsername(username),
             Objects::nonNull
         );
 

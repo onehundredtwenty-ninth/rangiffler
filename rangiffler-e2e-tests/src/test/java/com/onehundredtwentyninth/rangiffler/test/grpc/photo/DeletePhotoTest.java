@@ -42,7 +42,7 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
 
   @BeforeEach
   void before(TestUser user) {
-    var country = countryRepository.findCountryByCode("ru");
+    var country = countryRepository.findRequiredCountryByCode("ru");
     final CreatePhotoRequest createPhotoRequest = CreatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
         .setSrc(ByteString.EMPTY)

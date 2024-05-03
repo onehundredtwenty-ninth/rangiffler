@@ -49,7 +49,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
             .hasNext(true)
     );
 
-    final UserEntity expectedUser = userRepository.findById(UUID.fromString(response.getAllUsersList().get(0).getId()));
+    final UserEntity expectedUser = userRepository.findRequiredById(UUID.fromString(response.getAllUsersList().get(0).getId()));
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
@@ -100,7 +100,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
             .hasUserWithUsername(users[0].getUsername())
     );
 
-    final UserEntity expectedUser = userRepository.findByUsername(users[0].getUsername());
+    final UserEntity expectedUser = userRepository.findRequiredByUsername(users[0].getUsername());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
@@ -152,7 +152,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
             .hasUserWithFirstName(users[0].getFirstname())
     );
 
-    final UserEntity expectedUser = userRepository.findByFirstname(users[0].getFirstname());
+    final UserEntity expectedUser = userRepository.findRequiredByFirstname(users[0].getFirstname());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())
@@ -184,7 +184,7 @@ class GetAllUsersTest extends GrpcUserdataTestBase {
             .hasUserWithLastName(users[0].getLastName())
     );
 
-    final UserEntity expectedUser = userRepository.findByLastname(users[0].getLastName());
+    final UserEntity expectedUser = userRepository.findRequiredByLastname(users[0].getLastName());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllUsersList().get(0))
             .hasId(expectedUser.getId().toString())

@@ -51,7 +51,7 @@ class AddPhotoTest extends BaseWebTest {
   @CreateUser
   @Test
   void createPhotoTest(TestUser user) {
-    final var country = countryRepository.findCountryByCode("py");
+    final var country = countryRepository.findRequiredCountryByCode("py");
     final var photoToCreate = TestPhoto.builder()
         .photo(ImageUtils.getImageFromResourceAsBase64("Amsterdam.png").getBytes(StandardCharsets.UTF_8))
         .country(CountryMapper.toTestCountry(country))

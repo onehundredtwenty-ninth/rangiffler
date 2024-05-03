@@ -60,12 +60,12 @@ class UpdateUserTest extends BaseWebTest {
         .setAvatar("image/defaultAvatar.png")
         .saveChanges();
 
-    final var country = countryRepository.findCountryByCode(CountryCodes.CN.getCode());
+    final var country = countryRepository.findRequiredCountryByCode(CountryCodes.CN.getCode());
     final var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
         .until(
-            () -> userRepository.findById(user.getId()),
+            () -> userRepository.findRequiredById(user.getId()),
             userEntity -> newUserData.getFirstname().equals(userEntity.getFirstname())
         );
 
@@ -100,7 +100,7 @@ class UpdateUserTest extends BaseWebTest {
         .locationFlagShouldBe(user.getCountry().getFlag())
         .avatarShouldBe(user.getAvatar());
 
-    final var dbUser = userRepository.findById(user.getId());
+    final var dbUser = userRepository.findRequiredById(user.getId());
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbUser)

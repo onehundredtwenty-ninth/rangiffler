@@ -41,7 +41,7 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
   @CreateUser
   @Test
   void createPhotoTest(TestUser user) {
-    var country = countryRepository.findCountryByCode("ru");
+    var country = countryRepository.findRequiredCountryByCode("ru");
     final CreatePhotoRequest request = CreatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
         .setSrc(ByteString.EMPTY)

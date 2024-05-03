@@ -68,7 +68,7 @@ class CreatePhotoTest {
             .hasTotalLikes(0)
     );
 
-    final var country = countryRepository.findCountryByCode(photoInput.getCountry().code());
+    final var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
     final var expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(expectedPhoto)

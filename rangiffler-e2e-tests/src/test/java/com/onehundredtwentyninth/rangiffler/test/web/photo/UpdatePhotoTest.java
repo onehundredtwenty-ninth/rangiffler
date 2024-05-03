@@ -47,7 +47,7 @@ class UpdatePhotoTest extends BaseWebTest {
   )
   @Test
   void updatePhotoTest(TestUser user) {
-    final var country = countryRepository.findCountryByCode("ru");
+    final var country = countryRepository.findRequiredCountryByCode("ru");
     final var newDescription = UUID.randomUUID().toString();
 
     myTravelsPage.open()

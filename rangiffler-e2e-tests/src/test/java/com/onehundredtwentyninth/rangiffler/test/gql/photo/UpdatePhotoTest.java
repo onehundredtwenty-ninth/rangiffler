@@ -66,7 +66,7 @@ class UpdatePhotoTest {
     );
 
     var dbPhoto = photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId());
-    var country = countryRepository.findCountryByCode(photoInput.getCountry().code());
+    var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getPhoto())

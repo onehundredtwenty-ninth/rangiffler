@@ -49,9 +49,9 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
   )
   @Test
   void getStatisticTest(TestUser user) {
-    final CountryEntity cnCountry = countryRepository.findCountryByCode("cn");
-    final CountryEntity caCountry = countryRepository.findCountryByCode("ca");
-    final CountryEntity ruCountry = countryRepository.findCountryByCode("ru");
+    final CountryEntity cnCountry = countryRepository.findRequiredCountryByCode("cn");
+    final CountryEntity caCountry = countryRepository.findRequiredCountryByCode("ca");
+    final CountryEntity ruCountry = countryRepository.findRequiredCountryByCode("ru");
 
     final var updatedPhoto = user.getPhotos()
         .stream().filter(s -> s.getCountry().getId().equals(caCountry.getId()))

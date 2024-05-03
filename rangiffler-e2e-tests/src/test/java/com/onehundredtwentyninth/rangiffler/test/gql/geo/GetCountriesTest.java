@@ -49,7 +49,7 @@ class GetCountriesTest {
     );
 
     var countriesCount = countryRepository.count();
-    var expectedCountryDb = countryRepository.findCountryByCode("ru");
+    var expectedCountryDb = countryRepository.findRequiredCountryByCode("ru");
     var expectedCountry = new GqlCountry(expectedCountryDb.getCode(), expectedCountryDb.getName(),
         new String(expectedCountryDb.getFlag()));
 

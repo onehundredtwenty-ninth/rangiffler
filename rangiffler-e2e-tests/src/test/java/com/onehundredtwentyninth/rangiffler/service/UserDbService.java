@@ -84,7 +84,7 @@ public class UserDbService implements UserService {
         .flatMap(s -> s.getLikes().stream())
         .forEach(s -> {
           var userId = s.getUserId();
-          var username = userRepository.findById(userId).getUsername();
+          var username = userRepository.findRequiredById(userId).getUsername();
           deleteUser(username);
         });
     deleteUser(testUser.getUsername());
@@ -98,7 +98,7 @@ public class UserDbService implements UserService {
 
   @Override
   public TestUser createRandomUser() {
-    var userCountry = countryRepository.findCountryByCode(CountryCodes.US.getCode());
+    var userCountry = countryRepository.findRequiredCountryByCode(CountryCodes.US.getCode());
     var createdUser = createUser(faker.name().username(), faker.internet().password(),
         faker.random().hex(8),
         faker.random().hex(8),
@@ -123,7 +123,7 @@ public class UserDbService implements UserService {
   public TestUser createTestUser(CreateUser userParameters) {
     var username = userParameters.username().isEmpty() ? faker.name().username() : userParameters.username();
     var password = userParameters.password().isEmpty() ? faker.internet().password() : userParameters.password();
-    var userCountry = countryRepository.findCountryByCode(userParameters.countryCode().getCode());
+    var userCountry = countryRepository.findRequiredCountryByCode(userParameters.countryCode().getCode());
     var userAvatar = ImageUtils.getImageFromResourceAsBase64(userParameters.avatar().getFileName());
 
     var createdUser = createUser(username, password, faker.random().hex(8), faker.random().hex(8),
@@ -157,7 +157,7 @@ public class UserDbService implements UserService {
   public List<TestPhoto> createPhotos(UUID userId, WithPhoto[] photosParameters) {
     var createdPhotos = new ArrayList<TestPhoto>();
     for (var photoParameters : photosParameters) {
-      var photoCountry = countryRepository.findCountryByCode(photoParameters.countryCode().getCode());
+      var photoCountry = countryRepository.findRequiredCountryByCode(photoParameters.countryCode().getCode());
       var photoDescription = photoParameters.description().isBlank()
           ? faker.internet().uuid()
           : photoParameters.description();

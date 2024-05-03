@@ -46,7 +46,7 @@ class UpdateOtherUserPhotoTest extends GrpcPhotoTestBase {
   )
   @Test
   void updatePhotoTest(TestUser user) {
-    var country = countryRepository.findCountryByCode("ru");
+    var country = countryRepository.findRequiredCountryByCode("ru");
     var originalPhoto = user.getFriends().get(0).getPhotos().get(0);
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()

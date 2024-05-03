@@ -44,7 +44,7 @@ class GetAllCountriesTest extends GrpcGeoTestBase {
 
     });
 
-    var expectedCountry = countryRepository.findCountryByCode(response.getAllCountries(0).getCode());
+    var expectedCountry = countryRepository.findRequiredCountryByCode(response.getAllCountries(0).getCode());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getAllCountries(0))
             .hasId(expectedCountry.getId())

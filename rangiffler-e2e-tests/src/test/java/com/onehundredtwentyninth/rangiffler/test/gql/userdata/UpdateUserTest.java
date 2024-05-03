@@ -58,8 +58,8 @@ class UpdateUserTest {
     );
 
     var userInput = mapper.convertValue(request.variables().get("input"), UserInput.class);
-    var dbUser = userRepository.findById(user.getId());
-    var country = countryRepository.findCountryByCode(userInput.getLocation().getCode());
+    var dbUser = userRepository.findRequiredById(user.getId());
+    var country = countryRepository.findRequiredCountryByCode(userInput.getLocation().getCode());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
