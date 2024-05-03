@@ -41,7 +41,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlUserResponse> getUser(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithResponseBody(log))
+        .filters(filterWithoutResponseBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()
@@ -92,7 +92,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlUserResponse> updateUser(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithoutResponseBody(log))
+        .filters(filterWithoutResponseBodyAndTruncatedRequestBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()
@@ -109,7 +109,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlPhotoResponse> updatePhoto(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithoutResponseBody(log))
+        .filters(filterWithoutResponseBodyAndTruncatedRequestBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()

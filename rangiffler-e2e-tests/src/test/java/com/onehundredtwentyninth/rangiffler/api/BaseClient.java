@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
 
+import com.onehundredtwentyninth.rangiffler.api.filter.RequestLoggingWithTruncateBodyFilter;
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.logger.RestAssuredLogger;
 import io.qameta.allure.restassured.AllureRestAssured;
@@ -17,6 +18,7 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import java.util.List;
+import java.util.Set;
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.client.HttpClient;
@@ -79,6 +81,19 @@ public abstract class BaseClient {
   public List<Filter> filterWithoutResponseBody(Logger logger) {
     return List.of(
         new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
+        new ResponseLoggingFilter(LogDetail.STATUS, new RestAssuredLogger().getPrintStream(logger), 200),
+        new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger),
+            not(anyOf(equalTo(200)))),
+        new AllureRestAssured()
+    );
+  }
+
+  public List<Filter> filterWithoutResponseBodyAndTruncatedRequestBody(Logger logger) {
+    return List.of(
+        new RequestLoggingWithTruncateBodyFilter(
+            Set.of(LogDetail.URI, LogDetail.METHOD, LogDetail.HEADERS, LogDetail.PARAMS),
+            new RestAssuredLogger().getPrintStream(logger)
+        ),
         new ResponseLoggingFilter(LogDetail.STATUS, new RestAssuredLogger().getPrintStream(logger), 200),
         new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger),
             not(anyOf(equalTo(200)))),
