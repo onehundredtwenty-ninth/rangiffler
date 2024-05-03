@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -15,6 +15,7 @@ import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.ADD_PHOTO)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.ADD_PHOTO)})
+@DisplayName("[web] Photo")
 class LikePhotoTest extends BaseWebTest {
 
   @Inject
@@ -35,7 +37,7 @@ class LikePhotoTest extends BaseWebTest {
   @Inject
   private PhotoRepository photoRepository;
 
-  @DisplayName("Лайк фото")
+  @DisplayName("[web] Лайк фото")
   @ApiLogin
   @CreateUser(
       friends = @Friend(photos = @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE))
@@ -66,7 +68,7 @@ class LikePhotoTest extends BaseWebTest {
     });
   }
 
-  @DisplayName("Снять лайк с фото")
+  @DisplayName("[web] Снять лайк с фото")
   @ApiLogin
   @CreateUser(
       friends = @Friend(photos = @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE))

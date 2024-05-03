@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.userdata;
 
 import com.github.javafaker.Faker;
 import com.google.inject.Inject;
@@ -15,6 +15,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyProfilePage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER)})
+@DisplayName("[web] Userdata")
 class UpdateUserTest extends BaseWebTest {
 
   @Inject
@@ -40,7 +42,7 @@ class UpdateUserTest extends BaseWebTest {
   @Inject
   private Faker faker;
 
-  @DisplayName("Обновление пользователя")
+  @DisplayName("[web] Обновление пользователя")
   @ApiLogin
   @CreateUser
   @Test
@@ -78,7 +80,7 @@ class UpdateUserTest extends BaseWebTest {
     );
   }
 
-  @DisplayName("Отмена обновления данных пользователя")
+  @DisplayName("[web] Отмена обновления данных пользователя")
   @ApiLogin
   @CreateUser
   @Test

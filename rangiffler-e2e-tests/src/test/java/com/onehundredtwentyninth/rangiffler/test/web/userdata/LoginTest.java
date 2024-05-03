@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -11,6 +11,7 @@ import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.LoginPage;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.LOGIN)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.LOGIN)})
+@DisplayName("[web] Userdata")
 class LoginTest extends BaseWebTest {
 
   @Inject
@@ -30,7 +32,7 @@ class LoginTest extends BaseWebTest {
   @Inject
   private MyTravelsPage myTravelsPage;
 
-  @DisplayName("Авторизация")
+  @DisplayName("[web] Авторизация")
   @CreateUser
   @Test
   void loginTest(TestUser user) {

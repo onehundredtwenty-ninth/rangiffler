@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.assertion.EntitySoftAssertions;
@@ -16,6 +16,7 @@ import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.ADD_PHOTO)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.ADD_PHOTO)})
+@DisplayName("[web] Photo")
 class AddPhotoTest extends BaseWebTest {
 
   @Inject
@@ -44,7 +46,7 @@ class AddPhotoTest extends BaseWebTest {
   private PhotoRepository photoRepository;
   private PhotoEntity createdPhoto;
 
-  @DisplayName("Добавление фото")
+  @DisplayName("[web] Добавление фото")
   @ApiLogin
   @CreateUser
   @Test

@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -15,6 +15,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.PeoplePage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[web] Userdata")
 class UpdateUserFriendshipTest extends BaseWebTest {
 
   @Inject
@@ -37,7 +39,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
   private PeoplePage peoplePage;
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Отправить заявку в друзья")
+  @DisplayName("[web] Отправить заявку в друзья")
   @ApiLogin
   @CreateUser
   @Test
@@ -63,7 +65,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("Принять заявку в друзья")
+  @DisplayName("[web] Принять заявку в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -92,7 +94,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         .isEqualTo(FriendshipStatus.ACCEPTED);
   }
 
-  @DisplayName("Отклонить заявку в друзья")
+  @DisplayName("[web] Отклонить заявку в друзья")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -115,7 +117,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
         );
   }
 
-  @DisplayName("Удаление из друзей")
+  @DisplayName("[web] Удаление из друзей")
   @ApiLogin
   @CreateUser(
       friends = {

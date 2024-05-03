@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.userdata;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -12,6 +12,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.PeoplePage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +23,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[web] Userdata")
 class FriendsListTest extends BaseWebTest {
 
   @Inject
   private PeoplePage peoplePage;
 
-  @DisplayName("Отображение списка друзей")
+  @DisplayName("[web] Отображение списка друзей")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -42,7 +44,7 @@ class FriendsListTest extends BaseWebTest {
         .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по username")
+  @DisplayName("[web] Получение друзей пользователя с фильтрацией по username")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -58,7 +60,7 @@ class FriendsListTest extends BaseWebTest {
         .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по firstname")
+  @DisplayName("[web] Получение друзей пользователя с фильтрацией по firstname")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -74,7 +76,7 @@ class FriendsListTest extends BaseWebTest {
         .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по lastname")
+  @DisplayName("[web] Получение друзей пользователя с фильтрацией по lastname")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -90,7 +92,7 @@ class FriendsListTest extends BaseWebTest {
         .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0));
   }
 
-  @DisplayName("Отсутствие неподтверженных друзей в списке друзей пользователя")
+  @DisplayName("[web] Отсутствие неподтверженных друзей в списке друзей пользователя")
   @ApiLogin
   @CreateUser(
       friends = {
