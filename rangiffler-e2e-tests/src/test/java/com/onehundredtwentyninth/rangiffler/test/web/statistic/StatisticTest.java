@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.statistic;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -14,6 +14,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
 import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -24,12 +25,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.PHOTO_LIST)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.PHOTO_LIST)})
+@DisplayName("[web] Statistic")
 class StatisticTest extends BaseWebTest {
 
   @Inject
   private MyTravelsPage myTravelsPage;
 
-  @DisplayName("Получение статистики фото пользователя")
+  @DisplayName("[web] Получение статистики фото пользователя")
   @ApiLogin
   @CreateUser(
       photos = {
@@ -42,7 +44,7 @@ class StatisticTest extends BaseWebTest {
         .statisticShouldBePresented(CountryCodes.CN.getCode(), "China", 1);
   }
 
-  @DisplayName("Получение статистики фото пользователя и его друзей")
+  @DisplayName("[web] Получение статистики фото пользователя и его друзей")
   @ApiLogin
   @CreateUser(
       photos = {

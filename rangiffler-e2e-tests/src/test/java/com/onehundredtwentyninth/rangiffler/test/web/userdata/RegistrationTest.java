@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.userdata;
 
 import com.github.javafaker.Faker;
 import com.google.inject.Inject;
@@ -14,6 +14,7 @@ import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.page.RegisterPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
@@ -28,6 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.REGISTER)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.REGISTER)})
+@DisplayName("[web] Userdata")
 class RegistrationTest extends BaseWebTest {
 
   @Inject
@@ -44,7 +46,7 @@ class RegistrationTest extends BaseWebTest {
   private Faker faker;
   private String username;
 
-  @DisplayName("Регистрация")
+  @DisplayName("[web] Регистрация")
   @Test
   void registerTest() {
     username = faker.name().username();

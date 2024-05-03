@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.test.web;
+package com.onehundredtwentyninth.rangiffler.test.web.photo;
 
 import com.google.inject.Inject;
 import com.onehundredtwentyninth.rangiffler.constant.Epics;
@@ -16,6 +16,7 @@ import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
+import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -26,12 +27,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.PHOTO_LIST)
 @Tags({@Tag(Layers.UI), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.PHOTO_LIST)})
+@DisplayName("[web] Photo")
 class PhotoTest extends BaseWebTest {
 
   @Inject
   private MyTravelsPage myTravelsPage;
 
-  @DisplayName("Получение фото пользователя")
+  @DisplayName("[web] Получение фото пользователя")
   @ApiLogin
   @CreateUser(
       photos = {
@@ -44,7 +46,7 @@ class PhotoTest extends BaseWebTest {
         .exactlyPhotoCardsShouldBePresented(user.getPhotos().toArray(new TestPhoto[0]));
   }
 
-  @DisplayName("Получение фото пользователя и его друзей")
+  @DisplayName("[web] Получение фото пользователя и его друзей")
   @ApiLogin
   @CreateUser(
       photos = {
