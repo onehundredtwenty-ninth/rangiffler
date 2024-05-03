@@ -1,5 +1,9 @@
 package com.onehundredtwentyninth.rangiffler.api;
 
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.equalTo;
+
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.logger.RestAssuredLogger;
 import io.qameta.allure.restassured.AllureRestAssured;
@@ -75,7 +79,9 @@ public abstract class BaseClient {
   public List<Filter> filterWithoutResponseBody(Logger logger) {
     return List.of(
         new RequestLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger)),
-        new ResponseLoggingFilter(LogDetail.STATUS, new RestAssuredLogger().getPrintStream(logger)),
+        new ResponseLoggingFilter(LogDetail.STATUS, new RestAssuredLogger().getPrintStream(logger), 200),
+        new ResponseLoggingFilter(LogDetail.ALL, new RestAssuredLogger().getPrintStream(logger),
+            not(anyOf(equalTo(200)))),
         new AllureRestAssured()
     );
   }
