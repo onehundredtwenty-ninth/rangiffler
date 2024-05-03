@@ -2,8 +2,8 @@ package com.onehundredtwentyninth.rangiffler.test.grpc.geo;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc;
+import com.onehundredtwentyninth.rangiffler.interceptor.GrpcConsoleInterceptor;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GrpcTest;
-import com.onehundredtwentyninth.rangiffler.utils.GrpcConsoleInterceptor;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.qameta.allure.grpc.AllureGrpc;
