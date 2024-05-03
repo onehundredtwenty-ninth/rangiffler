@@ -23,9 +23,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class GetUserFriendsIncomeRequestsTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение всех входящих заявок в друзья")
+  @DisplayName("[grpc] Получение всех входящих заявок в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true),
@@ -50,7 +51,7 @@ class GetUserFriendsIncomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по username")
+  @DisplayName("[grpc] Получение входящих заявок в друзья пользователя с фильтрацией по username")
   @CreateUser(
       friends = {
           @Friend(pending = true),
@@ -76,7 +77,7 @@ class GetUserFriendsIncomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по firstname")
+  @DisplayName("[grpc] Получение входящих заявок в друзья пользователя с фильтрацией по firstname")
   @CreateUser(
       friends = {
           @Friend(pending = true),
@@ -102,7 +103,7 @@ class GetUserFriendsIncomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение входящих заявок в друзья пользователя с фильтрацией по lastname")
+  @DisplayName("[grpc] Получение входящих заявок в друзья пользователя с фильтрацией по lastname")
   @CreateUser(
       friends = {
           @Friend(pending = true),
@@ -128,7 +129,7 @@ class GetUserFriendsIncomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Отсутствие друзей и исходящих заявок в списке входящих заявок в друзья")
+  @DisplayName("[grpc] Отсутствие друзей и исходящих заявок в списке входящих заявок в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true),

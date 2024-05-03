@@ -21,12 +21,13 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.GEO)
 @Feature(Features.COUNTRY_LIST)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.GEO), @Tag(JUnitTags.COUNTRY_LIST)})
+@DisplayName("[grpc] Geo")
 class GetAllCountriesTest extends GrpcGeoTestBase {
 
   @Inject
   private CountryRepository countryRepository;
 
-  @DisplayName("Получение списка всех стран")
+  @DisplayName("[grpc] Получение списка всех стран")
   @Test
   void allCountriesTest() {
     final AllCountriesResponse response = blockingStub.getAllCountries(Empty.getDefaultInstance());

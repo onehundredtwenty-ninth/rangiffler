@@ -22,9 +22,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение id всех друзей пользователя")
+  @DisplayName("[grpc] Получение id всех друзей пользователя")
   @CreateUser(
       friends = {
           @Friend,
@@ -53,7 +54,7 @@ class GetUserFriendsIdsTest extends GrpcUserdataTestBase {
     });
   }
 
-  @DisplayName("Отсутствие id неподтверженных друзей в списке id друзей пользователя")
+  @DisplayName("[grpc] Отсутствие id неподтверженных друзей в списке id друзей пользователя")
   @CreateUser(
       friends = {
           @Friend,

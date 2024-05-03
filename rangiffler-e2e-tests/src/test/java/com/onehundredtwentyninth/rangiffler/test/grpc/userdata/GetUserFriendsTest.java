@@ -23,9 +23,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class GetUserFriendsTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение всех друзей пользователя")
+  @DisplayName("[grpc] Получение всех друзей пользователя")
   @CreateUser(
       friends = {
           @Friend,
@@ -50,7 +51,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по username")
+  @DisplayName("[grpc] Получение друзей пользователя с фильтрацией по username")
   @CreateUser(
       friends = {
           @Friend,
@@ -76,7 +77,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по firstname")
+  @DisplayName("[grpc] Получение друзей пользователя с фильтрацией по firstname")
   @CreateUser(
       friends = {
           @Friend,
@@ -102,7 +103,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение друзей пользователя с фильтрацией по lastname")
+  @DisplayName("[grpc] Получение друзей пользователя с фильтрацией по lastname")
   @CreateUser(
       friends = {
           @Friend,
@@ -128,7 +129,7 @@ class GetUserFriendsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Отсутствие неподтверженных друзей в списке друзей пользователя")
+  @DisplayName("[grpc] Отсутствие неподтверженных друзей в списке друзей пользователя")
   @CreateUser(
       friends = {
           @Friend,

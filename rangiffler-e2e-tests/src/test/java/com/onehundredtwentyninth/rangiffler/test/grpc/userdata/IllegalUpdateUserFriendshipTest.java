@@ -7,6 +7,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
@@ -19,6 +20,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.model.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -27,6 +29,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
 
   @Inject
@@ -35,7 +38,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   private FriendshipRepository friendshipRepository;
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Удалить несуществующую заявку в друзья")
+  @DisplayName("[grpc] Удалить несуществующую заявку в друзья")
   @CreateUser
   @Test
   void deleteNonExistentFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
@@ -49,7 +52,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .hasFriendshipNotFoundMessage(user.getUsername(), users[0].getUsername());
   }
 
-  @DisplayName("Принять собственную заявку в друзья")
+  @DisplayName("[grpc] Принять собственную заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
@@ -65,9 +68,17 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
+
+    final var friendshipEntity = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+        user.getId(),
+        user.getOutcomeInvitations().get(0).getId()
+    );
+    Assertions.assertThat(friendshipEntity.orElseThrow().getStatus())
+        .describedAs("Статус заявки в друзья не изменился")
+        .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("Отклонить собственную заявку в друзья")
+  @DisplayName("[grpc] Отклонить собственную заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
@@ -83,9 +94,17 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .hasFriendshipRequestNotFoundMessage(user.getOutcomeInvitations().get(0).getUsername(), user.getUsername());
+
+    final var friendshipEntity = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+        user.getId(),
+        user.getOutcomeInvitations().get(0).getId()
+    );
+    Assertions.assertThat(friendshipEntity.orElseThrow().getStatus())
+        .describedAs("Статус заявки в друзья не изменился")
+        .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("Отправка FriendshipAction UNSPECIFIED")
+  @DisplayName("[grpc] Отправка FriendshipAction UNSPECIFIED")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)
@@ -104,7 +123,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   }
 
   @CreateExtrasUsers(@CreateUser)
-  @DisplayName("Отправить повторно заявку в друзья")
+  @DisplayName("[grpc] Отправить повторно заявку в друзья")
   @CreateUser
   @Test
   void sentSecondFriendshipRequestTest(TestUser user, @Extras TestUser[] users) {
@@ -122,7 +141,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         );
   }
 
-  @DisplayName("Принять заявку в друзья повторно")
+  @DisplayName("[grpc] Принять заявку в друзья повторно")
   @CreateUser(
       friends = {
           @Friend(pending = true)
@@ -142,7 +161,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
-  @DisplayName("Отклонить ранее принятую заявку в друзья")
+  @DisplayName("[grpc] Отклонить ранее принятую заявку в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true)
@@ -168,7 +187,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername());
   }
 
-  @DisplayName("Обновить заявку в друзья несуществующим пользователем")
+  @DisplayName("[grpc] Обновить заявку в друзья несуществующим пользователем")
   @Test
   void sentFriendshipRequestTest() {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
@@ -181,7 +200,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .hasUserNotFoundMessage(request.getActionAuthorUserId());
   }
 
-  @DisplayName("Обновить заявку в друзья с несуществующим пользователем")
+  @DisplayName("[grpc] Обновить заявку в друзья с несуществующим пользователем")
   @CreateUser
   @Test
   void sentFriendshipRequestTest(TestUser user) {

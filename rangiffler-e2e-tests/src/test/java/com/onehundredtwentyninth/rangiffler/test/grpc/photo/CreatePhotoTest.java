@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.PHOTOS)
 @Feature(Features.ADD_PHOTO)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.ADD_PHOTO)})
+@DisplayName("[grpc] Photo")
 class CreatePhotoTest extends GrpcPhotoTestBase {
 
   @Inject
@@ -36,7 +37,7 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
   private CountryRepository countryRepository;
   private Photo response;
 
-  @DisplayName("Добавление фото")
+  @DisplayName("[grpc] Добавление фото")
   @CreateUser
   @Test
   void createPhotoTest(TestUser user) {
@@ -70,7 +71,7 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
   }
 
   @AfterEach
-  void after() {
+  void deletePhoto() {
     photoRepository.deletePhoto(UUID.fromString(response.getId()));
   }
 }

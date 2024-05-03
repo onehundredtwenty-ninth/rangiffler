@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER)})
+@DisplayName("[grpc] Userdata")
 class UpdateUserTest extends GrpcUserdataTestBase {
 
   @Inject
@@ -36,7 +37,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
   private UserRepository userRepository;
   private final Faker faker = new Faker();
 
-  @DisplayName("Обновление данных пользователя")
+  @DisplayName("[grpc] Обновление данных пользователя")
   @CreateUser
   @Test
   void updateUserTest(TestUser user) {
@@ -72,7 +73,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Отсутствие возможности изменения id пользователя")
+  @DisplayName("[grpc] Отсутствие возможности изменения id пользователя")
   @CreateUser
   @Test
   void updateUserIdImpossibleTest(TestUser user) {
@@ -97,7 +98,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Обновление несуществующего пользователя")
+  @DisplayName("[grpc] Обновление несуществующего пользователя")
   @Test
   void updateNonExistentUserTest() {
     final User updateUserRequest = User.newBuilder()

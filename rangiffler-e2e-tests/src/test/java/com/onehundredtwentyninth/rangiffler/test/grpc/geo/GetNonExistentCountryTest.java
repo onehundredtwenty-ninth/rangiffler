@@ -18,9 +18,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.GEO)
 @Feature(Features.COUNTRY)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.GEO), @Tag(JUnitTags.COUNTRY)})
+@DisplayName("[grpc] Geo")
 class GetNonExistentCountryTest extends GrpcGeoTestBase {
 
-  @DisplayName("Получение страны по несуществующему коду")
+  @DisplayName("[grpc] Получение страны по несуществующему коду")
   @Test
   void getCountryByNonExistentCodeTest() {
     var request = GetCountryByCodeRequest.newBuilder().setCode("nonExistentCode").build();
@@ -29,7 +30,7 @@ class GetNonExistentCountryTest extends GrpcGeoTestBase {
         .hasCountryNotFoundMessage(request.getCode());
   }
 
-  @DisplayName("Получение страны по несуществующему id")
+  @DisplayName("[grpc] Получение страны по несуществующему id")
   @Test
   void getCountryByNonExistentIdTest() {
     var request = GetCountryRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
@@ -38,7 +39,7 @@ class GetNonExistentCountryTest extends GrpcGeoTestBase {
         .hasCountryNotFoundMessage(request.getId());
   }
 
-  @DisplayName("Получение страны по невалидному id")
+  @DisplayName("[grpc] Получение страны по невалидному id")
   @Test
   void getCountryByInvalidIdTest() {
     var request = GetCountryRequest.newBuilder().setId("notValidId").build();

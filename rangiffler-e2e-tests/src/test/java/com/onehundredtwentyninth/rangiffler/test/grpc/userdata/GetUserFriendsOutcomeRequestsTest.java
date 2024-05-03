@@ -23,9 +23,10 @@ import org.junit.jupiter.api.Test;
 @Epic(Epics.USERS)
 @Feature(Features.USER_FRIENDSHIP)
 @Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.USERS), @Tag(JUnitTags.USER_FRIENDSHIP)})
+@DisplayName("[grpc] Userdata")
 class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
 
-  @DisplayName("Получение всех исходящих заявок в друзья")
+  @DisplayName("[grpc] Получение всех исходящих заявок в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
@@ -50,7 +51,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по username")
+  @DisplayName("[grpc] Получение исходящих заявок в друзья пользователя с фильтрацией по username")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
@@ -76,7 +77,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по firstname")
+  @DisplayName("[grpc] Получение исходящих заявок в друзья пользователя с фильтрацией по firstname")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
@@ -102,7 +103,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Получение исходящих заявок в друзья пользователя с фильтрацией по lastname")
+  @DisplayName("[grpc] Получение исходящих заявок в друзья пользователя с фильтрацией по lastname")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
@@ -128,7 +129,7 @@ class GetUserFriendsOutcomeRequestsTest extends GrpcUserdataTestBase {
     );
   }
 
-  @DisplayName("Отсутствие друзей и входящих заявок в списке исходящих заявок в друзья")
+  @DisplayName("[grpc] Отсутствие друзей и входящих заявок в списке исходящих заявок в друзья")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME),
