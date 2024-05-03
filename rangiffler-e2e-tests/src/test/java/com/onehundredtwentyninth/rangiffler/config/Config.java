@@ -5,7 +5,7 @@ public interface Config {
   static Config getInstance() {
     return "docker".equals(System.getProperty("test.env"))
         ? DockerConfig.INSTANCE
-        : DockerBackendLaunchLocalConfig.INSTANCE;
+        : LocalConfig.INSTANCE;
   }
 
   String authUrl();
