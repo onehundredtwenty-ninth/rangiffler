@@ -64,6 +64,7 @@ class UpdateUserTest extends BaseWebTest {
     final var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> userRepository.findRequiredById(user.getId()),
             userEntity -> newUserData.getFirstname().equals(userEntity.getFirstname())

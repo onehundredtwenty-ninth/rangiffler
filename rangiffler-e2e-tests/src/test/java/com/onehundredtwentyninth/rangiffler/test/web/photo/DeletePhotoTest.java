@@ -48,6 +48,7 @@ class DeletePhotoTest extends BaseWebTest {
     Awaitility.await("Ожидаем удаления фото из БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty());
   }
 }

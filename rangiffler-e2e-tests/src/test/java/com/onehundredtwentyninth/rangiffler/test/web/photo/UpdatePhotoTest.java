@@ -56,6 +56,7 @@ class UpdatePhotoTest extends BaseWebTest {
     final var userPhotos = Awaitility.await("Ожидаем обновления фото в БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> photoRepository.findByUserId(user.getId()),
             photoEntities -> newDescription.equals(photoEntities.get(0).getDescription())

@@ -52,6 +52,7 @@ class LikePhotoTest extends BaseWebTest {
     final var likes = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> photoRepository.findLikesByPhotoId(photoToLike.getId()),
             photoLikes -> !photoLikes.isEmpty()
@@ -83,6 +84,7 @@ class LikePhotoTest extends BaseWebTest {
     Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> !photoRepository.findLikesByPhotoId(photoToLike.getId()).isEmpty());
 
     myTravelsPage.dislikePhoto(photoToLike);
@@ -90,6 +92,7 @@ class LikePhotoTest extends BaseWebTest {
     Awaitility.await("Ожидаем удаления лайка из БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> photoRepository.findLikesByPhotoId(photoToLike.getId()).isEmpty());
   }
 }

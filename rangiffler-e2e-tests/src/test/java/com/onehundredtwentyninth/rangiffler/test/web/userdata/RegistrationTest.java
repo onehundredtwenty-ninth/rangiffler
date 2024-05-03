@@ -62,6 +62,7 @@ class RegistrationTest extends BaseWebTest {
     final var userInUserdata = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> userRepository.findRequiredByUsername(username),
             Objects::nonNull

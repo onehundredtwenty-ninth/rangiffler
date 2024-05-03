@@ -65,6 +65,7 @@ class AddPhotoTest extends BaseWebTest {
     final var userPhotos = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> photoRepository.findByUserId(user.getId()),
             photoEntities -> !photoEntities.isEmpty()
