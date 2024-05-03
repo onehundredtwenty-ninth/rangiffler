@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.service;
 
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Objects;

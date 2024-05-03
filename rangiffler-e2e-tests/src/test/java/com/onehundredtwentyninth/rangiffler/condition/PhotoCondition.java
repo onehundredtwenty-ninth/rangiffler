@@ -5,7 +5,7 @@ import static com.codeborne.selenide.Selenide.$;
 import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementCondition;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.page.component.PhotoCard;
 import javax.annotation.Nonnull;
 import org.openqa.selenium.WebElement;

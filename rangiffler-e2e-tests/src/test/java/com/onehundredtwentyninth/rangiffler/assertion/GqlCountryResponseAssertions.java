@@ -1,7 +1,8 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlCountry;
-import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
+
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountry;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountryResponse;
 import org.assertj.core.api.AbstractAssert;
 
 public class GqlCountryResponseAssertions extends AbstractAssert<GqlCountryResponseAssertions, GqlCountryResponse> {

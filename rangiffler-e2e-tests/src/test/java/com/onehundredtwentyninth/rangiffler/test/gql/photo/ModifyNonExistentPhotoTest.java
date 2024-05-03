@@ -14,10 +14,10 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.LikeInput;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlLikeInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -45,7 +45,7 @@ class ModifyNonExistentPhotoTest {
   @Test
   void updateNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
-    var photoInput = mapper.convertValue(request.variables().get("input"), PhotoInput.class);
+    var photoInput = mapper.convertValue(request.variables().get("input"), GqlPhotoInput.class);
     photoInput.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
     request.variables().put("input", photoInput);
 
@@ -69,9 +69,9 @@ class ModifyNonExistentPhotoTest {
   @Test
   void likeNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
-    var input = new PhotoInput();
+    var input = new GqlPhotoInput();
     input.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-    input.setLike(new LikeInput(user.getId()));
+    input.setLike(new GqlLikeInput(user.getId()));
     request.variables().put("input", input);
 
     var response = gatewayClient.updatePhoto(token, request);

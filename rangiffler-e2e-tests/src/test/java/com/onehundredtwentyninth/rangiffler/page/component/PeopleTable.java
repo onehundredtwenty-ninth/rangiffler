@@ -8,7 +8,7 @@ import static com.onehundredtwentyninth.rangiffler.condition.PeopleCollectionCon
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 
 public class PeopleTable extends BaseComponent<PeopleTable> {
 

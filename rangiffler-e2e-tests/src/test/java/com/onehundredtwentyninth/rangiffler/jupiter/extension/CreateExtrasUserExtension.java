@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateExtrasUsers;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import java.util.ArrayList;

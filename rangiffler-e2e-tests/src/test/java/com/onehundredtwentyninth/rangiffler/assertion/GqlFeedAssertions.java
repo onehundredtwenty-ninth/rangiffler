@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlFeed;
-import com.onehundredtwentyninth.rangiffler.model.GqlStat;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFeed;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlStat;
 import org.assertj.core.api.AbstractAssert;
 
 public class GqlFeedAssertions extends AbstractAssert<GqlFeedAssertions, GqlFeed> {

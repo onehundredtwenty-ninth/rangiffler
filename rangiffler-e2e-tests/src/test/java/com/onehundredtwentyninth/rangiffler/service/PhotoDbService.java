@@ -6,7 +6,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepositorySJdbc
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepositorySJdbc;
 import com.onehundredtwentyninth.rangiffler.mapper.PhotoMapper;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;

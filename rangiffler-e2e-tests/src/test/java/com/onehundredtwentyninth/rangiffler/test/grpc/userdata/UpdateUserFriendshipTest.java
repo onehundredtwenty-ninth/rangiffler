@@ -18,7 +18,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateExtrasUsers
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlUser;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.UUID;

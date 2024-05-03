@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlLike;
-import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlLike;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhoto;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;

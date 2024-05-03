@@ -16,13 +16,13 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.GqlLike;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.LikeInput;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlLike;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlLikeInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.assertj.core.api.Assertions;
@@ -56,9 +56,9 @@ class LikePhotoTest {
   void likePhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
     var photoId = user.getFriends().get(0).getPhotos().get(0).getId();
-    var input = new PhotoInput();
+    var input = new GqlPhotoInput();
     input.setId(photoId);
-    input.setLike(new LikeInput(user.getId()));
+    input.setLike(new GqlLikeInput(user.getId()));
     request.variables().put("input", input);
 
     final var response = gatewayClient.updatePhoto(token, request);
@@ -89,9 +89,9 @@ class LikePhotoTest {
   void rejectLikePhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
     var photoId = user.getFriends().get(0).getPhotos().get(0).getId();
-    var input = new PhotoInput();
+    var input = new GqlPhotoInput();
     input.setId(photoId);
-    input.setLike(new LikeInput(user.getId()));
+    input.setLike(new GqlLikeInput(user.getId()));
     request.variables().put("input", input);
 
     gatewayClient.updatePhoto(token, request);

@@ -17,7 +17,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.assertj.core.api.Assertions;
@@ -104,7 +104,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .isEqualTo(FriendshipStatus.PENDING);
   }
 
-  @DisplayName("[grpc] Отправка FriendshipAction UNSPECIFIED")
+  @DisplayName("[grpc] Отправка GqlFriendshipAction UNSPECIFIED")
   @CreateUser(
       friends = {
           @Friend(pending = true, friendshipRequestType = FriendshipRequestType.OUTCOME)

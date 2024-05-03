@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.jupiter.extension;
 
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.service.UserDbService;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import lombok.extern.slf4j.Slf4j;

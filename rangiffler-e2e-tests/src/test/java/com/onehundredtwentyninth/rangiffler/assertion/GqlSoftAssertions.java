@@ -1,12 +1,12 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlConnection;
-import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlError;
-import com.onehundredtwentyninth.rangiffler.model.GqlFeed;
-import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
-import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlConnection;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountryResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlError;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFeed;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhoto;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlUser;
 import java.util.function.Consumer;
 import org.assertj.core.api.AbstractSoftAssertions;
 import org.assertj.core.api.SoftAssertionsProvider;

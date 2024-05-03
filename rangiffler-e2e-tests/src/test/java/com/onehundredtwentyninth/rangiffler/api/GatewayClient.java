@@ -2,14 +2,14 @@ package com.onehundredtwentyninth.rangiffler.api;
 
 import static io.restassured.RestAssured.given;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlDeletePhotoResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlFeedResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlPeopleResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlPhotoResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlUserResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountryResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlDeletePhotoResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFeedResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPeopleResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlUserResponse;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
