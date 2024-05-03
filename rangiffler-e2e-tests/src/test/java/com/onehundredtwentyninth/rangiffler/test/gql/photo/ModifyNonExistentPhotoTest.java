@@ -46,7 +46,7 @@ class ModifyNonExistentPhotoTest {
   void updateNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
     var photoInput = mapper.convertValue(request.variables().get("input"), GqlPhotoInput.class);
-    photoInput.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    photoInput.setId(new UUID(0, 0));
     request.variables().put("input", photoInput);
 
     var response = gatewayClient.updatePhoto(token, request);
@@ -56,7 +56,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(photoInput.getId())
               .hasPath(List.of("photo"))
               .hasInternalErrorExtension();
         }
@@ -70,7 +70,7 @@ class ModifyNonExistentPhotoTest {
   void likeNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
     var input = new GqlPhotoInput();
-    input.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    input.setId(new UUID(0, 0));
     input.setLike(new GqlLikeInput(user.getId()));
     request.variables().put("input", input);
 
@@ -81,7 +81,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(input.getId())
               .hasPath(List.of("photo"))
               .hasInternalErrorExtension();
         }
@@ -93,7 +93,7 @@ class ModifyNonExistentPhotoTest {
   @CreateUser
   @Test
   void deleteNonExistentPhotoTest(@Token String token, @GqlRequestFile("gql/deletePhoto.json") GqlRequest request) {
-    request.variables().put("id", "00000000-0000-0000-0000-000000000000");
+    request.variables().put("id", new UUID(0, 0));
     var response = gatewayClient.deletePhoto(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions -> {
@@ -101,7 +101,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(new UUID(0, 0))
               .hasPath(List.of("deletePhoto"))
               .hasInternalErrorExtension();
         }

@@ -10,6 +10,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -33,7 +34,7 @@ class GetNonExistentCountryTest extends GrpcGeoTestBase {
   @DisplayName("[grpc] Получение страны по несуществующему id")
   @Test
   void getCountryByNonExistentIdTest() {
-    var request = GetCountryRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
+    var request = GetCountryRequest.newBuilder().setId(new UUID(0, 0).toString()).build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getCountry(request))
         .isInstanceOfStatusRuntimeException()
         .hasCountryNotFoundMessage(request.getId());

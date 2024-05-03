@@ -246,8 +246,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void sentFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new GqlFriendshipInput(UUID.fromString("00000000-0000-0000-0000-000000000000"),
-        GqlFriendshipAction.ADD);
+    final var input = new GqlFriendshipInput(new UUID(0, 0), GqlFriendshipAction.ADD);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -256,7 +255,7 @@ class IllegalUpdateUserFriendshipTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasUserNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasUserNotFoundMessage(input.user())
               .hasPath(List.of("friendship"))
               .hasInternalErrorExtension();
         }

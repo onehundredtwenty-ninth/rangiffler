@@ -20,6 +20,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.UUID;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -191,8 +192,8 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   @Test
   void sentFriendshipRequestTest() {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
-        .setActionAuthorUserId("00000000-0000-0000-0000-000000000000")
-        .setActionTargetUserId("00000000-0000-0000-0000-000000000000")
+        .setActionAuthorUserId(new UUID(0, 0).toString())
+        .setActionTargetUserId(new UUID(0, 0).toString())
         .setAction(FriendshipAction.ADD)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
@@ -206,7 +207,7 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
   void sentFriendshipRequestTest(TestUser user) {
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId("00000000-0000-0000-0000-000000000000")
+        .setActionTargetUserId(new UUID(0, 0).toString())
         .setAction(FriendshipAction.ADD)
         .build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
