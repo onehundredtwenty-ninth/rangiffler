@@ -2,7 +2,6 @@ package com.onehundredtwentyninth.rangiffler.db;
 
 import com.onehundredtwentyninth.rangiffler.config.Config;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 
 @RequiredArgsConstructor
 public enum JdbcUrl {
@@ -21,9 +20,5 @@ public enum JdbcUrl {
         CFG.jdbcHost(),
         CFG.jdbcPort()
     );
-  }
-
-  public String p6spyUrl() {
-    return "jdbc:p6spy:" + StringUtils.substringAfter(getUrl(), "jdbc:");
   }
 }
