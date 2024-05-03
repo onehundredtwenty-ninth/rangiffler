@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
 import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateExtrasUserExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.extension.CreateUserExtension;
+import com.onehundredtwentyninth.rangiffler.jupiter.extension.GrpcChannelExtension;
 import com.onehundredtwentyninth.rangiffler.jupiter.extension.GuiceExtension;
 import io.qameta.allure.junit5.AllureJunit5;
 import java.lang.annotation.ElementType;
@@ -12,7 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-@ExtendWith({GuiceExtension.class, AllureJunit5.class, CreateUserExtension.class, CreateExtrasUserExtension.class})
+@ExtendWith({GuiceExtension.class, AllureJunit5.class, GrpcChannelExtension.class, CreateUserExtension.class,
+    CreateExtrasUserExtension.class})
 public @interface GrpcTest {
 
 }
