@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.mapper;
 
 import com.onehundredtwentyninth.rangiffler.db.model.CountryEntity;
-import com.onehundredtwentyninth.rangiffler.model.TestCountry;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestCountry;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

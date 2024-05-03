@@ -14,8 +14,8 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.GqlCountry;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountry;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +49,7 @@ class GetCountriesTest {
     );
 
     var countriesCount = countryRepository.count();
-    var expectedCountryDb = countryRepository.findCountryByCode("ru");
+    var expectedCountryDb = countryRepository.findRequiredCountryByCode("ru");
     var expectedCountry = new GqlCountry(expectedCountryDb.getCode(), expectedCountryDb.getName(),
         new String(expectedCountryDb.getFlag()));
 

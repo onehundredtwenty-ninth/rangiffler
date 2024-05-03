@@ -6,7 +6,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.component.PeopleTable;
 
 public class PeoplePage extends BasePage<PeoplePage> {

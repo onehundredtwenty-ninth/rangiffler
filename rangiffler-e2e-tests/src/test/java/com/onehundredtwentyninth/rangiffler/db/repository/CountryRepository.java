@@ -5,11 +5,11 @@ import java.util.UUID;
 
 public interface CountryRepository {
 
-  CountryEntity findCountryById(UUID id);
+  CountryEntity findRequiredCountryById(UUID id);
 
-  CountryEntity findCountryByCode(String code);
+  CountryEntity findRequiredCountryByCode(String code);
 
-  CountryEntity findCountryByIdNot(UUID id);
+  CountryEntity findRequiredCountryByIdNot(UUID id);
 
   Integer count();
 }

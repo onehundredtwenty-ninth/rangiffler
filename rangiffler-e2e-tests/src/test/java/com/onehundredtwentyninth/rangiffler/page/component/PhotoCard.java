@@ -3,8 +3,8 @@ package com.onehundredtwentyninth.rangiffler.page.component;
 import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.SelenideElement;
-import com.onehundredtwentyninth.rangiffler.model.TestCountry;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestCountry;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Objects;

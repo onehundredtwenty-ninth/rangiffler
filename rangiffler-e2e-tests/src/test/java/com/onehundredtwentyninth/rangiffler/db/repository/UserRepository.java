@@ -20,11 +20,11 @@ public interface UserRepository {
 
   Integer count();
 
-  UserEntity findById(UUID id);
+  UserEntity findRequiredById(UUID id);
 
-  UserEntity findByUsername(String username);
+  UserEntity findRequiredByUsername(String username);
 
-  UserEntity findByFirstname(String firstname);
+  UserEntity findRequiredByFirstname(String firstname);
 
-  UserEntity findByLastname(String lastName);
+  UserEntity findRequiredByLastname(String lastName);
 }

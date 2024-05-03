@@ -10,6 +10,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -33,7 +34,7 @@ class GetNonExistentUserTest extends GrpcUserdataTestBase {
   @DisplayName("[grpc] Получение пользователя по несуществующему id")
   @Test
   void getUserByNonExistentIdTest() {
-    var request = UserByIdRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
+    var request = UserByIdRequest.newBuilder().setId(new UUID(0, 0).toString()).build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.getUserById(request))
         .isInstanceOfStatusRuntimeException()
         .hasUserNotFoundMessage(request.getId());

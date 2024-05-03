@@ -2,8 +2,8 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import java.util.List;
 import java.util.UUID;
 

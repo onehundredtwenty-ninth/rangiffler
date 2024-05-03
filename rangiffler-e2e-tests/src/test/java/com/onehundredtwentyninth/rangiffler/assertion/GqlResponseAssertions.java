@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlResponse;
 import org.assertj.core.api.AbstractAssert;
 
 public class GqlResponseAssertions extends AbstractAssert<GqlResponseAssertions, GqlResponse<?>> {

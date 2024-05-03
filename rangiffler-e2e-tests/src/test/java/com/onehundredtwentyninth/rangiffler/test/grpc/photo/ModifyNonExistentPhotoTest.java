@@ -11,6 +11,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -25,7 +26,7 @@ class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
   @DisplayName("[grpc] Обновление несуществующего фото")
   @Test
   void updateNonExistentPhotoTest() {
-    var request = UpdatePhotoRequest.newBuilder().setId("00000000-0000-0000-0000-000000000000").build();
+    var request = UpdatePhotoRequest.newBuilder().setId(new UUID(0, 0).toString()).build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updatePhoto(request))
         .isInstanceOfStatusRuntimeException()
         .hasPhotoNotFoundMessage(request.getId());
@@ -34,7 +35,7 @@ class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
   @DisplayName("[grpc] Проставление лайка несуществующему фото")
   @Test
   void likeNonExistentPhotoTest() {
-    var request = LikePhotoRequest.newBuilder().setPhotoId("00000000-0000-0000-0000-000000000000").build();
+    var request = LikePhotoRequest.newBuilder().setPhotoId(new UUID(0, 0).toString()).build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.likePhoto(request))
         .isInstanceOfStatusRuntimeException()
         .hasPhotoNotFoundMessage(request.getPhotoId());
@@ -43,7 +44,7 @@ class ModifyNonExistentPhotoTest extends GrpcPhotoTestBase {
   @DisplayName("[grpc] Удаление несуществующего фото")
   @Test
   void deleteNonExistentPhotoTest() {
-    var request = DeletePhotoRequest.newBuilder().setPhotoId("00000000-0000-0000-0000-000000000000").build();
+    var request = DeletePhotoRequest.newBuilder().setPhotoId(new UUID(0, 0).toString()).build();
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.deletePhoto(request))
         .isInstanceOfStatusRuntimeException()
         .hasPhotoNotFoundMessage(request.getPhotoId());

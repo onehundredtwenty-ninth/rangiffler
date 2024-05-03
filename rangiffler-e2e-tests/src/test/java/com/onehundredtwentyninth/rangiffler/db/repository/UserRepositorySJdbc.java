@@ -125,7 +125,7 @@ public class UserRepositorySJdbc implements UserRepository {
 
   @Override
   public void deleteInUserdataByUsername(String username) {
-    var user = findByUsername(username);
+    var user = findRequiredByUsername(username);
     deleteInUserdataById(user.getId());
   }
 
@@ -135,23 +135,23 @@ public class UserRepositorySJdbc implements UserRepository {
   }
 
   @Override
-  public UserEntity findById(UUID id) {
+  public UserEntity findRequiredById(UUID id) {
     return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE id = ?", new UserEntityRowMapper(), id);
   }
 
   @Override
-  public UserEntity findByUsername(String username) {
+  public UserEntity findRequiredByUsername(String username) {
     return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE username = ?", new UserEntityRowMapper(), username);
   }
 
   @Override
-  public UserEntity findByFirstname(String firstname) {
+  public UserEntity findRequiredByFirstname(String firstname) {
     return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE firstname = ?", new UserEntityRowMapper(),
         firstname);
   }
 
   @Override
-  public UserEntity findByLastname(String lastName) {
+  public UserEntity findRequiredByLastname(String lastName) {
     return udTemplate.queryForObject("SELECT * FROM \"user\" WHERE last_name = ?", new UserEntityRowMapper(), lastName);
   }
 }

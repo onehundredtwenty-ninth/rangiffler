@@ -36,7 +36,7 @@ class GetCountryTest extends GrpcGeoTestBase {
             .setCode("us")
             .build()
     );
-    final CountryEntity expectedCountry = countryRepository.findCountryByCode("us");
+    final CountryEntity expectedCountry = countryRepository.findRequiredCountryByCode("us");
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -50,7 +50,7 @@ class GetCountryTest extends GrpcGeoTestBase {
   @DisplayName("[grpc] Получение страны по id")
   @Test
   void getCountryByIdTest() {
-    final CountryEntity expectedCountry = countryRepository.findCountryByCode("ru");
+    final CountryEntity expectedCountry = countryRepository.findRequiredCountryByCode("ru");
     final Country response = blockingStub.getCountry(
         GetCountryRequest.newBuilder()
             .setId(expectedCountry.getId().toString())

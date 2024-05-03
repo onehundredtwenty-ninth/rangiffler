@@ -15,9 +15,9 @@ import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -44,7 +44,7 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
       })
   @Test
   void updatePhotoTest(TestUser user) {
-    var country = countryRepository.findCountryByCode("ru");
+    var country = countryRepository.findRequiredCountryByCode("ru");
 
     final UpdatePhotoRequest request = UpdatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())

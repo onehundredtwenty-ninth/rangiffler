@@ -12,8 +12,8 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyProfilePage;
 import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
@@ -60,12 +60,13 @@ class UpdateUserTest extends BaseWebTest {
         .setAvatar("image/defaultAvatar.png")
         .saveChanges();
 
-    final var country = countryRepository.findCountryByCode(CountryCodes.CN.getCode());
+    final var country = countryRepository.findRequiredCountryByCode(CountryCodes.CN.getCode());
     final var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
-            () -> userRepository.findById(user.getId()),
+            () -> userRepository.findRequiredById(user.getId()),
             userEntity -> newUserData.getFirstname().equals(userEntity.getFirstname())
         );
 
@@ -100,7 +101,7 @@ class UpdateUserTest extends BaseWebTest {
         .locationFlagShouldBe(user.getCountry().getFlag())
         .avatarShouldBe(user.getAvatar());
 
-    final var dbUser = userRepository.findById(user.getId());
+    final var dbUser = userRepository.findRequiredById(user.getId());
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbUser)

@@ -7,7 +7,7 @@ import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.LoginPage;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;

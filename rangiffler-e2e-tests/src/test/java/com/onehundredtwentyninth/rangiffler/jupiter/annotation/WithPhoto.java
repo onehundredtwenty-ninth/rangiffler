@@ -1,7 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.jupiter.annotation;
 
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 

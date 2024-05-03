@@ -18,11 +18,11 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class UpdatePhotoTest {
   )
   @Test
   void updatePhotoTest(@Token String token, TestUser user, @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
-    var photoInput = mapper.convertValue(request.variables().get("input"), PhotoInput.class);
+    var photoInput = mapper.convertValue(request.variables().get("input"), GqlPhotoInput.class);
     photoInput.setId(user.getPhotos().get(0).getId());
     request.variables().put("input", photoInput);
 
@@ -66,7 +66,7 @@ class UpdatePhotoTest {
     );
 
     var dbPhoto = photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId());
-    var country = countryRepository.findCountryByCode(photoInput.getCountry().code());
+    var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getPhoto())

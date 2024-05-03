@@ -16,7 +16,7 @@ import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.UUID;
@@ -41,7 +41,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
   @CreateUser
   @Test
   void updateUserTest(TestUser user) {
-    final CountryEntity newCountry = countryRepository.findCountryByIdNot(user.getCountry().getId());
+    final CountryEntity newCountry = countryRepository.findRequiredCountryByIdNot(user.getCountry().getId());
     final User updateUserRequest = User.newBuilder()
         .setUsername(user.getUsername())
         .setFirstname(faker.name().firstName())
@@ -61,7 +61,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
             .hasCountryId(updateUserRequest.getCountryId())
     );
 
-    final UserEntity userEntity = userRepository.findById(user.getId());
+    final UserEntity userEntity = userRepository.findRequiredById(user.getId());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(userEntity.getId().toString())
@@ -90,7 +90,7 @@ class UpdateUserTest extends GrpcUserdataTestBase {
             .hasUsername(updateUserRequest.getUsername())
     );
 
-    final UserEntity userEntity = userRepository.findByUsername(user.getUsername());
+    final UserEntity userEntity = userRepository.findRequiredByUsername(user.getUsername());
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(userEntity.getId().toString())

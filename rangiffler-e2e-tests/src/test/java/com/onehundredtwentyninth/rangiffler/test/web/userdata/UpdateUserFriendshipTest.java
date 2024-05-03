@@ -13,7 +13,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateExtrasUsers
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Extras;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.PeoplePage;
 import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
@@ -52,6 +52,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
     final var friendship = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
                 user.getId(),
@@ -81,6 +82,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
     final var friendship = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
                 user.getIncomeInvitations().get(0).getId(),
@@ -110,6 +112,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
     Awaitility.await("Ожидаем удаления заявки на дружбу из БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
                 user.getIncomeInvitations().get(0).getId(),
                 user.getId()
@@ -133,6 +136,7 @@ class UpdateUserFriendshipTest extends BaseWebTest {
     Awaitility.await("Ожидаем удаления дружбы из БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
                 user.getId(),
                 user.getFriends().get(0).getId()

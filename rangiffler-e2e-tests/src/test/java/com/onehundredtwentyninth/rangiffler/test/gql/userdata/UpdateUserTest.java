@@ -17,9 +17,9 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
-import com.onehundredtwentyninth.rangiffler.model.UserInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlUserInput;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.nio.charset.StandardCharsets;
@@ -57,9 +57,9 @@ class UpdateUserTest {
             .dataNotNull()
     );
 
-    var userInput = mapper.convertValue(request.variables().get("input"), UserInput.class);
-    var dbUser = userRepository.findById(user.getId());
-    var country = countryRepository.findCountryByCode(userInput.getLocation().getCode());
+    var userInput = mapper.convertValue(request.variables().get("input"), GqlUserInput.class);
+    var dbUser = userRepository.findRequiredById(user.getId());
+    var country = countryRepository.findRequiredCountryByCode(userInput.getLocation().getCode());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())

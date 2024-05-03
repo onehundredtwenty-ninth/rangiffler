@@ -12,7 +12,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.FriendshipRequestType;
 import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import org.junit.jupiter.api.DisplayName;

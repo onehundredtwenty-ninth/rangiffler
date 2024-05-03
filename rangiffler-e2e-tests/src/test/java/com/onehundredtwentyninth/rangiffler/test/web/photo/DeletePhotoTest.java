@@ -10,9 +10,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
@@ -48,6 +48,7 @@ class DeletePhotoTest extends BaseWebTest {
     Awaitility.await("Ожидаем удаления фото из БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty());
   }
 }

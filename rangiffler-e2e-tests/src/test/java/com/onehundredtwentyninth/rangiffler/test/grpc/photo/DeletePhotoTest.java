@@ -15,7 +15,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.CreatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.DeletePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -42,7 +42,7 @@ class DeletePhotoTest extends GrpcPhotoTestBase {
 
   @BeforeEach
   void before(TestUser user) {
-    var country = countryRepository.findCountryByCode("ru");
+    var country = countryRepository.findRequiredCountryByCode("ru");
     final CreatePhotoRequest createPhotoRequest = CreatePhotoRequest.newBuilder()
         .setUserId(user.getId().toString())
         .setSrc(ByteString.EMPTY)

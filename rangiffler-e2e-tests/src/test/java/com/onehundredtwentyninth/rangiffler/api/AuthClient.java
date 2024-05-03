@@ -5,7 +5,7 @@ import static io.restassured.RestAssured.given;
 import com.onehundredtwentyninth.rangiffler.api.interceptor.RequestCookieInterceptor;
 import com.onehundredtwentyninth.rangiffler.api.interceptor.ResponseCodeInterceptor;
 import com.onehundredtwentyninth.rangiffler.api.interceptor.ResponseCookieInterceptor;
-import com.onehundredtwentyninth.rangiffler.model.TokenResponse;
+import com.onehundredtwentyninth.rangiffler.model.api.TokenResponse;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import java.util.List;

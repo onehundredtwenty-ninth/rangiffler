@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlError;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlError;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

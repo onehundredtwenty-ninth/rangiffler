@@ -10,7 +10,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
 import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.page.RegisterPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
@@ -50,7 +50,7 @@ class RegistrationTest extends BaseWebTest {
   @Test
   void registerTest() {
     username = faker.name().username();
-    final var defaultCountry = countryRepository.findCountryByCode(CountryCodes.DE.getCode());
+    final var defaultCountry = countryRepository.findRequiredCountryByCode(CountryCodes.DE.getCode());
 
     startPage
         .open()
@@ -62,8 +62,9 @@ class RegistrationTest extends BaseWebTest {
     final var userInUserdata = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
-            () -> userRepository.findByUsername(username),
+            () -> userRepository.findRequiredByUsername(username),
             Objects::nonNull
         );
 

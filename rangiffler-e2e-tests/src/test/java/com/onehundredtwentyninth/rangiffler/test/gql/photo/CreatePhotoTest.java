@@ -17,11 +17,11 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.GqlPhotoResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
@@ -54,7 +54,7 @@ class CreatePhotoTest {
   @CreateUser
   @Test
   void createPhotoTest(@Token String token, TestUser user, @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
-    var photoInput = mapper.convertValue(request.variables().get("input"), PhotoInput.class);
+    var photoInput = mapper.convertValue(request.variables().get("input"), GqlPhotoInput.class);
     photoInput.setSrc(ImageUtils.getImageFromResourceAsBase64("Amsterdam.png"));
     request.variables().put("input", photoInput);
 
@@ -68,7 +68,7 @@ class CreatePhotoTest {
             .hasTotalLikes(0)
     );
 
-    final var country = countryRepository.findCountryByCode(photoInput.getCountry().code());
+    final var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
     final var expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(expectedPhoto)

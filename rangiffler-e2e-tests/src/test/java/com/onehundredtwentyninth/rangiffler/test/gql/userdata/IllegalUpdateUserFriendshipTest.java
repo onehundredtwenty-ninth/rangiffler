@@ -19,10 +19,10 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.FriendshipAction;
-import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendshipAction;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendshipInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -54,7 +54,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void deleteNonExistentFriendshipRequestTest(@Token String token, TestUser user, @Extras TestUser[] users,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(users[0].getId(), FriendshipAction.DELETE);
+    final var input = new GqlFriendshipInput(users[0].getId(), GqlFriendshipAction.DELETE);
     request.variables().put("input", input);
 
     final var response = gatewayClient.friendshipAction(token, request);
@@ -81,7 +81,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void acceptNonExistentFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getOutcomeInvitations().get(0).getId(), FriendshipAction.ACCEPT);
+    final var input = new GqlFriendshipInput(user.getOutcomeInvitations().get(0).getId(), GqlFriendshipAction.ACCEPT);
     request.variables().put("input", input);
 
     final var response = gatewayClient.friendshipAction(token, request);
@@ -108,7 +108,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void rejectNonExistentFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getOutcomeInvitations().get(0).getId(), FriendshipAction.ACCEPT);
+    final var input = new GqlFriendshipInput(user.getOutcomeInvitations().get(0).getId(), GqlFriendshipAction.ACCEPT);
     request.variables().put("input", input);
 
     final var response = gatewayClient.friendshipAction(token, request);
@@ -125,7 +125,7 @@ class IllegalUpdateUserFriendshipTest {
     );
   }
 
-  @DisplayName("[gql] Отправка FriendshipAction UNSPECIFIED")
+  @DisplayName("[gql] Отправка GqlFriendshipAction UNSPECIFIED")
   @ApiLogin
   @CreateUser(
       friends = {
@@ -162,7 +162,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void sentSecondFriendshipRequestTest(@Token String token, TestUser user, @Extras TestUser[] users,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(users[0].getId(), FriendshipAction.ADD);
+    final var input = new GqlFriendshipInput(users[0].getId(), GqlFriendshipAction.ADD);
     request.variables().put("input", input);
 
     gatewayClient.friendshipAction(token, request);
@@ -191,7 +191,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void acceptTwiceFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getIncomeInvitations().get(0).getId(), FriendshipAction.ACCEPT);
+    final var input = new GqlFriendshipInput(user.getIncomeInvitations().get(0).getId(), GqlFriendshipAction.ACCEPT);
     request.variables().put("input", input);
 
     gatewayClient.friendshipAction(token, request);
@@ -219,12 +219,12 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void rejectTwiceFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(user.getIncomeInvitations().get(0).getId(), FriendshipAction.ACCEPT);
+    final var input = new GqlFriendshipInput(user.getIncomeInvitations().get(0).getId(), GqlFriendshipAction.ACCEPT);
     request.variables().put("input", input);
 
     gatewayClient.friendshipAction(token, request);
 
-    final var rejectInput = new FriendshipInput(user.getIncomeInvitations().get(0).getId(), FriendshipAction.REJECT);
+    final var rejectInput = new GqlFriendshipInput(user.getIncomeInvitations().get(0).getId(), GqlFriendshipAction.REJECT);
     request.variables().put("input", rejectInput);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -246,8 +246,7 @@ class IllegalUpdateUserFriendshipTest {
   @Test
   void sentFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new FriendshipInput(UUID.fromString("00000000-0000-0000-0000-000000000000"),
-        FriendshipAction.ADD);
+    final var input = new GqlFriendshipInput(new UUID(0, 0), GqlFriendshipAction.ADD);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -256,7 +255,7 @@ class IllegalUpdateUserFriendshipTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasUserNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasUserNotFoundMessage(input.user())
               .hasPath(List.of("friendship"))
               .hasInternalErrorExtension();
         }

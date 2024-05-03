@@ -15,9 +15,9 @@ import com.onehundredtwentyninth.rangiffler.grpc.StatisticResponse;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -49,9 +49,9 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
   )
   @Test
   void getStatisticTest(TestUser user) {
-    final CountryEntity cnCountry = countryRepository.findCountryByCode("cn");
-    final CountryEntity caCountry = countryRepository.findCountryByCode("ca");
-    final CountryEntity ruCountry = countryRepository.findCountryByCode("ru");
+    final CountryEntity cnCountry = countryRepository.findRequiredCountryByCode("cn");
+    final CountryEntity caCountry = countryRepository.findRequiredCountryByCode("ca");
+    final CountryEntity ruCountry = countryRepository.findRequiredCountryByCode("ru");
 
     final var updatedPhoto = user.getPhotos()
         .stream().filter(s -> s.getCountry().getId().equals(caCountry.getId()))

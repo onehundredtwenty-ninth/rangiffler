@@ -3,7 +3,7 @@ package com.onehundredtwentyninth.rangiffler.service;
 import com.onehundredtwentyninth.rangiffler.api.AuthClient;
 import com.onehundredtwentyninth.rangiffler.api.cookie.ThreadSafeCookieManager;
 import com.onehundredtwentyninth.rangiffler.config.Config;
-import com.onehundredtwentyninth.rangiffler.model.TokenResponse;
+import com.onehundredtwentyninth.rangiffler.model.api.TokenResponse;
 import com.onehundredtwentyninth.rangiffler.utils.OauthUtils;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

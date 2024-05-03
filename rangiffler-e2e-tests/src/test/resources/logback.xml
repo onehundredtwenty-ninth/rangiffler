@@ -20,6 +20,14 @@
       <outputPatternAsHeader>true</outputPatternAsHeader>
     </encoder>
   </appender>
+  <logger name="com.codeborne.selenide.webdriver.WebDriverFactory" level="error"/>
+  <logger name="com.codeborne.selenide.impl.WebDriverThreadLocalContainer" level="error"/>
+  <logger name="com.codeborne.selenide.drivercommands.CreateDriverCommand" level="error"/>
+  <logger name="com.codeborne.selenide.drivercommands.CloseDriverCommand" level="error"/>
+  <logger name="com.codeborne.selenide.drivercommands.DisposablesRegistry" level="error"/>
+  <logger name="org.asynchttpclient.netty.handler.HttpHandler" level="info"/>
+  <logger name="org.asynchttpclient.netty.channel.ChannelManager" level="info"/>
+  <logger name="org.asynchttpclient.netty.request.NettyRequestSender" level="info"/>
   <root>
     <appender-ref ref="ConsoleAppender"/>
     <appender-ref ref="RollingFile"/>

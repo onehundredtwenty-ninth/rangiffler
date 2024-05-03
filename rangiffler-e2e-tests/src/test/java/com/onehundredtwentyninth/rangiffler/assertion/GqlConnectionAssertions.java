@@ -1,6 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlConnection;
+
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlConnection;
 import org.assertj.core.api.AbstractAssert;
 
 public class GqlConnectionAssertions extends AbstractAssert<GqlConnectionAssertions, GqlConnection<?>> {

@@ -11,6 +11,16 @@ buildscript {
         springCryptoVersion = '6.1.0'
         p6spyVersion = '3.9.1'
         kafkaClientsVersion = '3.5.1'
+        javafakerVersion = '1.0.2'
+        commonsIoVersion = '2.11.0'
+        sqlFormatterVersion = '2.0.3'
+        jacksonDatabindVersion = '2.17.0'
+        restAssuredVersion = '5.4.0'
+        allureRestAssuredVersion = '2.27.0'
+        assertjVersion = '3.25.3'
+        guiceVersion = '7.0.0'
+        freemarkerVersion = '2.3.32'
+        awaitilityVersion = '4.2.1'
     }
 }
 
@@ -37,7 +47,7 @@ dependencies {
     testImplementation "ch.qos.logback:logback-classic:${logbackVersion}"
     testImplementation "org.slf4j:slf4j-api:${slf4jVersion}"
     testImplementation "org.junit.jupiter:junit-jupiter:${junitVersion}"
-    testImplementation 'io.rest-assured:rest-assured:5.4.0'
+    testImplementation "io.rest-assured:rest-assured:${restAssuredVersion}"
     testImplementation "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
     testImplementation "p6spy:p6spy:${p6spyVersion}"
     testImplementation "org.springframework.security:spring-security-crypto:${springCryptoVersion}"
@@ -50,9 +60,9 @@ dependencies {
     }
     testImplementation "io.qameta.allure:allure-grpc:${allureVersion}"
     testImplementation "com.codeborne:selenide:${selenideVersion}"
-    testImplementation 'com.github.javafaker:javafaker:1.0.2'
-    testImplementation 'commons-io:commons-io:2.11.0'
-    testImplementation 'com.github.vertical-blank:sql-formatter:2.0.3'
+    testImplementation "com.github.javafaker:javafaker:${javafakerVersion}"
+    testImplementation "commons-io:commons-io:${commonsIoVersion}"
+    testImplementation "com.github.vertical-blank:sql-formatter:${sqlFormatterVersion}"
     testImplementation "io.grpc:grpc-protobuf:${grpcVersion}"
     testImplementation "io.grpc:grpc-stub:${grpcVersion}"
     testImplementation "io.grpc:grpc-netty:${grpcVersion}"
@@ -63,14 +73,13 @@ dependencies {
     testImplementation "org.apache.kafka:kafka-clients:${kafkaClientsVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${project.ext.lombokVersion}"
     testCompileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.0'
-    implementation 'io.qameta.allure:allure-rest-assured:2.27.0'
-    testImplementation 'org.assertj:assertj-core:3.25.3'
-    implementation 'com.google.inject:guice:7.0.0'
-    implementation 'org.springframework.data:spring-data-commons:3.2.5'
-    implementation 'org.freemarker:freemarker:2.3.32'
-    implementation 'com.codeborne:selenide-clear-with-shortcut:7.3.1'
-    testImplementation 'org.awaitility:awaitility:4.2.1'
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonDatabindVersion}"
+    implementation "io.qameta.allure:allure-rest-assured:${allureRestAssuredVersion}"
+    testImplementation "org.assertj:assertj-core:${assertjVersion}"
+    implementation "com.google.inject:guice:${guiceVersion}"
+    implementation "org.freemarker:freemarker:${freemarkerVersion}"
+    implementation "com.codeborne:selenide-clear-with-shortcut:${selenideVersion}"
+    testImplementation "org.awaitility:awaitility:${awaitilityVersion}"
 }
 
 tasks.withType(JavaCompile).configureEach {

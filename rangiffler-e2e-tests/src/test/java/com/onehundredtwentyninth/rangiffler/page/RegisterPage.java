@@ -5,7 +5,6 @@ import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import io.qameta.allure.Step;
 
 public class RegisterPage extends BasePage<RegisterPage> {
 
@@ -20,7 +19,6 @@ public class RegisterPage extends BasePage<RegisterPage> {
     return this;
   }
 
-  @Step("Fill register page with credentials: username: {login}, password: {password}")
   public RegisterPage fillRegisterPage(String login, String password) {
     setUsername(login);
     setPassword(password);
@@ -28,7 +26,6 @@ public class RegisterPage extends BasePage<RegisterPage> {
     return this;
   }
 
-  @Step("Fill register page with credentials: username: {login}, password: {password}, submit password: {passwordSubmit}")
   public RegisterPage fillRegisterPage(String login, String password, String passwordSubmit) {
     setUsername(login);
     setPassword(password);
@@ -36,25 +33,21 @@ public class RegisterPage extends BasePage<RegisterPage> {
     return this;
   }
 
-  @Step("Set username: {0}")
   public RegisterPage setUsername(String username) {
     usernameInput.setValue(username);
     return this;
   }
 
-  @Step("Set password: {0}")
   public RegisterPage setPassword(String password) {
     passwordInput.setValue(password);
     return this;
   }
 
-  @Step("Confirm password: {0}")
   public RegisterPage setPasswordSubmit(String password) {
     passwordSubmitInput.setValue(password);
     return this;
   }
 
-  @Step("Submit register")
   public void successSubmit() {
     submitButton.click();
     successRegisterMessage.shouldBe(visible);

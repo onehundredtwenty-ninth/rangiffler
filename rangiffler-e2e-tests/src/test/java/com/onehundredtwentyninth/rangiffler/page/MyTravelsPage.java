@@ -5,7 +5,7 @@ import static com.codeborne.selenide.Selenide.$x;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.page.component.AddNewPhotoForm;
 import com.onehundredtwentyninth.rangiffler.page.component.PhotoCardsBar;
 import com.onehundredtwentyninth.rangiffler.page.component.WorldMap;

@@ -14,10 +14,10 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.LikeInput;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlLikeInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoInput;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.util.List;
@@ -45,8 +45,8 @@ class ModifyNonExistentPhotoTest {
   @Test
   void updateNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/updatePhoto.json") GqlRequest request) {
-    var photoInput = mapper.convertValue(request.variables().get("input"), PhotoInput.class);
-    photoInput.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    var photoInput = mapper.convertValue(request.variables().get("input"), GqlPhotoInput.class);
+    photoInput.setId(new UUID(0, 0));
     request.variables().put("input", photoInput);
 
     var response = gatewayClient.updatePhoto(token, request);
@@ -56,7 +56,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(photoInput.getId())
               .hasPath(List.of("photo"))
               .hasInternalErrorExtension();
         }
@@ -69,9 +69,9 @@ class ModifyNonExistentPhotoTest {
   @Test
   void likeNonExistentPhotoTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/likePhoto.json") GqlRequest request) {
-    var input = new PhotoInput();
-    input.setId(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-    input.setLike(new LikeInput(user.getId()));
+    var input = new GqlPhotoInput();
+    input.setId(new UUID(0, 0));
+    input.setLike(new GqlLikeInput(user.getId()));
     request.variables().put("input", input);
 
     var response = gatewayClient.updatePhoto(token, request);
@@ -81,7 +81,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(input.getId())
               .hasPath(List.of("photo"))
               .hasInternalErrorExtension();
         }
@@ -93,7 +93,7 @@ class ModifyNonExistentPhotoTest {
   @CreateUser
   @Test
   void deleteNonExistentPhotoTest(@Token String token, @GqlRequestFile("gql/deletePhoto.json") GqlRequest request) {
-    request.variables().put("id", "00000000-0000-0000-0000-000000000000");
+    request.variables().put("id", new UUID(0, 0));
     var response = gatewayClient.deletePhoto(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions -> {
@@ -101,7 +101,7 @@ class ModifyNonExistentPhotoTest {
               .hasErrorsCount(1);
 
           softAssertions.assertThat(response.getErrors().get(0))
-              .hasPhotoNotFoundMessage(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+              .hasPhotoNotFoundMessage(new UUID(0, 0))
               .hasPath(List.of("deletePhoto"))
               .hasInternalErrorExtension();
         }

@@ -12,9 +12,9 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
-import com.onehundredtwentyninth.rangiffler.model.CountryCodes;
-import com.onehundredtwentyninth.rangiffler.model.PhotoFiles;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
@@ -47,7 +47,7 @@ class UpdatePhotoTest extends BaseWebTest {
   )
   @Test
   void updatePhotoTest(TestUser user) {
-    final var country = countryRepository.findCountryByCode("ru");
+    final var country = countryRepository.findRequiredCountryByCode("ru");
     final var newDescription = UUID.randomUUID().toString();
 
     myTravelsPage.open()
@@ -56,6 +56,7 @@ class UpdatePhotoTest extends BaseWebTest {
     final var userPhotos = Awaitility.await("Ожидаем обновления фото в БД")
         .atMost(Duration.ofMillis(10000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> photoRepository.findByUserId(user.getId()),
             photoEntities -> newDescription.equals(photoEntities.get(0).getDescription())

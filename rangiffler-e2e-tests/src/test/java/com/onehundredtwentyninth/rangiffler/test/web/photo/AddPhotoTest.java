@@ -13,8 +13,8 @@ import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.ApiLogin;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
-import com.onehundredtwentyninth.rangiffler.model.TestUser;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import com.onehundredtwentyninth.rangiffler.page.MyTravelsPage;
 import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
@@ -51,7 +51,7 @@ class AddPhotoTest extends BaseWebTest {
   @CreateUser
   @Test
   void createPhotoTest(TestUser user) {
-    final var country = countryRepository.findCountryByCode("py");
+    final var country = countryRepository.findRequiredCountryByCode("py");
     final var photoToCreate = TestPhoto.builder()
         .photo(ImageUtils.getImageFromResourceAsBase64("Amsterdam.png").getBytes(StandardCharsets.UTF_8))
         .country(CountryMapper.toTestCountry(country))
@@ -65,6 +65,7 @@ class AddPhotoTest extends BaseWebTest {
     final var userPhotos = Awaitility.await()
         .atMost(Duration.ofMillis(5000))
         .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
         .until(
             () -> photoRepository.findByUserId(user.getId()),
             photoEntities -> !photoEntities.isEmpty()

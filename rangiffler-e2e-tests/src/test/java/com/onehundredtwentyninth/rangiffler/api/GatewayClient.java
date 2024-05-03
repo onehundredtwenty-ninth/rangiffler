@@ -2,14 +2,14 @@ package com.onehundredtwentyninth.rangiffler.api;
 
 import static io.restassured.RestAssured.given;
 
-import com.onehundredtwentyninth.rangiffler.model.GqlCountryResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlDeletePhotoResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlFeedResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlPeopleResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlPhotoResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlRequest;
-import com.onehundredtwentyninth.rangiffler.model.GqlResponse;
-import com.onehundredtwentyninth.rangiffler.model.GqlUserResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlCountryResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlDeletePhotoResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFeedResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPeopleResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlPhotoResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlResponse;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlUserResponse;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +41,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlUserResponse> getUser(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithResponseBody(log))
+        .filters(filterWithoutResponseBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()
@@ -92,7 +92,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlUserResponse> updateUser(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithoutResponseBody(log))
+        .filters(filterWithoutResponseBodyAndTruncatedRequestBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()
@@ -109,7 +109,7 @@ public class GatewayClient extends BaseClient {
   public GqlResponse<GqlPhotoResponse> updatePhoto(String bearerToken, GqlRequest request) {
     return given()
         .spec(requestSpecification)
-        .filters(filterWithoutResponseBody(log))
+        .filters(filterWithoutResponseBodyAndTruncatedRequestBody(log))
         .auth().oauth2(bearerToken)
         .contentType(ContentType.JSON)
         .when()

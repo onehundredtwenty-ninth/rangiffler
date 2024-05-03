@@ -9,7 +9,7 @@ import static com.onehundredtwentyninth.rangiffler.condition.PhotoCondition.phot
 
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 
 public class PhotoCardsBar extends BaseComponent<PhotoCardsBar> {
 

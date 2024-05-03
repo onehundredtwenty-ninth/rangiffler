@@ -6,7 +6,7 @@ import com.codeborne.selenide.CheckResult;
 import com.codeborne.selenide.Driver;
 import com.codeborne.selenide.WebElementsCondition;
 import com.codeborne.selenide.impl.CollectionSource;
-import com.onehundredtwentyninth.rangiffler.model.TestPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestPhoto;
 import com.onehundredtwentyninth.rangiffler.page.component.PhotoCard;
 import java.util.ArrayList;
 import java.util.Arrays;
