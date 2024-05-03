@@ -1,4 +1,4 @@
-package com.onehundredtwentyninth.rangiffler.interceptor;
+package com.onehundredtwentyninth.rangiffler.grpc.interceptor;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;

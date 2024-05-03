@@ -1,6 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.grpc;
 
-import com.onehundredtwentyninth.rangiffler.interceptor.GrpcConsoleWithoutByteStringInterceptor;
+import com.onehundredtwentyninth.rangiffler.grpc.interceptor.GrpcConsoleWithoutByteStringInterceptor;
 import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
