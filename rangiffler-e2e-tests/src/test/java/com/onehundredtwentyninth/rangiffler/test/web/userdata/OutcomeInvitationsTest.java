@@ -41,7 +41,8 @@ class OutcomeInvitationsTest extends BaseWebTest {
   void outcomeInvitationsShouldBePresented(TestUser user) {
     peoplePage.open()
         .openOutcomeInvitationsTab()
-        .exactlyUsersShouldBePresentedInTable(user.getOutcomeInvitations().get(0), user.getOutcomeInvitations().get(1));
+        .usersCountShouldBeEqualTo(2)
+        .usersShouldBePresentedInTable(user.getOutcomeInvitations().get(0), user.getOutcomeInvitations().get(1));
   }
 
   @DisplayName("[web] Получение исходящих заявок в друзья пользователя с фильтрацией по username")
