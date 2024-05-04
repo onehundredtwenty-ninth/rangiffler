@@ -8,9 +8,7 @@ import com.onehundredtwentyninth.rangiffler.constant.Features;
 import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
 import com.onehundredtwentyninth.rangiffler.constant.Layers;
 import com.onehundredtwentyninth.rangiffler.constant.Suites;
-import com.onehundredtwentyninth.rangiffler.db.repository.CountryRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
-import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
 import com.onehundredtwentyninth.rangiffler.page.RegisterPage;
 import com.onehundredtwentyninth.rangiffler.page.StartPage;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
@@ -37,8 +35,6 @@ class RegistrationTest extends BaseWebTest {
   @Inject
   private UserRepository userRepository;
   @Inject
-  private CountryRepository countryRepository;
-  @Inject
   private StartPage startPage;
   @Inject
   private RegisterPage registerPage;
@@ -50,7 +46,6 @@ class RegistrationTest extends BaseWebTest {
   @Test
   void registerTest() {
     username = faker.name().username();
-    final var defaultCountry = countryRepository.findRequiredCountryByCode(CountryCodes.DE.getCode());
 
     startPage
         .open()
@@ -71,9 +66,8 @@ class RegistrationTest extends BaseWebTest {
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(userInUserdata)
             .hasUsername(username)
-            .hasFirstName(username)
-            .hasLastName(username)
-            .hasCountryId(defaultCountry.getId())
+            .firstNameIsNull()
+            .lastNameIsNull()
     );
   }
 
