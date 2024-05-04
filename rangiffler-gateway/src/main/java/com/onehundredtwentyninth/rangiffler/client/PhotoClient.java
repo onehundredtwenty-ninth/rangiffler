@@ -7,6 +7,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
+import com.onehundredtwentyninth.rangiffler.mapper.PhotoMapper;
 import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +48,7 @@ public class PhotoClient {
 
     var photos = response.getPhotosList()
         .stream()
-        .map(GqlPhoto::fromGrpcMessage)
+        .map(PhotoMapper::fromGrpcMessage)
         .toList();
     return !photos.isEmpty()
         ? new SliceImpl<>(photos, PageRequest.of(page, size), response.getHasNext())
@@ -78,7 +79,7 @@ public class PhotoClient {
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.createPhoto(request);
-    return GqlPhoto.fromGrpcMessage(response);
+    return PhotoMapper.fromGrpcMessage(response);
   }
 
   public GqlPhoto updatePhoto(String userName, PhotoInput photo) {
@@ -93,7 +94,7 @@ public class PhotoClient {
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.updatePhoto(request);
-    return GqlPhoto.fromGrpcMessage(response);
+    return PhotoMapper.fromGrpcMessage(response);
   }
 
   public GqlPhoto likePhoto(PhotoInput photo) {
@@ -103,7 +104,7 @@ public class PhotoClient {
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.likePhoto(request);
-    return GqlPhoto.fromGrpcMessage(response);
+    return PhotoMapper.fromGrpcMessage(response);
   }
 
   public boolean deletePhoto(String userName, UUID photoId) {

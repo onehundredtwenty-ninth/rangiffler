@@ -8,6 +8,7 @@ import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
+import com.onehundredtwentyninth.rangiffler.mapper.UserMapper;
 import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.GqlUser;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
@@ -40,7 +41,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(GqlUser::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -49,12 +50,12 @@ public class UsersClient {
 
   public GqlUser getUser(String userName) {
     var request = UserRequest.newBuilder().setUsername(userName).build();
-    return GqlUser.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
+    return UserMapper.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
   }
 
   public GqlUser getUserById(UUID id) {
     var request = UserByIdRequest.newBuilder().setId(id.toString()).build();
-    return GqlUser.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
+    return UserMapper.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
   }
 
   public Slice<GqlUser> getFriends(String username, int page, int size, String searchQuery) {
@@ -68,7 +69,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(GqlUser::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -94,7 +95,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(GqlUser::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -112,7 +113,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(GqlUser::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -130,7 +131,7 @@ public class UsersClient {
         .build();
 
     var response = rangifflerUserdataServiceBlockingStub.updateUser(request);
-    return GqlUser.fromGrpcMessage(response);
+    return UserMapper.fromGrpcMessage(response);
   }
 
   public GqlUser updateFriendshipStatus(String username, FriendshipInput friendshipInput) {
@@ -142,6 +143,6 @@ public class UsersClient {
         .build();
 
     var response = rangifflerUserdataServiceBlockingStub.updateUserFriendship(request);
-    return GqlUser.fromGrpcMessage(response);
+    return UserMapper.fromGrpcMessage(response);
   }
 }

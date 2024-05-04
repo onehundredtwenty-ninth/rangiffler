@@ -4,6 +4,7 @@ import com.google.protobuf.Empty;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryByCodeRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.GetCountryRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerGeoServiceGrpc.RangifflerGeoServiceBlockingStub;
+import com.onehundredtwentyninth.rangiffler.mapper.CountryMapper;
 import com.onehundredtwentyninth.rangiffler.model.GqlCountry;
 import java.util.List;
 import java.util.UUID;
@@ -21,20 +22,20 @@ public class GeoClient {
 
     return response.getAllCountriesList()
         .stream()
-        .map(GqlCountry::fromGrpcMessage)
+        .map(CountryMapper::fromGrpcMessage)
         .toList();
   }
 
   public GqlCountry getCountry(UUID countryId) {
     var request = GetCountryRequest.newBuilder().setId(countryId.toString()).build();
     var response = rangifflerGeoServiceBlockingStub.getCountry(request);
-    return GqlCountry.fromGrpcMessage(response);
+    return CountryMapper.fromGrpcMessage(response);
   }
 
   public GqlCountry getCountryByCode(String code) {
     var response = rangifflerGeoServiceBlockingStub.getCountryByCode(
         GetCountryByCodeRequest.newBuilder().setCode(code).build()
     );
-    return GqlCountry.fromGrpcMessage(response);
+    return CountryMapper.fromGrpcMessage(response);
   }
 }
