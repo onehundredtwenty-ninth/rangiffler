@@ -18,6 +18,9 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -45,6 +48,12 @@ class LikePhotoTest extends GrpcPhotoTestBase {
         .build();
     final Photo response = blockingStub.likePhoto(request);
 
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(() -> !photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty());
+
     final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
@@ -70,6 +79,13 @@ class LikePhotoTest extends GrpcPhotoTestBase {
         .setPhotoId(user.getPhotos().get(0).getId().toString())
         .build();
     blockingStub.likePhoto(request);
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(() -> !photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty());
+
     final Photo response = blockingStub.likePhoto(request);
 
     final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
@@ -82,5 +98,15 @@ class LikePhotoTest extends GrpcPhotoTestBase {
             .hasCreationDate(expectedPhoto.getCreatedDate().toInstant())
             .hasTotalLikes(0)
     );
+
+    Assertions.assertThatNoException()
+        .describedAs("У фото с id %s отсутствуют лайки в БД", user.getPhotos().get(0).getId())
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления лайка фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty())
+        );
   }
 }

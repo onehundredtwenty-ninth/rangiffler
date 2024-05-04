@@ -20,7 +20,9 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -54,7 +56,15 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
         .build();
     final Photo response = blockingStub.updatePhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
+    final PhotoEntity expectedPhoto = Awaitility.await("Ожидаем обновления фото в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId()),
+            photoEntities -> request.getDescription().equals(photoEntities.getDescription())
+        );
+
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())

@@ -18,7 +18,9 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -50,7 +52,15 @@ class CreatePhotoTest extends GrpcPhotoTestBase {
         .build();
     response = blockingStub.createPhoto(request);
 
-    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
+    final PhotoEntity expectedPhoto = Awaitility.await("Ожидаем появления созданного фото в БД")
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findByUserId(user.getId()),
+            photoEntities -> !photoEntities.isEmpty()
+        ).get(0);
+
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
             .hasId(expectedPhoto.getId().toString())
