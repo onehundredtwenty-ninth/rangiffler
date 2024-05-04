@@ -61,7 +61,7 @@ class UpdatePhotoTest extends GrpcPhotoTestBase {
             .hasSrc(expectedPhoto.getPhoto())
             .hasCountryId(expectedPhoto.getCountryId().toString())
             .hasDescription(expectedPhoto.getDescription())
-            .hasCreationDate(expectedPhoto.getCreatedDate().toLocalDateTime())
+            .hasCreationDate(expectedPhoto.getCreatedDate().toInstant())
     );
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
