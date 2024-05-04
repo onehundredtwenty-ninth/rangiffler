@@ -14,8 +14,8 @@ public class UserEntityMapper {
     return User.newBuilder()
         .setId(entity.getId().toString())
         .setUsername(entity.getUsername())
-        .setFirstname(entity.getFirstname())
-        .setLastName(entity.getLastName())
+        .setFirstname(entity.getFirstname() != null ? entity.getFirstname() : "")
+        .setLastName(entity.getLastName() != null ? entity.getLastName() : "")
         .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
         .setCountryId(entity.getCountryId())
         .build();

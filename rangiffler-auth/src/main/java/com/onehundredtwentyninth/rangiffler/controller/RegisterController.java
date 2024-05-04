@@ -3,6 +3,7 @@ package com.onehundredtwentyninth.rangiffler.controller;
 import com.onehundredtwentyninth.rangiffler.model.RegistrationModel;
 import com.onehundredtwentyninth.rangiffler.service.UserService;
 import jakarta.annotation.Nonnull;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -51,18 +52,20 @@ public class RegisterController {
   public String registerUser(@Valid @ModelAttribute RegistrationModel registrationModel,
       Errors errors,
       Model model,
+      HttpServletRequest request,
       HttpServletResponse response) {
     if (!errors.hasErrors()) {
       final String registeredUserName;
       try {
         registeredUserName = userService.registerUser(
             registrationModel.username(),
-            registrationModel.password()
+            registrationModel.password(),
+            request.getLocale().getCountry()
         );
         response.setStatus(HttpServletResponse.SC_CREATED);
         model.addAttribute(MODEL_USERNAME_ATTR, registeredUserName);
       } catch (DataIntegrityViolationException e) {
-        LOG.error("### Error while registration user: " + e.getMessage());
+        LOG.error("### Error while registration user: {}", e.getMessage());
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         addErrorToRegistrationModel(
             registrationModel,

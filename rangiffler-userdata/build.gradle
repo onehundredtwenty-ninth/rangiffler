@@ -18,6 +18,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:${project.ext.lombokVersion}"
     runtimeOnly "org.postgresql:postgresql:${project.ext.postgresDriverVersion}"
     implementation "net.devh:grpc-server-spring-boot-starter:${project.ext.springGrpcVersion}"
+    implementation "net.devh:grpc-client-spring-boot-starter:${project.ext.springGrpcVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

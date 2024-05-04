@@ -62,6 +62,12 @@ spring:
     url: 'jdbc:postgresql://localhost:5432/rangiffler-userdata'
     username: postgres
     password: secret
+
+grpc:
+  client:
+    grpcGeoClient:
+      address: 'static://localhost:8091'
+      negotiationType: PLAINTEXT
 ---
 spring:
   config:
@@ -81,4 +87,10 @@ spring:
     url: 'jdbc:postgresql://rangiffler-all-db:5432/rangiffler-userdata'
     username: postgres
     password: secret
+
+grpc:
+  client:
+    grpcGeoClient:
+      address: 'static://geo.rangiffler.dc:8091'
+      negotiationType: PLAINTEXT
 ---
