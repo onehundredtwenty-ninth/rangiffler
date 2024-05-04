@@ -18,6 +18,7 @@ import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
+import org.assertj.core.api.Assertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -45,10 +46,14 @@ class DeletePhotoTest extends BaseWebTest {
     myTravelsPage.open()
         .deletePhoto(user.getPhotos().get(0));
 
-    Awaitility.await("Ожидаем удаления фото из БД")
-        .atMost(Duration.ofMillis(10000))
-        .pollInterval(Duration.ofMillis(1000))
-        .ignoreExceptions()
-        .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty());
+    Assertions.assertThatNoException()
+        .describedAs("Фото с id %s отсутствует в БД", user.getPhotos().get(0).getId())
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty())
+        );
   }
 }
