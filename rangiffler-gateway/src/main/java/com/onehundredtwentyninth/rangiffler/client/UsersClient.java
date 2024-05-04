@@ -8,7 +8,6 @@ import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
-import com.onehundredtwentyninth.rangiffler.model.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import com.onehundredtwentyninth.rangiffler.model.UserJson;
@@ -69,7 +68,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.FRIEND))
+        .map(UserJson::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -95,7 +94,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.INVITATION_RECEIVED))
+        .map(UserJson::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -113,7 +112,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(s -> UserJson.friendFromGrpcMessage(s, FriendStatus.INVITATION_SENT))
+        .map(UserJson::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
