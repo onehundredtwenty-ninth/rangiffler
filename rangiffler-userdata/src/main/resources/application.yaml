@@ -41,7 +41,7 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
   file:
-    name: 'userdata.log'
+    name: 'logs/userdata.log'
 
 ---
 spring:

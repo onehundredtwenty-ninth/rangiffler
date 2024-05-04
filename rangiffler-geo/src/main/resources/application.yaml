@@ -41,7 +41,7 @@ logging:
   #    org.springframework.boot.autoconfigure: DEBUG
 
   file:
-    name: 'geo.log'
+    name: 'logs/geo.log'
 
 ---
 spring:

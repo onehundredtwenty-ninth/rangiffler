@@ -41,7 +41,7 @@ logging:
   #    org.springframework.boot.autoconfigure: DEBUG
 
   file:
-    name: 'photo.log'
+    name: 'logs/photo.log'
 
 ---
 spring:

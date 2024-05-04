@@ -18,7 +18,7 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
   file:
-    name: 'gateway.log'
+    name: 'logs/gateway.log'
 
 ---
 spring:
