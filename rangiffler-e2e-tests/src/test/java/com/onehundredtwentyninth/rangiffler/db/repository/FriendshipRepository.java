@@ -12,4 +12,7 @@ public interface FriendshipRepository {
       FriendshipStatus friendshipStatus);
 
   Optional<FriendshipEntity> findFriendshipByRequesterIdAndAddresseeId(UUID requesterId, UUID addresseeId);
+
+  Optional<FriendshipEntity> findFriendshipByRequesterIdAndAddresseeId(UUID requesterId, UUID addresseeId,
+      FriendshipStatus status);
 }
