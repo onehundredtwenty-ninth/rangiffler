@@ -4,7 +4,7 @@
     "input": {
       "description": "${enFaker.internet().uuid()?string}",
       "country": {
-        "code": "${enFaker.country().countryCode2()?string}"
+        "code": "us"
       }
     }
   },
