@@ -50,7 +50,7 @@ logging:
 #    org.springframework.boot.autoconfigure: DEBUG
 
   file:
-    name: 'auth.log'
+    name: 'logs/auth.log'
 
 ---
 spring:
