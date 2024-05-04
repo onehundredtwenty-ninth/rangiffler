@@ -41,7 +41,8 @@ class FriendsListTest extends BaseWebTest {
   void friendsShouldBePresented(TestUser user) {
     peoplePage.open()
         .openFriendsTab()
-        .exactlyUsersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
+        .usersCountShouldBeEqualTo(2)
+        .usersShouldBePresentedInTable(user.getFriends().get(0), user.getFriends().get(1));
   }
 
   @DisplayName("[web] Получение друзей пользователя с фильтрацией по username")

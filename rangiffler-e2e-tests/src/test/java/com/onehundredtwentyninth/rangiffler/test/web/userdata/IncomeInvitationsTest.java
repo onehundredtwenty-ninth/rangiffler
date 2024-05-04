@@ -41,7 +41,8 @@ class IncomeInvitationsTest extends BaseWebTest {
   void incomeInvitationsShouldBePresented(TestUser user) {
     peoplePage.open()
         .openIncomeInvitationsTab()
-        .exactlyUsersShouldBePresentedInTable(user.getIncomeInvitations().get(0), user.getIncomeInvitations().get(1));
+        .usersCountShouldBeEqualTo(2)
+        .usersShouldBePresentedInTable(user.getIncomeInvitations().get(0), user.getIncomeInvitations().get(1));
   }
 
   @DisplayName("[web] Получение входящих заявок в друзья пользователя с фильтрацией по username")

@@ -1,8 +1,10 @@
 package com.onehundredtwentyninth.rangiffler.page.component;
 
+import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
+import static com.onehundredtwentyninth.rangiffler.condition.PeopleCollectionCondition.containsUser;
 import static com.onehundredtwentyninth.rangiffler.condition.PeopleCollectionCondition.peopleExactly;
 
 import com.codeborne.selenide.Condition;
@@ -27,8 +29,20 @@ public class PeopleTable extends BaseComponent<PeopleTable> {
     return allRows.find(text(username));
   }
 
-  public PeopleTable usersShouldBePresentedInTable(TestUser... users) {
+  public PeopleTable exactlyUsersShouldBePresentedInTable(TestUser... users) {
     getAllRows().shouldHave(peopleExactly(users));
+    return this;
+  }
+
+  public PeopleTable usersShouldBePresentedInTable(TestUser... users) {
+    for (var expectedUser : users) {
+      getAllRows().should(containsUser(expectedUser));
+    }
+    return this;
+  }
+
+  public PeopleTable usersCountShouldBeEqualTo(int expectedCount) {
+    getAllRows().shouldHave(size(expectedCount));
     return this;
   }
 

@@ -50,7 +50,17 @@ public class PeoplePage extends BasePage<PeoplePage> {
   }
 
   public PeoplePage exactlyUsersShouldBePresentedInTable(TestUser... users) {
+    table.exactlyUsersShouldBePresentedInTable(users);
+    return this;
+  }
+
+  public PeoplePage usersShouldBePresentedInTable(TestUser... users) {
     table.usersShouldBePresentedInTable(users);
+    return this;
+  }
+
+  public PeoplePage usersCountShouldBeEqualTo(int expectedCount) {
+    table.usersCountShouldBeEqualTo(expectedCount);
     return this;
   }
 
