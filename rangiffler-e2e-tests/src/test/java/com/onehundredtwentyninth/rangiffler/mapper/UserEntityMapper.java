@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.mapper;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.db.model.UserEntity;
+import com.onehundredtwentyninth.rangiffler.grpc.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestCountry;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
@@ -36,6 +37,19 @@ public class UserEntityMapper {
         .setLastName(testUser.getLastName())
         .setAvatar(ByteString.copyFrom(testUser.getAvatar() != null ? testUser.getAvatar() : new byte[]{}))
         .setCountryId(testUser.getCountry().getId().toString())
+        .setFriendStatus(FriendStatus.FRIEND_STATUS_UNSPECIFIED)
+        .build();
+  }
+
+  public static User toMessage(TestUser testUser, FriendStatus friendStatus) {
+    return User.newBuilder()
+        .setId(testUser.getId().toString())
+        .setUsername(testUser.getUsername())
+        .setFirstname(testUser.getFirstname())
+        .setLastName(testUser.getLastName())
+        .setAvatar(ByteString.copyFrom(testUser.getAvatar() != null ? testUser.getAvatar() : new byte[]{}))
+        .setCountryId(testUser.getCountry().getId().toString())
+        .setFriendStatus(friendStatus)
         .build();
   }
 

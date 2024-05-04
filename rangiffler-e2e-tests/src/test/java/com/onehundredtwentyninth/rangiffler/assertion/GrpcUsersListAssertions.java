@@ -95,4 +95,14 @@ public class GrpcUsersListAssertions extends AbstractAssert<GrpcUsersListAsserti
     }
     return this;
   }
+
+  public GrpcUsersListAssertions notContainsUserWithName(String username) {
+    isNotNull();
+    boolean isUserPresented = actual.getAllUsersList().stream().anyMatch(s -> s.getUsername().equals(username));
+    if (isUserPresented) {
+      failWithActualExpectedAndMessage(actual, username,
+          "Expected response to have not user <%s> but it was", username);
+    }
+    return this;
+  }
 }

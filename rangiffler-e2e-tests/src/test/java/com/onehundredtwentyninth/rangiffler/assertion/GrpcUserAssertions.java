@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
+import com.onehundredtwentyninth.rangiffler.grpc.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import java.util.Arrays;
 import org.assertj.core.api.AbstractAssert;
@@ -63,6 +64,16 @@ public class GrpcUserAssertions extends AbstractAssert<GrpcUserAssertions, User>
     if (!countryId.equals(actual.getCountryId())) {
       failWithActualExpectedAndMessage(actual, countryId, "Expected countryId to be <%s> but was <%s>", countryId,
           actual.getCountryId());
+    }
+    return this;
+  }
+
+  public GrpcUserAssertions hasFriendStatus(FriendStatus friendStatus) {
+    isNotNull();
+    if (!friendStatus.equals(actual.getFriendStatus())) {
+      failWithActualExpectedAndMessage(actual, friendStatus, "Expected friendStatus to be <%s> but was <%s>",
+          friendStatus,
+          actual.getFriendStatus());
     }
     return this;
   }
