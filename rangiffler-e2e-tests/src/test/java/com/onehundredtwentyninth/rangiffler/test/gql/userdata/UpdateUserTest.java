@@ -23,6 +23,8 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -58,7 +60,6 @@ class UpdateUserTest {
     );
 
     var userInput = mapper.convertValue(request.variables().get("input"), GqlUserInput.class);
-    var dbUser = userRepository.findRequiredById(user.getId());
     var country = countryRepository.findRequiredCountryByCode(userInput.getLocation().getCode());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -70,6 +71,15 @@ class UpdateUserTest {
             .hasAvatar(userInput.getAvatar().getBytes(StandardCharsets.UTF_8))
             .hasCountryCode(userInput.getLocation().getCode())
     );
+
+    var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> userRepository.findRequiredById(user.getId()),
+            userEntity -> userInput.getFirstname().equals(userEntity.getFirstname())
+        );
 
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbUser)
