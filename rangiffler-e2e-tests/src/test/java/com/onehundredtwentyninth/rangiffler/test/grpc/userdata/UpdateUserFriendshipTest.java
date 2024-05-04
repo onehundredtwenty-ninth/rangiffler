@@ -160,7 +160,7 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
                 .pollInterval(Duration.ofMillis(1000))
                 .ignoreExceptions()
                 .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-                    actionTargetUser.getId(),
+                        actionTargetUser.getId(),
                         user.getId()
                     ).isEmpty()
                 )
@@ -202,8 +202,8 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
                 .pollInterval(Duration.ofMillis(1000))
                 .ignoreExceptions()
                 .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-                        user.getId(),
-                        actionTargetUser.getId()
+                        actionTargetUser.getId(),
+                        user.getId()
                     ).isEmpty()
                 )
         );
