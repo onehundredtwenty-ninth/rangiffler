@@ -82,9 +82,7 @@ public class PhotoClient {
   }
 
   public PhotoJson updatePhoto(String userName, PhotoInput photo) {
-    var country = photo.country() != null
-        ? geoClient.getCountryByCode(photo.country().code()).id().toString()
-        : "";
+    var country = geoClient.getCountryByCode(photo.country().code()).id().toString();
     var user = usersClient.getUser(userName);
 
     var request = UpdatePhotoRequest.newBuilder()
