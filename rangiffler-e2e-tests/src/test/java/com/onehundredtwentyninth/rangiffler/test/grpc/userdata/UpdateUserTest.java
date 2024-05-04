@@ -19,7 +19,9 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.UUID;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -61,15 +63,23 @@ class UpdateUserTest extends GrpcUserdataTestBase {
             .hasCountryId(updateUserRequest.getCountryId())
     );
 
-    final UserEntity userEntity = userRepository.findRequiredById(user.getId());
+    var dbUser = Awaitility.await("Ожидаем обновления пользователя в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> userRepository.findRequiredById(user.getId()),
+            userEntity -> updateUserRequest.getFirstname().equals(userEntity.getFirstname())
+        );
+
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(userEntity.getId().toString())
-            .hasUsername(userEntity.getUsername())
-            .hasFirstName(userEntity.getFirstname())
-            .hasLastName(userEntity.getLastName())
-            .hasAvatar(userEntity.getAvatar())
-            .hasCountryId(userEntity.getCountryId().toString())
+            .hasId(dbUser.getId().toString())
+            .hasUsername(dbUser.getUsername())
+            .hasFirstName(dbUser.getFirstname())
+            .hasLastName(dbUser.getLastName())
+            .hasAvatar(dbUser.getAvatar())
+            .hasCountryId(dbUser.getCountryId().toString())
     );
   }
 
