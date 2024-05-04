@@ -50,6 +50,24 @@ public class EntityUserAssertions extends AbstractAssert<EntityUserAssertions, U
     return this;
   }
 
+  public EntityUserAssertions firstNameIsNull() {
+    isNotNull();
+    if (actual.getFirstname() != null) {
+      failWithActualExpectedAndMessage(actual, null, "Expected firstName to be null but was <%s>",
+          actual.getFirstname());
+    }
+    return this;
+  }
+
+  public EntityUserAssertions lastNameIsNull() {
+    isNotNull();
+    if (actual.getLastName() != null) {
+      failWithActualExpectedAndMessage(actual, null, "Expected surname to be null but was <%s>",
+          actual.getLastName());
+    }
+    return this;
+  }
+
   public EntityUserAssertions hasAvatar(byte[] avatar) {
     isNotNull();
     if (!Arrays.equals(avatar, actual.getAvatar())) {

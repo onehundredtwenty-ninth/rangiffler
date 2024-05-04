@@ -1,9 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
 import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import org.assertj.core.api.AbstractAssert;
 
@@ -55,18 +52,6 @@ public class EntityPhotoAssertions extends AbstractAssert<EntityPhotoAssertions,
     if (!description.equals(actual.getDescription())) {
       failWithActualExpectedAndMessage(actual, description, "Expected description to be <%s> but was <%s>", description,
           actual.getDescription());
-    }
-    return this;
-  }
-
-  public EntityPhotoAssertions hasCreationDate(LocalDateTime creationDate) {
-    isNotNull();
-    var actualCreatedDate = LocalDateTime.ofInstant(actual.getCreatedDate().toInstant(), ZoneId.of("UTC"))
-        .truncatedTo(ChronoUnit.SECONDS);
-    if (!creationDate.truncatedTo(ChronoUnit.SECONDS).equals(actualCreatedDate)) {
-      failWithActualExpectedAndMessage(actual, creationDate, "Expected creationDate to be <%s> but was <%s>",
-          creationDate,
-          actualCreatedDate);
     }
     return this;
   }

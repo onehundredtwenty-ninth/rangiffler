@@ -43,4 +43,25 @@ public class FriendshipRepositorySJdbc implements FriendshipRepository {
       return Optional.empty();
     }
   }
+
+  @Override
+  public Optional<FriendshipEntity> findFriendshipByRequesterIdAndAddresseeId(UUID requesterId, UUID addresseeId,
+      FriendshipStatus status) {
+    try {
+      return Optional.ofNullable(
+          udTemplate.queryForObject("SELECT * FROM \"friendship\" WHERE requester_id = ? AND addressee_id = ? AND status = ?",
+              (ResultSet rs, int rowNum) -> {
+                var friendshipEntity = new FriendshipEntity();
+                friendshipEntity.setId(rs.getObject("id", UUID.class));
+                friendshipEntity.setRequesterId(rs.getObject("requester_id", UUID.class));
+                friendshipEntity.setAddresseeId(rs.getObject("addressee_id", UUID.class));
+                friendshipEntity.setCreatedDate(rs.getTimestamp("created_date"));
+                friendshipEntity.setStatus(FriendshipStatus.valueOf(rs.getString("status")));
+                return friendshipEntity;
+              }, requesterId, addresseeId, status.name())
+      );
+    } catch (EmptyResultDataAccessException e) {
+      return Optional.empty();
+    }
+  }
 }

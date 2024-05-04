@@ -20,9 +20,11 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import org.assertj.core.api.SoftAssertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -65,6 +67,15 @@ class ChangeStatisticTest extends GrpcStatisticTestBase {
         .setDescription(UUID.randomUUID().toString())
         .build();
     photoServiceBlockingStub.updatePhoto(updatePhotoRequest);
+
+    Awaitility.await("Ожидаем обновления фото в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findRequiredPhotoById(updatedPhoto.getId()).getDescription()
+                .equals(updatePhotoRequest.getDescription())
+        );
 
     final StatisticRequest request = StatisticRequest.newBuilder()
         .addAllUserIds(List.of(user.getId().toString()))

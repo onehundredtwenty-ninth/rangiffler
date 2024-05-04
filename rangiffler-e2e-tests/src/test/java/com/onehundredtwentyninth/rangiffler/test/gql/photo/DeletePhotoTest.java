@@ -21,7 +21,9 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
-import org.assertj.core.api.SoftAssertions;
+import java.time.Duration;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -55,16 +57,18 @@ class DeletePhotoTest {
             .dataNotNull()
     );
 
-    var isPhotoExistsInDb = photoRepository.isPhotoExists(user.getPhotos().get(0).getId());
+    Assertions.assertThat(response.getData().getDeletePhoto())
+        .describedAs("Поле ответа deletePhoto true")
+        .isTrue();
 
-    SoftAssertions.assertSoftly(softAssertions -> {
-      softAssertions.assertThat(response.getData().getDeletePhoto())
-          .describedAs("Поле ответа deletePhoto true")
-          .isTrue();
-
-      softAssertions.assertThat(isPhotoExistsInDb)
-          .describedAs("Запись с id %s отсутствует в БД", user.getPhotos().get(0).getId())
-          .isFalse();
-    });
+    Assertions.assertThatNoException()
+        .describedAs("Фото с id %s отсутствует в БД", user.getPhotos().get(0).getId())
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findPhotoById(user.getPhotos().get(0).getId()).isEmpty())
+        );
   }
 }

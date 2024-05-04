@@ -20,8 +20,10 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend.Friendship
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import java.util.UUID;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -135,6 +137,17 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .build();
     blockingStub.updateUserFriendship(request);
 
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getId(),
+                users[0].getId()
+            ).isPresent()
+        );
+
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .messageContains(
@@ -157,6 +170,18 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .build();
     blockingStub.updateUserFriendship(request);
 
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getIncomeInvitations().get(0).getId(),
+                user.getId(),
+                FriendshipStatus.ACCEPTED
+            ).isPresent()
+        );
+
     GrpcStatusExceptionAssertions.assertThatThrownBy(() -> blockingStub.updateUserFriendship(request))
         .isInstanceOfStatusRuntimeException()
         .hasFriendshipRequestNotFoundMessage(user.getIncomeInvitations().get(0).getUsername(), user.getUsername());
@@ -176,6 +201,18 @@ class IllegalUpdateUserFriendshipTest extends GrpcUserdataTestBase {
         .setAction(FriendshipAction.ACCEPT)
         .build();
     blockingStub.updateUserFriendship(acceptRequest);
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getIncomeInvitations().get(0).getId(),
+                user.getId(),
+                FriendshipStatus.ACCEPTED
+            ).isPresent()
+        );
 
     final UpdateUserFriendshipRequest rejectRequest = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())

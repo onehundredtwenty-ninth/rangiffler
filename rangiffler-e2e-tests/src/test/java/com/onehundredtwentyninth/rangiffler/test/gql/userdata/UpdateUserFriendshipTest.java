@@ -26,7 +26,10 @@ import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -70,10 +73,17 @@ class UpdateUserFriendshipTest {
             .hasFriendStatus(GqlFriendStatus.INVITATION_SENT)
     );
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getId(),
-        users[0].getId()
-    );
+    final var friendship = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getId(),
+                users[0].getId()
+            ),
+            Optional::isPresent
+        );
 
     Assertions.assertThat(friendship)
         .describedAs("Заявка в друзья есть в БД")
@@ -112,10 +122,17 @@ class UpdateUserFriendshipTest {
             .hasFriendStatus(GqlFriendStatus.FRIEND)
     );
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        actionTarget.getId(),
-        user.getId()
-    );
+    final var friendship = Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                user.getIncomeInvitations().get(0).getId(),
+                user.getId()
+            ),
+            Optional::isPresent
+        );
 
     Assertions.assertThat(friendship)
         .describedAs("Заявка в друзья есть в БД")
@@ -154,14 +171,19 @@ class UpdateUserFriendshipTest {
             .friendStatusIsNull()
     );
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        actionTarget.getId(),
-        user.getId()
-    );
-
-    Assertions.assertThat(friendship)
+    Assertions.assertThatNoException()
         .describedAs("Заявка на дружбу отсутствует в БД")
-        .isEmpty();
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления заявки на дружбу из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                        actionTarget.getId(),
+                        user.getId()
+                    ).isEmpty()
+                )
+        );
   }
 
   @DisplayName("[gql] Удаление из друзей")
@@ -192,13 +214,18 @@ class UpdateUserFriendshipTest {
             .friendStatusIsNull()
     );
 
-    final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getId(),
-        actionTarget.getId()
-    );
-
-    Assertions.assertThat(friendship)
-        .describedAs("Запись о дружбе отсутствует в БД")
-        .isEmpty();
+    Assertions.assertThatNoException()
+        .describedAs("Дружба отсутствует в БД")
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления дружбы из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
+                        user.getId(),
+                        actionTarget.getId()
+                    ).isEmpty()
+                )
+        );
   }
 }

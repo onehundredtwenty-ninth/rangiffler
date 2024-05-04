@@ -25,6 +25,8 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -65,7 +67,6 @@ class UpdatePhotoTest {
             .dataNotNull()
     );
 
-    var dbPhoto = photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId());
     var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -77,6 +78,14 @@ class UpdatePhotoTest {
             .hasTotalLikes(0)
     );
 
+    var dbPhoto = Awaitility.await("Ожидаем обновления фото в БД")
+        .atMost(Duration.ofMillis(10000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findRequiredPhotoById(user.getPhotos().get(0).getId()),
+            photoEntities -> photoInput.getDescription().equals(photoEntities.getDescription())
+        );
     EntitySoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(dbPhoto)
             .hasId(user.getPhotos().get(0).getId().toString())

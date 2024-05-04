@@ -5,8 +5,6 @@ import com.onehundredtwentyninth.rangiffler.db.model.LikeEntity;
 import com.onehundredtwentyninth.rangiffler.grpc.Like;
 import com.onehundredtwentyninth.rangiffler.grpc.Photo;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -56,10 +54,9 @@ public class GrpcPhotoAssertions extends AbstractAssert<GrpcPhotoAssertions, Pho
     return this;
   }
 
-  public GrpcPhotoAssertions hasCreationDate(LocalDateTime creationDate) {
+  public GrpcPhotoAssertions hasCreationDate(Instant creationDate) {
     isNotNull();
-    var actualCreatedDate = LocalDateTime.ofInstant(Instant.ofEpochSecond(actual.getCreationDate().getSeconds()),
-        ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS);
+    var actualCreatedDate = Instant.ofEpochSecond(actual.getCreationDate().getSeconds());
     if (!creationDate.truncatedTo(ChronoUnit.SECONDS).equals(actualCreatedDate)) {
       failWithActualExpectedAndMessage(actual, creationDate, "Expected creationDate to be <%s> but was <%s>",
           creationDate,
@@ -97,8 +94,8 @@ public class GrpcPhotoAssertions extends AbstractAssert<GrpcPhotoAssertions, Pho
                 .setId(s.getId().toString())
                 .setUserId(s.getUserId().toString())
                 .setCreationDate(Timestamp.newBuilder()
-                    .setSeconds(s.getCreatedDate().toLocalDateTime().atZone(ZoneId.of("UTC")).toInstant().getEpochSecond())
-                    .setNanos(s.getCreatedDate().toLocalDateTime().atZone(ZoneId.of("UTC")).toInstant().getNano())
+                    .setSeconds(s.getCreatedDate().toInstant().getEpochSecond())
+                    .setNanos(s.getCreatedDate().toInstant().getNano())
                 )
                 .build()
         )

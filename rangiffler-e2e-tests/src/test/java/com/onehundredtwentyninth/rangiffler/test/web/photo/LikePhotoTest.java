@@ -19,6 +19,7 @@ import com.onehundredtwentyninth.rangiffler.test.web.BaseWebTest;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.time.Duration;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
@@ -89,10 +90,14 @@ class LikePhotoTest extends BaseWebTest {
 
     myTravelsPage.dislikePhoto(photoToLike);
 
-    Awaitility.await("Ожидаем удаления лайка из БД")
-        .atMost(Duration.ofMillis(10000))
-        .pollInterval(Duration.ofMillis(1000))
-        .ignoreExceptions()
-        .until(() -> photoRepository.findLikesByPhotoId(photoToLike.getId()).isEmpty());
+    Assertions.assertThatNoException()
+        .describedAs("У фото с id %s отсутствуют лайки в БД", photoToLike.getId())
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления лайка фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findLikesByPhotoId(photoToLike.getId()).isEmpty())
+        );
   }
 }
