@@ -104,6 +104,13 @@ class LikePhotoTest {
     request.variables().put("input", input);
 
     gatewayClient.updatePhoto(token, request);
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(() -> !photoRepository.findLikesByPhotoId(photoId).isEmpty());
+
     final var response = gatewayClient.updatePhoto(token, request);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
@@ -113,9 +120,9 @@ class LikePhotoTest {
     );
 
     Assertions.assertThatNoException()
-        .describedAs("У фото с id %s отсутствуую лайки в БД", photoId)
+        .describedAs("У фото с id %s отсутствуют лайки в БД", photoId)
         .isThrownBy(() ->
-            Awaitility.await("Ожидаем удаления фото из БД")
+            Awaitility.await("Ожидаем удаления лайка фото из БД")
                 .atMost(Duration.ofMillis(10000))
                 .pollInterval(Duration.ofMillis(1000))
                 .ignoreExceptions()
