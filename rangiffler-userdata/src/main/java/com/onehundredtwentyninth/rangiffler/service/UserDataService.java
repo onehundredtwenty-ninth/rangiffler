@@ -55,9 +55,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
             allUsersEntities.stream()
                 .map(s -> {
-                      var friendStatus = friendStatuses.get(s.getId()) != null
-                          ? friendStatuses.get(s.getId())
-                          : FriendStatus.NOT_FRIEND;
+                      var friendStatus = friendStatuses.get(s.getId());
                       return UserEntityMapper.toMessage(s, friendStatus);
                     }
                 )
@@ -234,13 +232,20 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
   }
 
   private Map<UUID, FriendStatus> getPeopleFriendStatuses(UserEntity actor, List<UserEntity> users) {
-    return friendshipRepository.findFriendships(users, actor)
-        .stream().collect(Collectors.toMap(
-                friendshipEntity -> !friendshipEntity.getRequester().getId().equals(actor.getId())
-                    ? friendshipEntity.getRequester().getId()
-                    : friendshipEntity.getAddressee().getId(),
-                friendshipEntity -> {
-                  if (friendshipEntity.getStatus() == FriendshipStatus.ACCEPTED) {
+    var friendships = friendshipRepository.findFriendships(users, actor);
+    return users.stream()
+        .collect(Collectors.toMap(
+                UserEntity::getId,
+                userEntity -> {
+                  var friendshipEntity = friendships.stream().filter(
+                          s -> s.getAddressee().getId().equals(userEntity.getId())
+                              || s.getRequester().getId().equals(userEntity.getId())
+                      )
+                      .findFirst()
+                      .orElse(null);
+                  if (friendshipEntity == null) {
+                    return FriendStatus.NOT_FRIEND;
+                  } else if (friendshipEntity.getStatus() == FriendshipStatus.ACCEPTED) {
                     return FriendStatus.FRIEND;
                   } else if (friendshipEntity.getRequester().getId().equals(actor.getId())) {
                     return FriendStatus.INVITATION_SENT;
