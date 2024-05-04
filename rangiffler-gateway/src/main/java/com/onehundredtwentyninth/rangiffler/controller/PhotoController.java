@@ -1,9 +1,9 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
-import com.onehundredtwentyninth.rangiffler.model.FeedJson;
-import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
 import com.onehundredtwentyninth.rangiffler.client.PhotoClient;
+import com.onehundredtwentyninth.rangiffler.model.GqlFeed;
+import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
+import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -26,20 +26,20 @@ public class PhotoController {
   }
 
   @QueryMapping
-  public FeedJson feed(@AuthenticationPrincipal Jwt principal,
+  public GqlFeed feed(@AuthenticationPrincipal Jwt principal,
       @Argument Boolean withFriends) {
-    return new FeedJson(principal.getClaim("sub"), withFriends, null, null);
+    return new GqlFeed(principal.getClaim("sub"), withFriends, null, null);
   }
 
   @SchemaMapping(typeName = "Feed", field = "photos")
-  public Slice<PhotoJson> photos(FeedJson feed, @AuthenticationPrincipal Jwt principal,
+  public Slice<GqlPhoto> photos(GqlFeed feed, @AuthenticationPrincipal Jwt principal,
       @Argument int page,
       @Argument int size) {
     return photoClient.getPhotos(principal.getClaim("sub"), page, size, feed.withFriends());
   }
 
   @MutationMapping
-  public PhotoJson photo(@AuthenticationPrincipal Jwt principal, @Argument PhotoInput input) {
+  public GqlPhoto photo(@AuthenticationPrincipal Jwt principal, @Argument PhotoInput input) {
     return photoClient.photo(principal.getClaim("sub"), input);
   }
 

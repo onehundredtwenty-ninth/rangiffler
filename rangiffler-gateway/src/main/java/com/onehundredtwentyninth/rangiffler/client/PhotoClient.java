@@ -7,8 +7,8 @@ import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.PhotoRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerPhotoServiceGrpc.RangifflerPhotoServiceBlockingStub;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdatePhotoRequest;
+import com.onehundredtwentyninth.rangiffler.model.GqlPhoto;
 import com.onehundredtwentyninth.rangiffler.model.PhotoInput;
-import com.onehundredtwentyninth.rangiffler.model.PhotoJson;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -29,7 +29,7 @@ public class PhotoClient {
   @Autowired
   private GeoClient geoClient;
 
-  public Slice<PhotoJson> getPhotos(String userName, int page, int size, boolean withFriends) {
+  public Slice<GqlPhoto> getPhotos(String userName, int page, int size, boolean withFriends) {
     var userIds = new ArrayList<UUID>();
     userIds.add(usersClient.getUser(userName).id());
 
@@ -47,14 +47,14 @@ public class PhotoClient {
 
     var photos = response.getPhotosList()
         .stream()
-        .map(PhotoJson::fromGrpcMessage)
+        .map(GqlPhoto::fromGrpcMessage)
         .toList();
     return !photos.isEmpty()
         ? new SliceImpl<>(photos, PageRequest.of(page, size), response.getHasNext())
         : null;
   }
 
-  public PhotoJson photo(String userName, PhotoInput photo) {
+  public GqlPhoto photo(String userName, PhotoInput photo) {
     if (photo.id() == null) {
       return createPhoto(userName, photo);
     }
@@ -66,7 +66,7 @@ public class PhotoClient {
     return updatePhoto(userName, photo);
   }
 
-  public PhotoJson createPhoto(String userName, PhotoInput photo) {
+  public GqlPhoto createPhoto(String userName, PhotoInput photo) {
     var country = geoClient.getCountryByCode(photo.country().code()).id().toString();
     var user = usersClient.getUser(userName);
 
@@ -78,10 +78,10 @@ public class PhotoClient {
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.createPhoto(request);
-    return PhotoJson.fromGrpcMessage(response);
+    return GqlPhoto.fromGrpcMessage(response);
   }
 
-  public PhotoJson updatePhoto(String userName, PhotoInput photo) {
+  public GqlPhoto updatePhoto(String userName, PhotoInput photo) {
     var country = geoClient.getCountryByCode(photo.country().code()).id().toString();
     var user = usersClient.getUser(userName);
 
@@ -93,17 +93,17 @@ public class PhotoClient {
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.updatePhoto(request);
-    return PhotoJson.fromGrpcMessage(response);
+    return GqlPhoto.fromGrpcMessage(response);
   }
 
-  public PhotoJson likePhoto(PhotoInput photo) {
+  public GqlPhoto likePhoto(PhotoInput photo) {
     var request = LikePhotoRequest.newBuilder()
         .setPhotoId(photo.id().toString())
         .setUserId(photo.like().user().toString())
         .build();
 
     var response = rangifflerPhotoServiceBlockingStub.likePhoto(request);
-    return PhotoJson.fromGrpcMessage(response);
+    return GqlPhoto.fromGrpcMessage(response);
   }
 
   public boolean deletePhoto(String userName, UUID photoId) {

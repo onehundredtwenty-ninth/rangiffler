@@ -9,21 +9,21 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import org.springframework.data.domain.Slice;
 
-public record UserJson(
+public record GqlUser(
     UUID id,
     String username,
     String firstname,
     String surname,
     String avatar,
-    FriendStatus friendStatus,
-    Slice<UserJson> friends,
-    Slice<UserJson> incomeInvitations,
-    Slice<UserJson> outcomeInvitations,
-    CountryJson location
+    GqlFriendStatus friendStatus,
+    Slice<GqlUser> friends,
+    Slice<GqlUser> incomeInvitations,
+    Slice<GqlUser> outcomeInvitations,
+    GqlCountry location
 ) {
 
-  public static @Nonnull UserJson fromGrpcMessage(@Nonnull User userMessage) {
-    return new UserJson(
+  public static @Nonnull GqlUser fromGrpcMessage(@Nonnull User userMessage) {
+    return new GqlUser(
         UUID.fromString(userMessage.getId()),
         userMessage.getUsername(),
         userMessage.getFirstname(),
@@ -31,11 +31,11 @@ public record UserJson(
         new String(userMessage.getAvatar().toByteArray(), StandardCharsets.UTF_8),
         userMessage.getFriendStatus() == FRIEND_STATUS_UNSPECIFIED || userMessage.getFriendStatus() == NOT_FRIEND
             ? null
-            : FriendStatus.valueOf(userMessage.getFriendStatus().name()),
+            : GqlFriendStatus.valueOf(userMessage.getFriendStatus().name()),
         null,
         null,
         null,
-        new CountryJson(UUID.fromString(userMessage.getCountryId()), null, null, null)
+        new GqlCountry(UUID.fromString(userMessage.getCountryId()), null, null, null)
     );
   }
 }

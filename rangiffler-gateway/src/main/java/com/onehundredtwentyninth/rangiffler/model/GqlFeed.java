@@ -3,11 +3,11 @@ package com.onehundredtwentyninth.rangiffler.model;
 import java.util.List;
 import org.springframework.data.domain.Slice;
 
-public record FeedJson(
+public record GqlFeed(
     String username,
     Boolean withFriends,
-    Slice<PhotoJson> photos,
-    List<StatJson> stat
+    Slice<GqlPhoto> photos,
+    List<GqlStat> stat
 ) {
 
 }
