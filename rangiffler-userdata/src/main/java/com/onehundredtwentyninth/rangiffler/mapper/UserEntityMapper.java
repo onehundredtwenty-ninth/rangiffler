@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.mapper;
 
 import com.google.protobuf.ByteString;
 import com.onehundredtwentyninth.rangiffler.data.UserEntity;
+import com.onehundredtwentyninth.rangiffler.grpc.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import java.util.UUID;
 import lombok.AccessLevel;
@@ -18,6 +19,18 @@ public class UserEntityMapper {
         .setLastName(entity.getLastName() != null ? entity.getLastName() : "")
         .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
         .setCountryId(entity.getCountryId())
+        .build();
+  }
+
+  public static User toMessage(UserEntity entity, FriendStatus friendStatus) {
+    return User.newBuilder()
+        .setId(entity.getId().toString())
+        .setUsername(entity.getUsername())
+        .setFirstname(entity.getFirstname() != null ? entity.getFirstname() : "")
+        .setLastName(entity.getLastName() != null ? entity.getLastName() : "")
+        .setAvatar(ByteString.copyFrom(entity.getAvatar() != null ? entity.getAvatar() : new byte[]{}))
+        .setCountryId(entity.getCountryId())
+        .setFriendStatus(friendStatus)
         .build();
   }
 
