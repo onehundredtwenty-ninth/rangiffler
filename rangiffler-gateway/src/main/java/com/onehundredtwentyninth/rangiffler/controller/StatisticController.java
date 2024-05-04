@@ -1,8 +1,8 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
-import com.onehundredtwentyninth.rangiffler.model.FeedJson;
-import com.onehundredtwentyninth.rangiffler.model.StatJson;
 import com.onehundredtwentyninth.rangiffler.client.StatisticClient;
+import com.onehundredtwentyninth.rangiffler.model.GqlFeed;
+import com.onehundredtwentyninth.rangiffler.model.GqlStat;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
@@ -21,7 +21,7 @@ public class StatisticController {
   }
 
   @SchemaMapping(typeName = "Feed", field = "stat")
-  public List<StatJson> stat(FeedJson feed, @AuthenticationPrincipal Jwt principal) {
+  public List<GqlStat> stat(GqlFeed feed, @AuthenticationPrincipal Jwt principal) {
     return statisticClient.getStatistic(principal.getClaim("sub"), feed.withFriends());
   }
 }

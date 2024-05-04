@@ -2,8 +2,8 @@ package com.onehundredtwentyninth.rangiffler.client;
 
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerStatisticServiceGrpc.RangifflerStatisticServiceBlockingStub;
 import com.onehundredtwentyninth.rangiffler.grpc.StatisticRequest;
-import com.onehundredtwentyninth.rangiffler.model.CountryJson;
-import com.onehundredtwentyninth.rangiffler.model.StatJson;
+import com.onehundredtwentyninth.rangiffler.model.GqlCountry;
+import com.onehundredtwentyninth.rangiffler.model.GqlStat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -19,7 +19,7 @@ public class StatisticClient {
   @Autowired
   private UsersClient usersClient;
 
-  public List<StatJson> getStatistic(String userName, boolean withFriends) {
+  public List<GqlStat> getStatistic(String userName, boolean withFriends) {
     var userIds = new ArrayList<UUID>();
     userIds.add(usersClient.getUser(userName).id());
 
@@ -32,7 +32,7 @@ public class StatisticClient {
     );
 
     return response.getStatisticList().stream()
-        .map(s -> new StatJson(s.getCount(), new CountryJson(UUID.fromString(s.getCountryId()), null, null, null)))
+        .map(s -> new GqlStat(s.getCount(), new GqlCountry(UUID.fromString(s.getCountryId()), null, null, null)))
         .toList();
   }
 }

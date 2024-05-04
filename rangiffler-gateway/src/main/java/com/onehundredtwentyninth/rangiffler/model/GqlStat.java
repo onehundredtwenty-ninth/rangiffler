@@ -1,8 +1,8 @@
 package com.onehundredtwentyninth.rangiffler.model;
 
-public record StatJson(
+public record GqlStat(
     Integer count,
-    CountryJson country
+    GqlCountry country
 ) {
 
 }

@@ -16,7 +16,7 @@ public class GraphqlExceptionHandler extends DataFetcherExceptionResolverAdapter
 
   @Override
   protected GraphQLError resolveToSingleError(@Nonnull Throwable ex, @Nonnull DataFetchingEnvironment env) {
-    log.error("Exception occurred", ex);
+    log.error(ex.getMessage(), ex);
 
     if (ex instanceof IllegalArgumentException || ex instanceof IllegalStateException) {
       return GraphqlErrorBuilder.newError()

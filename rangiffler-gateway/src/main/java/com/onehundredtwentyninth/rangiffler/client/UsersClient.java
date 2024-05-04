@@ -8,9 +8,10 @@ import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
 import com.onehundredtwentyninth.rangiffler.grpc.UserByIdRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.UserRequest;
+import com.onehundredtwentyninth.rangiffler.mapper.UserMapper;
 import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
+import com.onehundredtwentyninth.rangiffler.model.GqlUser;
 import com.onehundredtwentyninth.rangiffler.model.UserInput;
-import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +30,7 @@ public class UsersClient {
   @Autowired
   private GeoClient geoClient;
 
-  public Slice<UserJson> getAllUsers(String username, int page, int size, String searchQuery) {
+  public Slice<GqlUser> getAllUsers(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -40,24 +41,24 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(UserJson::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
         : null;
   }
 
-  public UserJson getUser(String userName) {
+  public GqlUser getUser(String userName) {
     var request = UserRequest.newBuilder().setUsername(userName).build();
-    return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
+    return UserMapper.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUser(request));
   }
 
-  public UserJson getUserById(UUID id) {
+  public GqlUser getUserById(UUID id) {
     var request = UserByIdRequest.newBuilder().setId(id.toString()).build();
-    return UserJson.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
+    return UserMapper.fromGrpcMessage(rangifflerUserdataServiceBlockingStub.getUserById(request));
   }
 
-  public Slice<UserJson> getFriends(String username, int page, int size, String searchQuery) {
+  public Slice<GqlUser> getFriends(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -68,7 +69,7 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(UserJson::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
@@ -83,7 +84,7 @@ public class UsersClient {
         .toList();
   }
 
-  public Slice<UserJson> getFriendshipRequests(String username, int page, int size, String searchQuery) {
+  public Slice<GqlUser> getFriendshipRequests(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -94,14 +95,14 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(UserJson::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
         : null;
   }
 
-  public Slice<UserJson> getFriendshipAddresses(String username, int page, int size, String searchQuery) {
+  public Slice<GqlUser> getFriendshipAddresses(String username, int page, int size, String searchQuery) {
     var requestParameters = AllUsersRequest.newBuilder()
         .setUsername(username)
         .setPage(page)
@@ -112,14 +113,14 @@ public class UsersClient {
 
     var users = response.getAllUsersList()
         .stream()
-        .map(UserJson::fromGrpcMessage)
+        .map(UserMapper::fromGrpcMessage)
         .toList();
     return !users.isEmpty()
         ? new SliceImpl<>(users, PageRequest.of(page, size), response.getHasNext())
         : null;
   }
 
-  public UserJson updateUser(String username, UserInput userInput) {
+  public GqlUser updateUser(String username, UserInput userInput) {
     var country = geoClient.getCountryByCode(userInput.location().code());
     var request = User.newBuilder()
         .setUsername(username)
@@ -130,10 +131,10 @@ public class UsersClient {
         .build();
 
     var response = rangifflerUserdataServiceBlockingStub.updateUser(request);
-    return UserJson.fromGrpcMessage(response);
+    return UserMapper.fromGrpcMessage(response);
   }
 
-  public UserJson updateFriendshipStatus(String username, FriendshipInput friendshipInput) {
+  public GqlUser updateFriendshipStatus(String username, FriendshipInput friendshipInput) {
     var actionAuthorUser = getUser(username);
     var request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(actionAuthorUser.id().toString())
@@ -142,6 +143,6 @@ public class UsersClient {
         .build();
 
     var response = rangifflerUserdataServiceBlockingStub.updateUserFriendship(request);
-    return UserJson.fromGrpcMessage(response);
+    return UserMapper.fromGrpcMessage(response);
   }
 }

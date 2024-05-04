@@ -1,10 +1,10 @@
 package com.onehundredtwentyninth.rangiffler.controller;
 
-import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
-import com.onehundredtwentyninth.rangiffler.model.LikeJson;
-import com.onehundredtwentyninth.rangiffler.model.UserInput;
-import com.onehundredtwentyninth.rangiffler.model.UserJson;
 import com.onehundredtwentyninth.rangiffler.client.UsersClient;
+import com.onehundredtwentyninth.rangiffler.model.FriendshipInput;
+import com.onehundredtwentyninth.rangiffler.model.GqlLike;
+import com.onehundredtwentyninth.rangiffler.model.GqlUser;
+import com.onehundredtwentyninth.rangiffler.model.UserInput;
 import javax.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
@@ -27,7 +27,7 @@ public class UsersController {
   }
 
   @QueryMapping
-  public Slice<UserJson> users(@AuthenticationPrincipal Jwt principal,
+  public Slice<GqlUser> users(@AuthenticationPrincipal Jwt principal,
       @Argument int page,
       @Argument int size,
       @Argument @Nullable String searchQuery) {
@@ -35,12 +35,12 @@ public class UsersController {
   }
 
   @QueryMapping
-  public UserJson user(@AuthenticationPrincipal Jwt principal) {
+  public GqlUser user(@AuthenticationPrincipal Jwt principal) {
     return usersClient.getUser(principal.getClaim("sub"));
   }
 
   @SchemaMapping(typeName = "User", field = "friends")
-  public Slice<UserJson> friends(UserJson user,
+  public Slice<GqlUser> friends(GqlUser user,
       @Argument int page,
       @Argument int size,
       @Argument @Nullable String searchQuery) {
@@ -48,7 +48,7 @@ public class UsersController {
   }
 
   @SchemaMapping(typeName = "User", field = "incomeInvitations")
-  public Slice<UserJson> incomeInvitations(UserJson user,
+  public Slice<GqlUser> incomeInvitations(GqlUser user,
       @Argument int page,
       @Argument int size,
       @Argument @Nullable String searchQuery) {
@@ -56,7 +56,7 @@ public class UsersController {
   }
 
   @SchemaMapping(typeName = "User", field = "outcomeInvitations")
-  public Slice<UserJson> outcomeInvitations(UserJson user,
+  public Slice<GqlUser> outcomeInvitations(GqlUser user,
       @Argument int page,
       @Argument int size,
       @Argument @Nullable String searchQuery) {
@@ -64,17 +64,17 @@ public class UsersController {
   }
 
   @SchemaMapping(typeName = "Like", field = "username")
-  public String likeUser(LikeJson like) {
+  public String likeUser(GqlLike like) {
     return usersClient.getUserById(like.user()).username();
   }
 
   @MutationMapping
-  public UserJson user(@AuthenticationPrincipal Jwt principal, @Argument UserInput input) {
+  public GqlUser user(@AuthenticationPrincipal Jwt principal, @Argument UserInput input) {
     return usersClient.updateUser(principal.getClaim("sub"), input);
   }
 
   @MutationMapping
-  public UserJson friendship(@AuthenticationPrincipal Jwt principal, @Argument FriendshipInput input) {
+  public GqlUser friendship(@AuthenticationPrincipal Jwt principal, @Argument FriendshipInput input) {
     return usersClient.updateFriendshipStatus(principal.getClaim("sub"), input);
   }
 }
