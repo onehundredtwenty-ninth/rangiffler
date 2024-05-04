@@ -25,7 +25,9 @@ import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
 import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
+import java.time.Duration;
 import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
@@ -63,7 +65,14 @@ class LikePhotoTest {
 
     final var response = gatewayClient.updatePhoto(token, request);
 
-    final var expectedLikes = photoRepository.findLikesByPhotoId(photoId)
+    final var expectedLikes = Awaitility.await("Ожидаем появления поставленного лайка в БД")
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findLikesByPhotoId(photoId),
+            photoEntities -> !photoEntities.isEmpty()
+        )
         .stream()
         .map(s -> new GqlLike(s.getUserId(), null, null))
         .toList();
@@ -96,7 +105,6 @@ class LikePhotoTest {
 
     gatewayClient.updatePhoto(token, request);
     final var response = gatewayClient.updatePhoto(token, request);
-    final var expectedLikes = photoRepository.findLikesByPhotoId(photoId);
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getPhoto())
@@ -104,7 +112,14 @@ class LikePhotoTest {
             .hasTotalLikes(0)
     );
 
-    Assertions.assertThat(expectedLikes)
-        .isEmpty();
+    Assertions.assertThatNoException()
+        .describedAs("У фото с id %s отсутствуую лайки в БД", photoId)
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findLikesByPhotoId(photoId).isEmpty())
+        );
   }
 }

@@ -26,6 +26,8 @@ import com.onehundredtwentyninth.rangiffler.utils.ImageUtils;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -69,9 +71,18 @@ class CreatePhotoTest {
     );
 
     final var country = countryRepository.findRequiredCountryByCode(photoInput.getCountry().code());
-    final var expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
+
+    final var dbPhotos = Awaitility.await("Ожидаем появления созданного фото в БД")
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(
+            () -> photoRepository.findByUserId(user.getId()),
+            photoEntities -> !photoEntities.isEmpty()
+        );
+
     EntitySoftAssertions.assertSoftly(softAssertions ->
-        softAssertions.assertThat(expectedPhoto)
+        softAssertions.assertThat(dbPhotos.get(0))
             .hasUserId(user.getId().toString())
             .hasSrc(photoInput.getSrc().getBytes(StandardCharsets.UTF_8))
             .hasCountryId(country.getId().toString())
