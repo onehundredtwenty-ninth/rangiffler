@@ -11,6 +11,7 @@ import com.onehundredtwentyninth.rangiffler.db.model.FriendshipEntity;
 import com.onehundredtwentyninth.rangiffler.db.model.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.db.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.db.repository.UserRepository;
+import com.onehundredtwentyninth.rangiffler.grpc.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.grpc.FriendshipAction;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
@@ -53,12 +54,13 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId().toString())
-            .hasUsername(user.getUsername())
-            .hasFirstName(user.getFirstname())
-            .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountry().getId().toString())
+            .hasId(users[0].getId().toString())
+            .hasUsername(users[0].getUsername())
+            .hasFirstName(users[0].getFirstname())
+            .hasLastName(users[0].getLastName())
+            .hasAvatar(users[0].getAvatar())
+            .hasCountryId(users[0].getCountry().getId().toString())
+            .hasFriendStatus(FriendStatus.INVITATION_SENT)
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -75,21 +77,23 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   )
   @Test
   void acceptFriendshipRequestTest(TestUser user) {
+    var actionTargetUser = user.getIncomeInvitations().get(0);
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
+        .setActionTargetUserId(actionTargetUser.getId().toString())
         .setAction(FriendshipAction.ACCEPT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId().toString())
-            .hasUsername(user.getUsername())
-            .hasFirstName(user.getFirstname())
-            .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountry().getId().toString())
+            .hasId(actionTargetUser.getId().toString())
+            .hasUsername(actionTargetUser.getUsername())
+            .hasFirstName(actionTargetUser.getFirstname())
+            .hasLastName(actionTargetUser.getLastName())
+            .hasAvatar(actionTargetUser.getAvatar())
+            .hasCountryId(actionTargetUser.getCountry().getId().toString())
+            .hasFriendStatus(FriendStatus.FRIEND)
     );
 
     final FriendshipEntity friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -106,21 +110,23 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   )
   @Test
   void rejectFriendshipRequestTest(TestUser user) {
+    var actionTargetUser = user.getIncomeInvitations().get(0);
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getIncomeInvitations().get(0).getId().toString())
+        .setActionTargetUserId(actionTargetUser.getId().toString())
         .setAction(FriendshipAction.REJECT)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId().toString())
-            .hasUsername(user.getUsername())
-            .hasFirstName(user.getFirstname())
-            .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountry().getId().toString())
+            .hasId(actionTargetUser.getId().toString())
+            .hasUsername(actionTargetUser.getUsername())
+            .hasFirstName(actionTargetUser.getFirstname())
+            .hasLastName(actionTargetUser.getLastName())
+            .hasAvatar(actionTargetUser.getAvatar())
+            .hasCountryId(actionTargetUser.getCountry().getId().toString())
+            .hasFriendStatus(FriendStatus.NOT_FRIEND)
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -139,21 +145,23 @@ class UpdateUserFriendshipTest extends GrpcUserdataTestBase {
   )
   @Test
   void deleteFriendshipTest(TestUser user) {
+    var actionTargetUser = user.getFriends().get(0);
     final UpdateUserFriendshipRequest request = UpdateUserFriendshipRequest.newBuilder()
         .setActionAuthorUserId(user.getId().toString())
-        .setActionTargetUserId(user.getFriends().get(0).getId().toString())
+        .setActionTargetUserId(actionTargetUser.getId().toString())
         .setAction(FriendshipAction.DELETE)
         .build();
     final User response = blockingStub.updateUserFriendship(request);
 
     GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response)
-            .hasId(user.getId().toString())
-            .hasUsername(user.getUsername())
-            .hasFirstName(user.getFirstname())
-            .hasLastName(user.getLastName())
-            .hasAvatar(user.getAvatar())
-            .hasCountryId(user.getCountry().getId().toString())
+            .hasId(actionTargetUser.getId().toString())
+            .hasUsername(actionTargetUser.getUsername())
+            .hasFirstName(actionTargetUser.getFirstname())
+            .hasLastName(actionTargetUser.getLastName())
+            .hasAvatar(actionTargetUser.getAvatar())
+            .hasCountryId(actionTargetUser.getCountry().getId().toString())
+            .hasFriendStatus(FriendStatus.NOT_FRIEND)
     );
 
     final Optional<FriendshipEntity> friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(

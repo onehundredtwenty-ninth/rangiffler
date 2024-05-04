@@ -3,6 +3,7 @@ package com.onehundredtwentyninth.rangiffler.data.repository;
 import com.onehundredtwentyninth.rangiffler.data.FriendshipEntity;
 import com.onehundredtwentyninth.rangiffler.data.FriendshipStatus;
 import com.onehundredtwentyninth.rangiffler.data.UserEntity;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,9 @@ public interface FriendshipRepository extends JpaRepository<FriendshipEntity, UU
       + "where (f.requester = :user or f.addressee = :user) "
       + "and (f.requester = :friend or f.addressee = :friend)")
   Optional<FriendshipEntity> findFriendship(UserEntity user, UserEntity friend);
+
+  @Query("select f from FriendshipEntity f "
+      + "where (f.requester in (:users) or f.addressee in (:users)) "
+      + "and (f.requester = :friend or f.addressee = :friend)")
+  List<FriendshipEntity> findFriendships(List<UserEntity> users, UserEntity friend);
 }

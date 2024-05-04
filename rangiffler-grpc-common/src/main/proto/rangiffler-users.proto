@@ -51,6 +51,7 @@ message User {
   string lastName = 4;
   bytes avatar = 5;
   string countryId = 6;
+  FriendStatus friendStatus = 7;
 }
 
 message UpdateUserFriendshipRequest {
@@ -65,4 +66,12 @@ enum FriendshipAction {
   ACCEPT = 2;
   REJECT = 3;
   DELETE = 4;
+}
+
+enum FriendStatus {
+  FRIEND_STATUS_UNSPECIFIED = 0;
+  NOT_FRIEND = 1;
+  INVITATION_SENT = 2;
+  INVITATION_RECEIVED = 3;
+  FRIEND = 4;
 }

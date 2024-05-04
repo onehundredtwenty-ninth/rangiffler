@@ -1,5 +1,6 @@
 package com.onehundredtwentyninth.rangiffler.assertion;
 
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendStatus;
 import com.onehundredtwentyninth.rangiffler.model.gql.GqlUser;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
@@ -66,6 +67,25 @@ public class GqlUserAssertions extends AbstractAssert<GqlUserAssertions, GqlUser
     if (!countryCode.equals(actual.getLocation().getCode())) {
       failWithActualExpectedAndMessage(actual, countryCode, "Expected countryId to be <%s> but was <%s>", countryCode,
           actual.getLocation().getCode());
+    }
+    return this;
+  }
+
+  public GqlUserAssertions hasFriendStatus(GqlFriendStatus friendStatus) {
+    isNotNull();
+    if (!friendStatus.equals(actual.getFriendStatus())) {
+      failWithActualExpectedAndMessage(actual, friendStatus, "Expected friendStatus to be <%s> but was <%s>",
+          friendStatus,
+          actual.getFriendStatus());
+    }
+    return this;
+  }
+
+  public GqlUserAssertions friendStatusIsNull() {
+    isNotNull();
+    if (actual.getFriendStatus() != null) {
+      failWithActualExpectedAndMessage(actual, null, "Expected friendStatus to be null but was <%s>",
+          actual.getFriendStatus());
     }
     return this;
   }

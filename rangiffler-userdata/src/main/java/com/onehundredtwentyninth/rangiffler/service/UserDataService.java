@@ -2,6 +2,7 @@ package com.onehundredtwentyninth.rangiffler.service;
 
 import com.onehundredtwentyninth.rangiffler.data.FriendshipEntity;
 import com.onehundredtwentyninth.rangiffler.data.FriendshipStatus;
+import com.onehundredtwentyninth.rangiffler.data.UserEntity;
 import com.onehundredtwentyninth.rangiffler.data.repository.FriendshipRepository;
 import com.onehundredtwentyninth.rangiffler.data.repository.UserRepository;
 import com.onehundredtwentyninth.rangiffler.exception.FriendshipNotFoundException;
@@ -9,6 +10,7 @@ import com.onehundredtwentyninth.rangiffler.exception.FriendshipRequestNotFoundE
 import com.onehundredtwentyninth.rangiffler.exception.UserNotFoundException;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.AllUsersResponse;
+import com.onehundredtwentyninth.rangiffler.grpc.FriendStatus;
 import com.onehundredtwentyninth.rangiffler.grpc.RangifflerUserdataServiceGrpc;
 import com.onehundredtwentyninth.rangiffler.grpc.UpdateUserFriendshipRequest;
 import com.onehundredtwentyninth.rangiffler.grpc.User;
@@ -19,7 +21,10 @@ import com.onehundredtwentyninth.rangiffler.mapper.UserEntityMapper;
 import io.grpc.stub.StreamObserver;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -39,13 +44,24 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
 
   @Override
   public void getAllUsers(AllUsersRequest request, StreamObserver<AllUsersResponse> responseObserver) {
+    var user = userRepository.findByUsername(request.getUsername())
+        .orElseThrow(() -> new UserNotFoundException(request.getUsername()));
     var allUsersEntities = userRepository.findByUsernameNotAndSearchQuery(request.getUsername(),
         PageRequest.of(request.getPage(), request.getSize()),
         request.getSearchQuery()
     );
+    var friendStatuses = getPeopleFriendStatuses(user, allUsersEntities.stream().toList());
 
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
-            allUsersEntities.stream().map(UserEntityMapper::toMessage).toList()
+            allUsersEntities.stream()
+                .map(s -> {
+                      var friendStatus = friendStatuses.get(s.getId()) != null
+                          ? friendStatuses.get(s.getId())
+                          : FriendStatus.NOT_FRIEND;
+                      return UserEntityMapper.toMessage(s, friendStatus);
+                    }
+                )
+                .toList()
         )
         .setHasNext(allUsersEntities.hasNext())
         .build();
@@ -84,7 +100,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
     );
 
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
-            allUsersEntities.stream().map(UserEntityMapper::toMessage).toList()
+            allUsersEntities.stream().map(s -> UserEntityMapper.toMessage(s, FriendStatus.FRIEND)).toList()
         )
         .setHasNext(allUsersEntities.hasNext())
         .build();
@@ -117,7 +133,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
     );
 
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
-            allUsersEntities.stream().map(UserEntityMapper::toMessage).toList()
+            allUsersEntities.stream().map(s -> UserEntityMapper.toMessage(s, FriendStatus.INVITATION_RECEIVED)).toList()
         )
         .setHasNext(allUsersEntities.hasNext())
         .build();
@@ -136,7 +152,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
     );
 
     var allUsersResponse = AllUsersResponse.newBuilder().addAllAllUsers(
-            allUsersEntities.stream().map(UserEntityMapper::toMessage).toList()
+            allUsersEntities.stream().map(s -> UserEntityMapper.toMessage(s, FriendStatus.INVITATION_SENT)).toList()
         )
         .setHasNext(allUsersEntities.hasNext())
         .build();
@@ -171,6 +187,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         .orElseThrow(() -> new UserNotFoundException(request.getActionTargetUserId()));
 
     var action = request.getAction();
+    User userResponse;
     switch (action) {
       case ADD -> {
         var friendshipEntity = new FriendshipEntity();
@@ -179,12 +196,14 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
         friendshipEntity.setStatus(FriendshipStatus.PENDING);
         friendshipEntity.setCreatedDate(Timestamp.from(Instant.now()));
         friendshipRepository.saveAndFlush(friendshipEntity);
+        userResponse = UserEntityMapper.toMessage(actionTargetUser, FriendStatus.INVITATION_SENT);
       }
       case DELETE -> {
         var friendshipEntity = friendshipRepository.findFriendship(actionAuthorUser, actionTargetUser).orElseThrow(
             () -> new FriendshipNotFoundException(actionAuthorUser.getUsername(), actionTargetUser.getUsername())
         );
         friendshipRepository.delete(friendshipEntity);
+        userResponse = UserEntityMapper.toMessage(actionTargetUser, FriendStatus.NOT_FRIEND);
       }
       case ACCEPT -> {
         var friendshipEntity = friendshipRepository.findByRequesterAndAddresseeAndStatus(actionTargetUser,
@@ -195,6 +214,7 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
             );
         friendshipEntity.setStatus(FriendshipStatus.ACCEPTED);
         friendshipRepository.saveAndFlush(friendshipEntity);
+        userResponse = UserEntityMapper.toMessage(actionTargetUser, FriendStatus.FRIEND);
       }
       case REJECT -> {
         var friendshipEntity = friendshipRepository.findByRequesterAndAddresseeAndStatus(actionTargetUser,
@@ -204,12 +224,31 @@ public class UserDataService extends RangifflerUserdataServiceGrpc.RangifflerUse
                 )
             );
         friendshipRepository.delete(friendshipEntity);
+        userResponse = UserEntityMapper.toMessage(actionTargetUser, FriendStatus.NOT_FRIEND);
       }
       default -> throw new IllegalStateException();
     }
 
-    var userResponse = UserEntityMapper.toMessage(actionAuthorUser);
     responseObserver.onNext(userResponse);
     responseObserver.onCompleted();
+  }
+
+  private Map<UUID, FriendStatus> getPeopleFriendStatuses(UserEntity actor, List<UserEntity> users) {
+    return friendshipRepository.findFriendships(users, actor)
+        .stream().collect(Collectors.toMap(
+                friendshipEntity -> !friendshipEntity.getRequester().getId().equals(actor.getId())
+                    ? friendshipEntity.getRequester().getId()
+                    : friendshipEntity.getAddressee().getId(),
+                friendshipEntity -> {
+                  if (friendshipEntity.getStatus() == FriendshipStatus.ACCEPTED) {
+                    return FriendStatus.FRIEND;
+                  } else if (friendshipEntity.getRequester().getId().equals(actor.getId())) {
+                    return FriendStatus.INVITATION_SENT;
+                  } else {
+                    return FriendStatus.INVITATION_RECEIVED;
+                  }
+                }
+            )
+        );
   }
 }

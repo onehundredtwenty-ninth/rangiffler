@@ -19,6 +19,7 @@ import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Friend;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlRequestFile;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.GqlTest;
 import com.onehundredtwentyninth.rangiffler.jupiter.annotation.Token;
+import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendStatus;
 import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendshipAction;
 import com.onehundredtwentyninth.rangiffler.model.gql.GqlFriendshipInput;
 import com.onehundredtwentyninth.rangiffler.model.gql.GqlRequest;
@@ -64,8 +65,9 @@ class UpdateUserFriendshipTest {
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
-            .hasId(user.getId())
-            .hasUsername(user.getUsername())
+            .hasId(users[0].getId())
+            .hasUsername(users[0].getUsername())
+            .hasFriendStatus(GqlFriendStatus.INVITATION_SENT)
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
@@ -92,7 +94,8 @@ class UpdateUserFriendshipTest {
   @Test
   void acceptFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new GqlFriendshipInput(user.getIncomeInvitations().get(0).getId(), GqlFriendshipAction.ACCEPT);
+    var actionTarget = user.getIncomeInvitations().get(0);
+    final var input = new GqlFriendshipInput(actionTarget.getId(), GqlFriendshipAction.ACCEPT);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -104,12 +107,13 @@ class UpdateUserFriendshipTest {
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
-            .hasId(user.getId())
-            .hasUsername(user.getUsername())
+            .hasId(actionTarget.getId())
+            .hasUsername(actionTarget.getUsername())
+            .hasFriendStatus(GqlFriendStatus.FRIEND)
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getIncomeInvitations().get(0).getId(),
+        actionTarget.getId(),
         user.getId()
     );
 
@@ -132,7 +136,8 @@ class UpdateUserFriendshipTest {
   @Test
   void rejectFriendshipRequestTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new GqlFriendshipInput(user.getIncomeInvitations().get(0).getId(), GqlFriendshipAction.REJECT);
+    var actionTarget = user.getIncomeInvitations().get(0);
+    final var input = new GqlFriendshipInput(actionTarget.getId(), GqlFriendshipAction.REJECT);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -144,12 +149,13 @@ class UpdateUserFriendshipTest {
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
-            .hasId(user.getId())
-            .hasUsername(user.getUsername())
+            .hasId(actionTarget.getId())
+            .hasUsername(actionTarget.getUsername())
+            .friendStatusIsNull()
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
-        user.getIncomeInvitations().get(0).getId(),
+        actionTarget.getId(),
         user.getId()
     );
 
@@ -168,7 +174,8 @@ class UpdateUserFriendshipTest {
   @Test
   void deleteFriendshipTest(@Token String token, TestUser user,
       @GqlRequestFile("gql/friendshipAction.json") GqlRequest request) {
-    final var input = new GqlFriendshipInput(user.getFriends().get(0).getId(), GqlFriendshipAction.DELETE);
+    var actionTarget = user.getFriends().get(0);
+    final var input = new GqlFriendshipInput(actionTarget.getId(), GqlFriendshipAction.DELETE);
     request.variables().put("input", input);
     final var response = gatewayClient.friendshipAction(token, request);
 
@@ -180,13 +187,14 @@ class UpdateUserFriendshipTest {
 
     GqlSoftAssertions.assertSoftly(softAssertions ->
         softAssertions.assertThat(response.getData().getUser())
-            .hasId(user.getId())
-            .hasUsername(user.getUsername())
+            .hasId(actionTarget.getId())
+            .hasUsername(actionTarget.getUsername())
+            .friendStatusIsNull()
     );
 
     final var friendship = friendshipRepository.findFriendshipByRequesterIdAndAddresseeId(
         user.getId(),
-        user.getFriends().get(0).getId()
+        actionTarget.getId()
     );
 
     Assertions.assertThat(friendship)
