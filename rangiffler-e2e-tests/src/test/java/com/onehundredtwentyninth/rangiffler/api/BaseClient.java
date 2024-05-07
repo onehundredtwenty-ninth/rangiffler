@@ -34,6 +34,11 @@ public abstract class BaseClient {
     this.requestSpecification = new RequestSpecBuilder().setBaseUri(baseUri).build();
   }
 
+  /**
+   * На каждый инстанс класса будет создан отдельный HttpClient, так как RestAssured не освобождает коннект, чтобы иметь
+   * возможность получать тело ответа как стрим
+   * https://github.com/rest-assured/rest-assured/issues/1392#issuecomment-718893112
+   */
   @SuppressWarnings("deprecation")
   public BaseClient(String baseUri, boolean followRedirect, List<HttpRequestInterceptor> requestInterceptors,
       List<HttpResponseInterceptor> responseInterceptors) {
