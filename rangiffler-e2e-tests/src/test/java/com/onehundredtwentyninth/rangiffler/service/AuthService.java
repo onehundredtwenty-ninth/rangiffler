@@ -13,6 +13,10 @@ public class AuthService {
   private static final Config CFG = Config.getInstance();
   private final AuthClient authClient = new AuthClient();
 
+  /**
+   * Запросов отправляется несколько больше, чем в Retrofit версии, так как согласно RFC 2616 при редиректе POST запроса
+   * со статусом 302 Found автоматический переход производится не должен https://habr.com/ru/articles/86258/
+   */
   public TokenResponse doLogin(String username, String password) {
     final String codeVerifier = OauthUtils.generateCodeVerifier();
     final String codeChallenge = OauthUtils.generateCodeChallange(codeVerifier);
@@ -23,7 +27,8 @@ public class AuthService {
     authClient.authorize("code", "client", "openid", CFG.frontUrl() + "/authorized",
         codeChallenge, "S256");
 
-    return authClient.token("Basic " + new String(Base64.getEncoder().encode("client:secret".getBytes(StandardCharsets.UTF_8))),
+    return authClient.token(
+        "Basic " + new String(Base64.getEncoder().encode("client:secret".getBytes(StandardCharsets.UTF_8))),
         "client",
         CFG.frontUrl() + "/authorized",
         "authorization_code",
