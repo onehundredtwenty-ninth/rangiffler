@@ -177,8 +177,7 @@ $ npm run dev
 Для этого зайти в меню Run -> Edit Configurations -> выбрать main класс -> указать Active profiles: local
 [Инструкция](https://stackoverflow.com/questions/39738901/how-do-i-activate-a-spring-boot-profile-when-running-from-intellij).
 
-#### 4 Запустить сервис Rangiffler-auth c помощью gradle или командой Run в IDE:
-- 
+#### 4 Запустить сервис Rangiffler-auth c помощью gradle или командой Run в IDE: 
 
 - Запустить сервис auth
 
@@ -209,10 +208,6 @@ $ gradle bootRun --args='--spring.profiles.active=local'
 #### auth:      127.0.0.1 auth.rangiffler.dc
 
 #### gateway:   127.0.0.1 gateway.rangiffler.dc
-
-```posh
-$ vi /etc/hosts
-```
 
 ```posh
 ##
@@ -259,13 +254,12 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 
 #### 1. Войти в свою УЗ на https://hub.docker.com/ и последовательно создать публичные репозитории
 
-- rangiffler-frontend
-- rangiffler-frontend-gql
-- rangiffler-userdata
-- rangiffler-spend
-- rangiffler-gateway
-- rangiffler-currency
-- rangiffler-auth
+- rangiffler-gql-client-docker
+- rangiffler-userdata-docker
+- rangiffler-photo-docker
+- rangiffler-gateway-docker
+- rangiffler-country-docker
+- rangiffler-auth-docker
 
 Допустим, что ваш username на https://hub.docker.com - *foobazz*
 
@@ -273,7 +267,7 @@ Build to Docker daemon failed, perhaps you should make sure your credentials for
 
 - где foobazz - ваш юзернэйм на https://hub.docker.com/
 
-#### 3. заменить в файле build.gradle (в корне проекта) imagePrefix = "7423848291787895" на imagePrefix = "foobazz"
+#### 3. заменить в файле build.gradle (в корне проекта) dockerHubName = "7423848291787895" на dockerHubName = "foobazz"
 
 - где foobazz - ваш юзернэйм на https://hub.docker.com/
 
