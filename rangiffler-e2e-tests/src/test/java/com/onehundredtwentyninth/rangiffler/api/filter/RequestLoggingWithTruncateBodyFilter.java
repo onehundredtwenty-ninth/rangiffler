@@ -16,6 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Необходим для сокрытия в логах запросов передаваемых картинок, так как они забивают лог и делает его менее
+ * читабельным. Текущая реализация обходит все поля запроса и обрезает строки длиннее 1000 символов
+ *
+ * @see com.onehundredtwentyninth.rangiffler.grpc.interceptor.GrpcConsoleWithoutByteStringInterceptor
+ */
 @Slf4j
 public class RequestLoggingWithTruncateBodyFilter implements Filter {
 

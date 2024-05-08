@@ -18,6 +18,13 @@ import java.util.List;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Необходим для сокрытия в логах запросов / ответов передаваемых картинок, так как они забивают лог и делает его менее
+ * читабельным. Текущая реализация обходит все поля запроса / ответа и заменяет поля ByteString длинной больше 1000 на
+ * new byte[]{}
+ *
+ * @see com.onehundredtwentyninth.rangiffler.api.filter.RequestLoggingWithTruncateBodyFilter
+ */
 @Slf4j
 public class GrpcConsoleWithoutByteStringInterceptor implements ClientInterceptor {
 

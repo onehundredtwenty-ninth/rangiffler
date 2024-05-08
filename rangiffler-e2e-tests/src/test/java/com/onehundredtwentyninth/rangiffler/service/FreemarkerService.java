@@ -12,6 +12,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import lombok.SneakyThrows;
 
+/**
+ * Используется для подстановки рандомных значений в json-ы gql запросов
+ * @see com.onehundredtwentyninth.rangiffler.jupiter.extension.GqlRequestResolver
+ */
 public class FreemarkerService {
 
   public Configuration getDefaultConfiguration() {
