@@ -1,5 +1,7 @@
 package com.onehundredtwentyninth.rangiffler.config;
 
+import java.util.List;
+
 public interface Config {
 
   static Config getInstance() {
@@ -44,5 +46,13 @@ public interface Config {
 
   default int userdataPort() {
     return 8092;
+  }
+
+  default String kafkaAddress() {
+    return "localhost:9092";
+  }
+
+  default List<String> kafkaTopics() {
+    return List.of("users");
   }
 }
