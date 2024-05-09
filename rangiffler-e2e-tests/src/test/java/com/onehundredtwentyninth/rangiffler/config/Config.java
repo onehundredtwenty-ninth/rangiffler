@@ -48,9 +48,7 @@ public interface Config {
     return 8092;
   }
 
-  default String kafkaAddress() {
-    return "localhost:9092";
-  }
+  String kafkaAddress();
 
   default List<String> kafkaTopics() {
     return List.of("users");
