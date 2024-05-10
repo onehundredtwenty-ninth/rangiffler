@@ -96,8 +96,9 @@ public class KafkaReader implements Runnable {
   }
 
   private void logRecord(@Nonnull ConsumerRecord<String, String> record) {
-    log.info("topic = {}, \npartition = {}, \noffset = {}, \nkey = {}, \nvalue = {}\n\n",
+    log.info("topic = {}, headers = {}, \npartition = {}, \noffset = {}, \nkey = {}, \nvalue = {}\n\n",
         record.topic(),
+        record.headers(),
         record.partition(),
         record.offset(),
         record.key(),
