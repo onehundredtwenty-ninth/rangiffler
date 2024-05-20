@@ -1,0 +1,12 @@
+{
+  "operationName": "LikePhoto",
+  "variables": {
+    "input": {
+      "id": "",
+      "like": {
+        "user": ""
+      }
+    }
+  },
+  "query": "mutation LikePhoto($input: PhotoInput!) {\n  photo(input: $input) {\n    id\n    country {\n      code\n      name\n      flag\n      __typename\n    }\n    description\n    likes {\n      total\n      likes {\n        user\n        __typename\n      }\n      __typename\n    }\n    __typename\n  }\n}"
+}

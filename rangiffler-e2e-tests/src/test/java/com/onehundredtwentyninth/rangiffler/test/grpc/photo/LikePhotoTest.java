@@ -1,0 +1,112 @@
+package com.onehundredtwentyninth.rangiffler.test.grpc.photo;
+
+import com.google.inject.Inject;
+import com.onehundredtwentyninth.rangiffler.assertion.GrpcResponseSoftAssertions;
+import com.onehundredtwentyninth.rangiffler.constant.Epics;
+import com.onehundredtwentyninth.rangiffler.constant.Features;
+import com.onehundredtwentyninth.rangiffler.constant.JUnitTags;
+import com.onehundredtwentyninth.rangiffler.constant.Layers;
+import com.onehundredtwentyninth.rangiffler.constant.Suites;
+import com.onehundredtwentyninth.rangiffler.db.model.PhotoEntity;
+import com.onehundredtwentyninth.rangiffler.db.repository.PhotoRepository;
+import com.onehundredtwentyninth.rangiffler.grpc.LikePhotoRequest;
+import com.onehundredtwentyninth.rangiffler.grpc.Photo;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.CreateUser;
+import com.onehundredtwentyninth.rangiffler.jupiter.annotation.WithPhoto;
+import com.onehundredtwentyninth.rangiffler.model.testdata.CountryCodes;
+import com.onehundredtwentyninth.rangiffler.model.testdata.PhotoFiles;
+import com.onehundredtwentyninth.rangiffler.model.testdata.TestUser;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import java.time.Duration;
+import org.assertj.core.api.Assertions;
+import org.awaitility.Awaitility;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
+import org.junit.jupiter.api.Test;
+
+@Epic(Epics.PHOTOS)
+@Feature(Features.UPDATE_PHOTO)
+@Tags({@Tag(Layers.GRPC), @Tag(Suites.SMOKE), @Tag(JUnitTags.PHOTOS), @Tag(JUnitTags.UPDATE_PHOTO)})
+@DisplayName("[grpc] Photo")
+class LikePhotoTest extends GrpcPhotoTestBase {
+
+  @Inject
+  private PhotoRepository photoRepository;
+
+  @DisplayName("[grpc] Лайк фото пользователя")
+  @CreateUser(
+      photos = {
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
+      })
+  @Test
+  void likePhotoTest(TestUser user) {
+    final LikePhotoRequest request = LikePhotoRequest.newBuilder()
+        .setUserId(user.getId().toString())
+        .setPhotoId(user.getPhotos().get(0).getId().toString())
+        .build();
+    final Photo response = blockingStub.likePhoto(request);
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(() -> !photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty());
+
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasId(expectedPhoto.getId().toString())
+            .hasSrc(expectedPhoto.getPhoto())
+            .hasCountryId(expectedPhoto.getCountryId().toString())
+            .hasDescription(expectedPhoto.getDescription())
+            .hasCreationDate(expectedPhoto.getCreatedDate().toInstant())
+            .hasTotalLikes(1)
+            .hasLikeFromUser(user.getId().toString())
+    );
+  }
+
+  @DisplayName("[grpc] Снять лайк с фото пользователя")
+  @CreateUser(
+      photos = {
+          @WithPhoto(countryCode = CountryCodes.CN, image = PhotoFiles.FRANCE)
+      })
+  @Test
+  void rejectLikePhotoTest(TestUser user) {
+    final LikePhotoRequest request = LikePhotoRequest.newBuilder()
+        .setUserId(user.getId().toString())
+        .setPhotoId(user.getPhotos().get(0).getId().toString())
+        .build();
+    blockingStub.likePhoto(request);
+
+    Awaitility.await()
+        .atMost(Duration.ofMillis(5000))
+        .pollInterval(Duration.ofMillis(1000))
+        .ignoreExceptions()
+        .until(() -> !photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty());
+
+    final Photo response = blockingStub.likePhoto(request);
+
+    final PhotoEntity expectedPhoto = photoRepository.findByUserId(user.getId()).get(0);
+    GrpcResponseSoftAssertions.assertSoftly(softAssertions ->
+        softAssertions.assertThat(response)
+            .hasId(expectedPhoto.getId().toString())
+            .hasSrc(expectedPhoto.getPhoto())
+            .hasCountryId(expectedPhoto.getCountryId().toString())
+            .hasDescription(expectedPhoto.getDescription())
+            .hasCreationDate(expectedPhoto.getCreatedDate().toInstant())
+            .hasTotalLikes(0)
+    );
+
+    Assertions.assertThatNoException()
+        .describedAs("У фото с id %s отсутствуют лайки в БД", user.getPhotos().get(0).getId())
+        .isThrownBy(() ->
+            Awaitility.await("Ожидаем удаления лайка фото из БД")
+                .atMost(Duration.ofMillis(10000))
+                .pollInterval(Duration.ofMillis(1000))
+                .ignoreExceptions()
+                .until(() -> photoRepository.findLikesByPhotoId(user.getPhotos().get(0).getId()).isEmpty())
+        );
+  }
+}

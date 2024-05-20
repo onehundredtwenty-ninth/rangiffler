@@ -1,0 +1,142 @@
+version: '3.9'
+
+services:
+  rangiffler-all-db:
+    container_name: rangiffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="rangiffler-auth","rangiffler-geo","rangiffler-photo","rangiffler-userdata"
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "5432:5432"
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  rangiffler-all-zookeeper:
+    container_name: rangiffler-all-zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    ports:
+      - "2181:2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - rangiffler-network
+
+  rangiffler-all-kafka:
+    container_name: rangiffler-all-kafka
+    image: confluentinc/cp-kafka:7.3.2
+    ports:
+      - "9092:9092"
+    depends_on:
+      rangiffler-all-zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=rangiffler-all-zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://rangiffler-all-kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - rangiffler-network
+
+  auth.rangiffler.dc:
+    container_name: auth.rangiffler.dc
+    image: ${PREFIX}/rangiffler-auth-${PROFILE}:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+      rangiffler-all-kafka:
+        condition: service_started
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: ${PREFIX}/rangiffler-gateway-${PROFILE}:latest
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: "wget --spider http://localhost:8080/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: "${FRONT_IMAGE}"
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  geo.rangiffler.dc:
+    container_name: geo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-geo-${PROFILE}:latest
+    ports:
+      - "8091:8091"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-photo-${PROFILE}:latest
+    ports:
+      - "8093:8093"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+  userdata.rangiffler.dc:
+    container_name: userdata.rangiffler.dc
+    image: ${PREFIX}/rangiffler-userdata-${PROFILE}:latest
+    ports:
+      - "8092:8092"
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - rangiffler-network
+    dns_search: .
+
+networks:
+  rangiffler-network:
+    driver: bridge

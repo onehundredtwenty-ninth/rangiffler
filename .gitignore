@@ -37,3 +37,9 @@ out/
 ### VS Code ###
 .vscode/
 
+*/build/
+*.log
+*.gz
+
+### gRPC generated files ###
+/rangiffler-grpc-common/src/generated/**

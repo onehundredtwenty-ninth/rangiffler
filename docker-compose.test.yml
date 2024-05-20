@@ -1,0 +1,198 @@
+version: '3.9'
+
+services:
+  rangiffler-all-db:
+    container_name: rangiffler-all-db
+    image: postgres:15.1
+    environment:
+      - POSTGRES_MULTIPLE_DATABASES="rangiffler-auth","rangiffler-geo","rangiffler-photo","rangiffler-userdata"
+      - PGUSER=postgres
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres", "-d", "postgres" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+    expose:
+      - "5432"
+    networks:
+      - test-network
+    dns_search: .
+
+  rangiffler-all-zookeeper:
+    container_name: rangiffler-all-zookeeper
+    image: confluentinc/cp-zookeeper:7.3.2
+    expose:
+      - "2181"
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+    networks:
+      - test-network
+
+  rangiffler-all-kafka:
+    container_name: rangiffler-all-kafka
+    image: confluentinc/cp-kafka:7.3.2
+    expose:
+      - "9092"
+    depends_on:
+      rangiffler-all-zookeeper:
+        condition: service_started
+    environment:
+      - KAFKA_BROKER_ID=1
+      - KAFKA_ZOOKEEPER_CONNECT=rangiffler-all-zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://rangiffler-all-kafka:9092
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1
+      - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
+    networks:
+      - test-network
+
+  auth.rangiffler.dc:
+    container_name: auth.rangiffler.dc
+    image: ${PREFIX}/rangiffler-auth-${PROFILE}:latest
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "wget --spider http://localhost:9000/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+      rangiffler-all-kafka:
+        condition: service_started
+    networks:
+      - test-network
+    dns_search: .
+
+  gateway.rangiffler.dc:
+    container_name: gateway.rangiffler.dc
+    image: ${PREFIX}/rangiffler-gateway-${PROFILE}:latest
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: "wget --spider http://localhost:8080/actuator/health || exit 1"
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  frontend.rangiffler.dc:
+    container_name: frontend.rangiffler.dc
+    image: "${FRONT_IMAGE}"
+    ports:
+      - "80:80"
+    restart: always
+    networks:
+      - test-network
+    dns_search: .
+
+  geo.rangiffler.dc:
+    container_name: geo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-geo-${PROFILE}:latest
+    expose:
+      - "8091"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  photo.rangiffler.dc:
+    container_name: photo.rangiffler.dc
+    image: ${PREFIX}/rangiffler-photo-${PROFILE}:latest
+    expose:
+      - "8093"
+    restart: always
+    depends_on:
+      rangiffler-all-db:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  userdata.rangiffler.dc:
+    container_name: userdata.rangiffler.dc
+    image: ${PREFIX}/rangiffler-userdata-${PROFILE}:latest
+    expose:
+      - "8092"
+    restart: always
+    depends_on:
+      auth.rangiffler.dc:
+        condition: service_healthy
+    networks:
+      - test-network
+    dns_search: .
+
+  selenoid:
+    container_name: selenoid
+    image: aerokube/selenoid:1.11.0
+    platform: "${ARCH}"
+    volumes:
+      - ./selenoid:/etc/selenoid
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    command: [ "-conf", "/etc/selenoid/browsers.json", "-limit", "3", "-video-output-dir", "/opt/selenoid/video", "-log-output-dir", "/opt/selenoid/logs", "-container-network", "rangiffler_test-network" ]
+    ports:
+      - "4444:4444"
+    networks:
+      - test-network
+    dns_search: .
+
+  selenoid-ui:
+    container_name: selenoid-ui
+    image: aerokube/selenoid-ui:1.10.10
+    depends_on:
+      - selenoid
+    restart: unless-stopped
+    ports:
+      - "9090:8080"
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+    networks:
+      - test-network
+    dns_search: .
+
+  rangiffler-e2e:
+    container_name: rangiffler-e2e
+    image: ${PREFIX}/rangiffler-e2e-tests:latest
+    depends_on:
+      frontend.rangiffler.dc:
+        condition: service_started
+    volumes:
+      - ./rangiffler-e2e-tests/build/allure-results:/rangiffler/rangiffler-e2e-tests/build/allure-results
+    networks:
+      - test-network
+    dns_search: .
+
+  allure:
+    container_name: allure
+    image: frankescobar/allure-docker-service
+    depends_on:
+      - rangiffler-e2e
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 3
+      KEEP_HISTORY: 1
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./rangiffler-e2e-tests/build/allure-results:/app/allure-results
+    networks:
+      - test-network
+    dns_search: .
+
+networks:
+  test-network:
+    driver: bridge
