@@ -80,4 +80,30 @@ public class AuthClient extends BaseClient {
         .response()
         .as(TokenResponse.class);
   }
+
+  public Response registerForm() {
+    return given()
+        .spec(requestSpecification)
+        .filters(filterWithResponseBody(log))
+        .get("/register")
+        .then()
+        .statusCode(200)
+        .extract()
+        .response();
+  }
+
+  public void register(String username, String password, String csrf) {
+    given()
+        .spec(requestSpecification)
+        .filters(filterWithResponseBody(log))
+        .formParams(Map.of(
+            "username", username,
+            "password", password,
+            "passwordSubmit", password,
+            "_csrf", csrf
+        ))
+        .post("/register")
+        .then()
+        .statusCode(201);
+  }
 }

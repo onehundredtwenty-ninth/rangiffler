@@ -36,6 +36,11 @@ public class AuthService {
         codeVerifier);
   }
 
+  public void doRegister(String username, String password) {
+    authClient.registerForm();
+    authClient.register(username, password, ThreadSafeCookieManager.INSTANCE.getCookieValue("XSRF-TOKEN"));
+  }
+
   public static class CodeHolder {
 
     private static final ThreadLocal<String> HOLDER = new ThreadLocal<>();

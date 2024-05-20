@@ -48,4 +48,9 @@ public class LocalConfig implements Config {
   public String jdbcHost() {
     return "localhost";
   }
+
+  @Override
+  public String kafkaAddress() {
+    return "localhost:9092";
+  }
 }

@@ -52,4 +52,9 @@ public class DockerConfig implements Config {
   public String jdbcHost() {
     return "rangiffler-all-db";
   }
+
+  @Override
+  public String kafkaAddress() {
+    return "rangiffler-all-kafka:9092";
+  }
 }
